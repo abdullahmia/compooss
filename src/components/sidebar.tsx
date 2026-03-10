@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronRight, ChevronDown, Database as DbIcon, Table2, Search, Plus, RefreshCw } from "lucide-react";
 import type { Database } from "@/data/mockData";
+import { ChevronDown, ChevronRight, Database as DbIcon, Plus, RefreshCw, Search, Table2 } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "./ui/badge/badge";
+import { IconButton } from "./ui/icon-button/icon-button";
 
 interface DatabaseSidebarProps {
   databases: Database[];
@@ -12,7 +14,7 @@ interface DatabaseSidebarProps {
   onCreateDatabase?: () => void;
 }
 
-export function DatabaseSidebar({ databases, selectedDb, selectedCollection, onSelectCollection, onCreateDatabase }: DatabaseSidebarProps) {
+export function Sidebar({ databases, selectedDb, selectedCollection, onSelectCollection, onCreateDatabase }: DatabaseSidebarProps) {
   const [expandedDbs, setExpandedDbs] = useState<Set<string>>(new Set(["ecommerce"]));
   const [search, setSearch] = useState("");
 
@@ -36,16 +38,17 @@ export function DatabaseSidebar({ databases, selectedDb, selectedCollection, onS
       <div className="p-3 border-b border-border flex items-center justify-between">
         <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Databases</span>
         <div className="flex items-center gap-1">
-          <button
+          <IconButton
+            variant="toolbar"
+            icon={<Plus className="h-3.5 w-3.5" />}
+            label="Create Database"
             onClick={onCreateDatabase}
-            className="p-1 text-muted-foreground hover:text-primary transition-colors rounded-sm hover:bg-sidebar-accent"
-            title="Create Database"
-          >
-            <Plus className="h-3.5 w-3.5" />
-          </button>
-          <button className="p-1 text-muted-foreground hover:text-primary transition-colors rounded-sm hover:bg-sidebar-accent">
-            <RefreshCw className="h-3.5 w-3.5" />
-          </button>
+          />
+          <IconButton
+            variant="toolbar"
+            icon={<RefreshCw className="h-3.5 w-3.5" />}
+            label="Refresh"
+          />
         </div>
       </div>
 
@@ -84,7 +87,9 @@ export function DatabaseSidebar({ databases, selectedDb, selectedCollection, onS
                 )}
                 <DbIcon className="h-3.5 w-3.5 text-primary" />
                 <span className="font-medium text-sidebar-foreground">{db.name}</span>
-                <span className="ml-auto text-muted-foreground text-[10px]">{db.sizeOnDisk}</span>
+                <Badge variant="subtle" size="sm" className="ml-auto">
+                  {db.sizeOnDisk}
+                </Badge>
               </button>
 
               {isExpanded && (
@@ -95,17 +100,16 @@ export function DatabaseSidebar({ databases, selectedDb, selectedCollection, onS
                       <button
                         key={col.name}
                         onClick={() => onSelectCollection(db.name, col.name)}
-                        className={`w-full flex items-center gap-1.5 pl-5 pr-3 py-1.5 text-xs transition-colors ${
-                          isActive
+                        className={`w-full flex items-center gap-1.5 pl-5 pr-3 py-1.5 text-xs transition-colors ${isActive
                             ? "bg-primary/15 text-primary"
                             : "text-sidebar-foreground hover:bg-sidebar-accent"
-                        }`}
+                          }`}
                       >
                         <Table2 className="h-3 w-3 shrink-0" />
                         <span className="truncate">{col.name}</span>
-                        <span className="ml-auto text-[10px] text-muted-foreground">
+                        <Badge variant="subtle" size="sm" className="ml-auto">
                           {col.documentCount.toLocaleString()}
-                        </span>
+                        </Badge>
                       </button>
                     );
                   })}

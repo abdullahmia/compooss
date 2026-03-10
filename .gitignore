@@ -43,3 +43,6 @@ next-env.d.ts
 *.njsproj
 *.sln
 *.sw?
+
+*storybook.log
+storybook-static

@@ -1,8 +1,9 @@
 "use client";
 
-import { Database, Leaf, RefreshCw, Settings, HelpCircle } from "lucide-react";
+import { Database, HelpCircle, Leaf, RefreshCw, Settings } from "lucide-react";
 import { useState } from "react";
-import { SettingsModal } from "./SettingsModal";
+import { SettingsModal } from "./settings/settings-modal";
+import { IconButton } from "./ui/icon-button/icon-button";
 
 interface TopBarProps {
   connectionString: string;
@@ -36,15 +37,17 @@ export function TopBar({ connectionString, onDisconnect }: TopBarProps) {
             Disconnect
           </button>
         )}
-        <button
+        <IconButton
+          variant="default"
+          icon={<Settings className="h-4 w-4" />}
+          label="Settings"
           onClick={() => setSettingsOpen(true)}
-          className="p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-sm hover:bg-secondary"
-        >
-          <Settings className="h-4 w-4" />
-        </button>
-        <button className="p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-sm hover:bg-secondary">
-          <HelpCircle className="h-4 w-4" />
-        </button>
+        />
+        <IconButton
+          variant="default"
+          icon={<HelpCircle className="h-4 w-4" />}
+          label="Help"
+        />
       </div>
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </>

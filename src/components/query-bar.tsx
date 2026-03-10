@@ -1,7 +1,8 @@
 "use client";
 
-import { Play, RotateCcw, Braces, SlidersHorizontal } from "lucide-react";
-import { useState, useRef, useCallback } from "react";
+import { Braces, Play, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
+import { IconButton } from "./ui/icon-button/icon-button";
 
 interface QueryBarProps {
   onRunQuery: (query: string) => void;
@@ -104,18 +105,19 @@ export function QueryBar({ onRunQuery, fieldSuggestions = [] }: QueryBarProps) {
             </div>
           )}
         </div>
-        <button
+
+        <IconButton
+          variant={showOptions ? "active" : "default"}
+          icon={<SlidersHorizontal className="h-3.5 w-3.5" />}
+          label="Options"
           onClick={() => setShowOptions(!showOptions)}
-          className={`p-1.5 rounded-sm transition-colors ${showOptions ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
-        >
-          <SlidersHorizontal className="h-3.5 w-3.5" />
-        </button>
-        <button
-          onClick={() => setQuery('{ }')}
-          className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-sm transition-colors"
-        >
-          <RotateCcw className="h-3.5 w-3.5" />
-        </button>
+        />
+        <IconButton
+          variant="default"
+          icon={<RotateCcw className="h-3.5 w-3.5" />}
+          label="Reset"
+        />
+
         <button
           onClick={() => onRunQuery(query)}
           className="flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 rounded-sm text-xs font-medium hover:bg-primary/90 transition-colors"

@@ -1,7 +1,8 @@
 "use client";
 
+import { Clock, Leaf, Plus, Star, StarOff, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { Leaf, Plus, Clock, Trash2, Star, StarOff } from "lucide-react";
+import { Button } from "./ui/button/button";
 
 interface SavedConnection {
   id: string;
@@ -88,21 +89,16 @@ export function ConnectionScreen({ onConnect }: ConnectionScreenProps) {
                 className="flex-1 bg-secondary text-sm font-mono text-foreground px-4 py-2.5 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-hidden transition-colors placeholder:text-muted-foreground"
                 placeholder="mongodb://localhost:27017"
               />
-              <button
-                onClick={handleConnect}
-                className="bg-primary text-primary-foreground px-6 py-2.5 rounded-sm text-sm font-semibold hover:bg-primary/90 transition-colors"
-              >
+              <Button onClick={handleConnect}>
                 Connect
-              </button>
+              </Button>
             </div>
             <div className="flex items-center gap-3 mt-3">
-              <button
-                onClick={() => setShowNewForm(!showNewForm)}
-                className="text-xs text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
-              >
-                <Plus className="h-3 w-3" />
+              <Button variant="ghost"
+                icon={<Plus className="h-3 w-3" />}
+                onClick={() => setShowNewForm(!showNewForm)}>
                 Save as favorite
-              </button>
+              </Button>
             </div>
 
             {showNewForm && (
