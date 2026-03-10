@@ -1,0 +1,9 @@
+[
+  {
+    "id": "862d9113-0b7e-4890-bde0-3b6da81dd279",
+    "name": "Local",
+    "uri": "mongodb://localhost:27017/compooss",
+    "createdAt": "2026-03-10T21:49:23.126Z",
+    "lastUsedAt": null
+  }
+]

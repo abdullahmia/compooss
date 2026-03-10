@@ -1,10 +1,19 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Database, Search } from "lucide-react";
-import { Input } from "./input";
+import { useForm } from "react-hook-form";
+import { Input, type InputProps } from "./input";
+
+function InputWithForm(props: Omit<InputProps, "hookForm" | "name"> & { name?: string }) {
+  const name = props.name ?? "field";
+  const form = useForm({
+    defaultValues: { [name]: (props as InputProps & { defaultValue?: string }).defaultValue ?? "" },
+  });
+  return <Input {...props} name={name} hookForm={form} />;
+}
 
 const meta = {
   title: "UI/Input",
-  component: Input,
+  component: InputWithForm,
   tags: ["autodocs"],
   argTypes: {
     variant: {
@@ -21,13 +30,14 @@ const meta = {
     },
     disabled: { control: "boolean" },
     placeholder: { control: "text" },
+    label: { control: "text" },
   },
   args: {
     placeholder: "Type something...",
     disabled: false,
     iconPosition: "left",
   },
-} satisfies Meta<typeof Input>;
+} satisfies Meta<typeof InputWithForm>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -51,7 +61,7 @@ export const Default: Story = {
   },
 };
 
-export const Search_: Story = {
+export const SearchVariant: Story = {
   name: "Search",
   args: {
     variant: "search",
@@ -167,49 +177,65 @@ export const MonoWithValue: Story = {
 
 // ─── All variants at a glance ─────────────────────────────────────────────────
 
-/** Visual reference — all meaningful states side by side. */
-export const AllVariants: Story = {
-  render: () => (
+function AllVariantsForm() {
+  const form = useForm({
+    defaultValues: {
+      default1: "",
+      default2: "",
+      default3: "With value",
+      search1: "",
+      search2: "",
+      mono1: "",
+      mono2: "60000",
+      mono3: "",
+      size1: "",
+      size2: "",
+      size3: "",
+    },
+  });
+  return (
     <div className="flex flex-col gap-6 p-6 max-w-md">
-      {/* Default variants */}
       <div className="space-y-3">
         <p className="text-xs font-medium text-muted-foreground">Default</p>
-        <Input variant="default" placeholder="Default input" />
-        <Input variant="default" placeholder="Disabled" disabled />
-        <Input variant="default" defaultValue="With value" />
+        <Input hookForm={form} name="default1" variant="default" placeholder="Default input" />
+        <Input hookForm={form} name="default2" variant="default" placeholder="Disabled" disabled />
+        <Input hookForm={form} name="default3" variant="default" placeholder="With value" />
       </div>
-
-      {/* Search variants */}
       <div className="space-y-3">
         <p className="text-xs font-medium text-muted-foreground">Search</p>
         <Input
+          hookForm={form}
+          name="search1"
           variant="search"
           icon={<Search className="h-3.5 w-3.5" />}
           placeholder="Search..."
         />
         <Input
+          hookForm={form}
+          name="search2"
           variant="search"
           icon={<Search className="h-3.5 w-3.5" />}
           placeholder="Disabled search"
           disabled
         />
       </div>
-
-      {/* Mono variants */}
       <div className="space-y-3">
         <p className="text-xs font-medium text-muted-foreground">Mono</p>
-        <Input variant="mono" placeholder='{ field: "value" }' />
-        <Input variant="mono" defaultValue="60000" />
-        <Input variant="mono" placeholder="Disabled" disabled />
+        <Input hookForm={form} name="mono1" variant="mono" placeholder='{ field: "value" }' />
+        <Input hookForm={form} name="mono2" variant="mono" />
+        <Input hookForm={form} name="mono3" variant="mono" placeholder="Disabled" disabled />
       </div>
-
-      {/* Sizes */}
       <div className="space-y-3">
         <p className="text-xs font-medium text-muted-foreground">Sizes</p>
-        <Input variant="default" inputSize="sm" placeholder="Small" />
-        <Input variant="default" inputSize="md" placeholder="Medium" />
-        <Input variant="default" inputSize="lg" placeholder="Large" />
+        <Input hookForm={form} name="size1" variant="default" inputSize="sm" placeholder="Small" />
+        <Input hookForm={form} name="size2" variant="default" inputSize="md" placeholder="Medium" />
+        <Input hookForm={form} name="size3" variant="default" inputSize="lg" placeholder="Large" />
       </div>
     </div>
-  ),
+  );
+}
+
+/** Visual reference — all meaningful states side by side. */
+export const AllVariants: Story = {
+  render: () => <AllVariantsForm />,
 };
