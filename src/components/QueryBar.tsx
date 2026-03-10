@@ -1,3 +1,5 @@
+"use client";
+
 import { Play, RotateCcw, Braces, SlidersHorizontal } from "lucide-react";
 import { useState, useRef, useCallback } from "react";
 
@@ -79,12 +81,12 @@ export function QueryBar({ onRunQuery, fieldSuggestions = [] }: QueryBarProps) {
             onChange={(e) => handleQueryChange(e.target.value)}
             onKeyDown={handleKeyDown}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-            className="w-full bg-secondary text-xs font-mono text-foreground px-3 py-1.5 rounded border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none transition-colors"
+            className="w-full bg-secondary text-xs font-mono text-foreground px-3 py-1.5 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-hidden transition-colors"
             placeholder='{ field: "value" }'
           />
           {/* Field suggestions dropdown */}
           {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute top-full left-0 mt-1 w-64 bg-card border border-border rounded shadow-lg z-50 py-1 max-h-48 overflow-y-auto scrollbar-thin">
+            <div className="absolute top-full left-0 mt-1 w-64 bg-card border border-border rounded-sm shadow-lg z-50 py-1 max-h-48 overflow-y-auto scrollbar-thin">
               {suggestions.map((field, i) => (
                 <button
                   key={field}
@@ -104,19 +106,19 @@ export function QueryBar({ onRunQuery, fieldSuggestions = [] }: QueryBarProps) {
         </div>
         <button
           onClick={() => setShowOptions(!showOptions)}
-          className={`p-1.5 rounded transition-colors ${showOptions ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
+          className={`p-1.5 rounded-sm transition-colors ${showOptions ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
         </button>
         <button
           onClick={() => setQuery('{ }')}
-          className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded transition-colors"
+          className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-sm transition-colors"
         >
           <RotateCcw className="h-3.5 w-3.5" />
         </button>
         <button
           onClick={() => onRunQuery(query)}
-          className="flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 rounded text-xs font-medium hover:bg-primary/90 transition-colors"
+          className="flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 rounded-sm text-xs font-medium hover:bg-primary/90 transition-colors"
         >
           <Play className="h-3 w-3" />
           Find
@@ -130,7 +132,7 @@ export function QueryBar({ onRunQuery, fieldSuggestions = [] }: QueryBarProps) {
             <input
               type="text"
               defaultValue="{ }"
-              className="bg-secondary text-foreground font-mono px-2 py-1 rounded border border-border w-32 text-xs outline-none focus:border-primary"
+              className="bg-secondary text-foreground font-mono px-2 py-1 rounded-sm border border-border w-32 text-xs outline-hidden focus:border-primary"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -138,7 +140,7 @@ export function QueryBar({ onRunQuery, fieldSuggestions = [] }: QueryBarProps) {
             <input
               type="text"
               defaultValue="{ }"
-              className="bg-secondary text-foreground font-mono px-2 py-1 rounded border border-border w-32 text-xs outline-none focus:border-primary"
+              className="bg-secondary text-foreground font-mono px-2 py-1 rounded-sm border border-border w-32 text-xs outline-hidden focus:border-primary"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -146,7 +148,7 @@ export function QueryBar({ onRunQuery, fieldSuggestions = [] }: QueryBarProps) {
             <input
               type="text"
               defaultValue="20"
-              className="bg-secondary text-foreground font-mono px-2 py-1 rounded border border-border w-16 text-xs outline-none focus:border-primary"
+              className="bg-secondary text-foreground font-mono px-2 py-1 rounded-sm border border-border w-16 text-xs outline-hidden focus:border-primary"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -154,7 +156,7 @@ export function QueryBar({ onRunQuery, fieldSuggestions = [] }: QueryBarProps) {
             <input
               type="text"
               defaultValue="0"
-              className="bg-secondary text-foreground font-mono px-2 py-1 rounded border border-border w-16 text-xs outline-none focus:border-primary"
+              className="bg-secondary text-foreground font-mono px-2 py-1 rounded-sm border border-border w-16 text-xs outline-hidden focus:border-primary"
             />
           </div>
         </div>

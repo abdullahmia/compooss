@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useMemo } from "react";
 import { FileText, BarChart3, Grid3X3, Code2, ShieldCheck, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { QueryBar } from "./QueryBar";
@@ -50,7 +52,7 @@ export function CollectionView({ dbName, collection }: CollectionViewProps) {
       <div className="px-4 py-3 border-b border-border bg-card/50">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-semibold text-foreground">{dbName}.{collection.name}</h2>
-          <span className="text-[10px] px-2 py-0.5 rounded bg-primary/15 text-primary font-medium">
+          <span className="text-[10px] px-2 py-0.5 rounded-sm bg-primary/15 text-primary font-medium">
             {collection.documentCount.toLocaleString()} docs
           </span>
           <span className="text-[10px] text-muted-foreground">
@@ -86,19 +88,19 @@ export function CollectionView({ dbName, collection }: CollectionViewProps) {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-1.5 rounded text-xs transition-colors ${viewMode === 'list' ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
+                className={`p-1.5 rounded-sm text-xs transition-colors ${viewMode === 'list' ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
               >
                 <FileText className="h-3.5 w-3.5" />
               </button>
               <button
                 onClick={() => setViewMode("json")}
-                className={`p-1.5 rounded text-xs transition-colors ${viewMode === 'json' ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
+                className={`p-1.5 rounded-sm text-xs transition-colors ${viewMode === 'json' ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
               >
                 <Code2 className="h-3.5 w-3.5" />
               </button>
               <button
                 onClick={() => setViewMode("table")}
-                className={`p-1.5 rounded text-xs transition-colors ${viewMode === 'table' ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
+                className={`p-1.5 rounded-sm text-xs transition-colors ${viewMode === 'table' ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
               >
                 <Grid3X3 className="h-3.5 w-3.5" />
               </button>
@@ -112,11 +114,11 @@ export function CollectionView({ dbName, collection }: CollectionViewProps) {
                 Add Data
               </button>
               <div className="flex items-center gap-1 ml-3">
-                <button className="p-1 text-muted-foreground hover:text-foreground rounded hover:bg-secondary transition-colors">
+                <button className="p-1 text-muted-foreground hover:text-foreground rounded-sm hover:bg-secondary transition-colors">
                   <ChevronLeft className="h-3.5 w-3.5" />
                 </button>
                 <span className="text-xs text-muted-foreground">1 – {documents.length}</span>
-                <button className="p-1 text-muted-foreground hover:text-foreground rounded hover:bg-secondary transition-colors">
+                <button className="p-1 text-muted-foreground hover:text-foreground rounded-sm hover:bg-secondary transition-colors">
                   <ChevronRight className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -129,7 +131,7 @@ export function CollectionView({ dbName, collection }: CollectionViewProps) {
               <JsonDocument key={doc._id} document={doc} index={i} />
             ))}
             {viewMode === "json" && (
-              <pre className="text-xs font-mono text-foreground bg-card p-4 rounded border border-border overflow-auto">
+              <pre className="text-xs font-mono text-foreground bg-card p-4 rounded-sm border border-border overflow-auto">
                 {JSON.stringify(documents, null, 2)}
               </pre>
             )}
