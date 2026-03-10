@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { ChevronRight, ChevronDown, Database as DbIcon, Table2, Search, Plus, RefreshCw } from "lucide-react";
 import type { Database } from "@/data/mockData";
@@ -36,12 +38,12 @@ export function DatabaseSidebar({ databases, selectedDb, selectedCollection, onS
         <div className="flex items-center gap-1">
           <button
             onClick={onCreateDatabase}
-            className="p-1 text-muted-foreground hover:text-primary transition-colors rounded hover:bg-sidebar-accent"
+            className="p-1 text-muted-foreground hover:text-primary transition-colors rounded-sm hover:bg-sidebar-accent"
             title="Create Database"
           >
             <Plus className="h-3.5 w-3.5" />
           </button>
-          <button className="p-1 text-muted-foreground hover:text-primary transition-colors rounded hover:bg-sidebar-accent">
+          <button className="p-1 text-muted-foreground hover:text-primary transition-colors rounded-sm hover:bg-sidebar-accent">
             <RefreshCw className="h-3.5 w-3.5" />
           </button>
         </div>
@@ -49,14 +51,14 @@ export function DatabaseSidebar({ databases, selectedDb, selectedCollection, onS
 
       {/* Search */}
       <div className="p-2">
-        <div className="flex items-center gap-2 bg-secondary rounded px-2 py-1.5">
+        <div className="flex items-center gap-2 bg-secondary rounded-sm px-2 py-1.5">
           <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
           <input
             type="text"
             placeholder="Filter databases..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground outline-none w-full"
+            className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground outline-hidden w-full"
           />
         </div>
       </div>

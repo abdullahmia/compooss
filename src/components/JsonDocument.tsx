@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { ChevronRight, ChevronDown, Copy, Pencil, Trash2, FileText } from "lucide-react";
 import type { MongoDocument } from "@/data/mockData";
@@ -8,7 +10,7 @@ interface JsonDocumentProps {
 }
 
 function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
-  const [expanded, setExpanded] = useState(depth < 2);
+  const [expanded, setExpanded] = useState(depth < 0);
 
   if (value === null) return <span className="text-json-null font-mono text-xs">null</span>;
   if (typeof value === "boolean") return <span className="text-json-boolean font-mono text-xs">{value.toString()}</span>;
@@ -77,7 +79,7 @@ export function JsonDocument({ document, index }: JsonDocumentProps) {
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div className="border border-border rounded-lg bg-card mb-3 group shadow-sm hover:border-primary/20 transition-colors">
+    <div className="border border-border rounded-lg bg-card mb-3 group shadow-xs hover:border-primary/20 transition-colors">
       {/* Card header - Compass style with green left accent */}
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-muted/30 rounded-t-lg relative overflow-hidden">
         <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary" />
@@ -90,13 +92,13 @@ export function JsonDocument({ document, index }: JsonDocumentProps) {
         </span>
         
         <div className="ml-auto flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded transition-colors" title="Clone Document">
+          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-sm transition-colors" title="Clone Document">
             <Copy className="h-3 w-3" />
           </button>
-          <button className="p-1.5 text-muted-foreground hover:text-primary hover:bg-secondary rounded transition-colors" title="Edit Document">
+          <button className="p-1.5 text-muted-foreground hover:text-primary hover:bg-secondary rounded-sm transition-colors" title="Edit Document">
             <Pencil className="h-3 w-3" />
           </button>
-          <button className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-secondary rounded transition-colors" title="Delete Document">
+          <button className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-secondary rounded-sm transition-colors" title="Delete Document">
             <Trash2 className="h-3 w-3" />
           </button>
         </div>

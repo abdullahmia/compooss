@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { TopBar } from "@/components/TopBar";
 import { DatabaseSidebar } from "@/components/DatabaseSidebar";
@@ -8,7 +10,7 @@ import { CreateDatabaseModal } from "@/components/CreateDatabaseModal";
 import { databases as initialDatabases } from "@/data/mockData";
 import type { Database } from "@/data/mockData";
 
-const Index = () => {
+export default function Home() {
   const [connected, setConnected] = useState(false);
   const [connectionString, setConnectionString] = useState("");
   const [selectedDb, setSelectedDb] = useState<string | null>(null);
@@ -77,6 +79,4 @@ const Index = () => {
       />
     </div>
   );
-};
-
-export default Index;
+}

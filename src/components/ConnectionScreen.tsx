@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Leaf, Plus, Clock, Trash2, Star, StarOff } from "lucide-react";
 
@@ -83,12 +85,12 @@ export function ConnectionScreen({ onConnect }: ConnectionScreenProps) {
                 type="text"
                 value={connectionString}
                 onChange={(e) => setConnectionString(e.target.value)}
-                className="flex-1 bg-secondary text-sm font-mono text-foreground px-4 py-2.5 rounded border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none transition-colors placeholder:text-muted-foreground"
+                className="flex-1 bg-secondary text-sm font-mono text-foreground px-4 py-2.5 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-hidden transition-colors placeholder:text-muted-foreground"
                 placeholder="mongodb://localhost:27017"
               />
               <button
                 onClick={handleConnect}
-                className="bg-primary text-primary-foreground px-6 py-2.5 rounded text-sm font-semibold hover:bg-primary/90 transition-colors"
+                className="bg-primary text-primary-foreground px-6 py-2.5 rounded-sm text-sm font-semibold hover:bg-primary/90 transition-colors"
               >
                 Connect
               </button>
@@ -110,11 +112,11 @@ export function ConnectionScreen({ onConnect }: ConnectionScreenProps) {
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="Connection name"
-                  className="flex-1 bg-secondary text-xs text-foreground px-3 py-2 rounded border border-border focus:border-primary outline-none transition-colors placeholder:text-muted-foreground"
+                  className="flex-1 bg-secondary text-xs text-foreground px-3 py-2 rounded-sm border border-border focus:border-primary outline-hidden transition-colors placeholder:text-muted-foreground"
                 />
                 <button
                   onClick={handleSaveNew}
-                  className="bg-primary/15 text-primary px-4 py-2 rounded text-xs font-medium hover:bg-primary/25 transition-colors"
+                  className="bg-primary/15 text-primary px-4 py-2 rounded-sm text-xs font-medium hover:bg-primary/25 transition-colors"
                 >
                   Save
                 </button>
@@ -162,13 +164,13 @@ export function ConnectionScreen({ onConnect }: ConnectionScreenProps) {
                         </span>
                         <button
                           onClick={(e) => { e.stopPropagation(); removeConnection(conn.id); }}
-                          className="p-1 text-muted-foreground hover:text-destructive rounded opacity-0 group-hover:opacity-100 transition-all"
+                          className="p-1 text-muted-foreground hover:text-destructive rounded-sm opacity-0 group-hover:opacity-100 transition-all"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                         <button
                           onClick={(e) => { e.stopPropagation(); onConnect(conn.connectionString); }}
-                          className="bg-primary/15 text-primary px-3 py-1 rounded text-xs font-medium hover:bg-primary/25 transition-colors opacity-0 group-hover:opacity-100"
+                          className="bg-primary/15 text-primary px-3 py-1 rounded-sm text-xs font-medium hover:bg-primary/25 transition-colors opacity-0 group-hover:opacity-100"
                         >
                           Connect
                         </button>
