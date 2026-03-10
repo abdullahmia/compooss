@@ -2,7 +2,7 @@
 
 Compooss is a lightweight MongoDB database client designed to run **inside your `docker-compose` stack** during development. The goal is to give you an easy way to explore and manage your MongoDB data **without installing a separate GUI app** on your machine.
 
-![Compooss Preview](public/preview.png)
+![Compooss Preview](docs/preview.png)
 
 ### Features (planned)
 
@@ -56,6 +56,14 @@ npm run dev
 
 - **Name**: Abdullah  
 - **Project**: Compooss – MongoDB client for `docker-compose`-based development
+
+### Documentation
+
+- [Contributing](docs/CONTRIBUTING.md)
+- [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+- [Development Guide](docs/DEVELOPMENT.md)
+- [Security Policy](docs/SECURITY.md)
+- [Changelog](docs/CHANGELOG.md)
 
 ### License
 
