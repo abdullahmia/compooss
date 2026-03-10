@@ -29,7 +29,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-xs" onClick={onClose} />
+      <div className="absolute inset-0 bg-background/10 backdrop-blur-xs" onClick={onClose} />
       <div className="relative bg-card border border-border rounded-lg shadow-xl w-full max-w-lg mx-4">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">

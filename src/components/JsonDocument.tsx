@@ -10,7 +10,7 @@ interface JsonDocumentProps {
 }
 
 function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
-  const [expanded, setExpanded] = useState(depth < 2);
+  const [expanded, setExpanded] = useState(depth < 0);
 
   if (value === null) return <span className="text-json-null font-mono text-xs">null</span>;
   if (typeof value === "boolean") return <span className="text-json-boolean font-mono text-xs">{value.toString()}</span>;
