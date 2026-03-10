@@ -54,7 +54,7 @@ npm run dev
 
 ### Author
 
-- **Name**: Abdullah  
+- **Name**: Abdullah Mia
 - **Project**: Compooss – MongoDB client for `docker-compose`-based development
 
 ### Documentation

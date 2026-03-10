@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { TopBar } from "@/components/TopBar";
-import { DatabaseSidebar } from "@/components/DatabaseSidebar";
-import { CollectionView } from "@/components/CollectionView";
-import { WelcomeView } from "@/components/WelcomeView";
-import { ConnectionScreen } from "@/components/ConnectionScreen";
-import { CreateDatabaseModal } from "@/components/CreateDatabaseModal";
-import { databases as initialDatabases } from "@/data/mockData";
+import { CollectionView } from "@/components/collection-view";
+import { ConnectionScreen } from "@/components/connection-screen";
+import { CreateDatabaseModal } from "@/components/create-database-modal";
+import { Sidebar } from "@/components/sidebar";
+import { TopBar } from "@/components/top-bar";
+import { WelcomeView } from "@/components/welcome-view";
 import type { Database } from "@/data/mockData";
+import { databases as initialDatabases } from "@/data/mockData";
+import { useState } from "react";
 
 export default function Home() {
   const [connected, setConnected] = useState(false);
@@ -59,7 +59,7 @@ export default function Home() {
     <div className="h-screen flex flex-col overflow-hidden">
       <TopBar connectionString={connectionString} onDisconnect={handleDisconnect} />
       <div className="flex flex-1 overflow-hidden">
-        <DatabaseSidebar
+        <Sidebar
           databases={databases}
           selectedDb={selectedDb}
           selectedCollection={selectedCollection}

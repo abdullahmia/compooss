@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronRight, ChevronDown, Copy, Pencil, Trash2, FileText } from "lucide-react";
 import type { MongoDocument } from "@/data/mockData";
+import { ChevronDown, ChevronRight, Copy, FileText, Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { IconButton } from "./ui/icon-button/icon-button";
 
 interface JsonDocumentProps {
   document: MongoDocument;
@@ -78,9 +79,13 @@ function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
 export function JsonDocument({ document, index }: JsonDocumentProps) {
   const [expanded, setExpanded] = useState(true);
 
+  const handleClone = () => {
+    navigator.clipboard.writeText(JSON.stringify(document, null, 2));
+  };
+
   return (
     <div className="border border-border rounded-lg bg-card mb-3 group shadow-xs hover:border-primary/20 transition-colors">
-      {/* Card header - Compass style with green left accent */}
+      {/* Document header */}
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-muted/30 rounded-t-lg relative overflow-hidden">
         <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary" />
         <button onClick={() => setExpanded(!expanded)} className="text-muted-foreground hover:text-foreground ml-1">
@@ -92,15 +97,25 @@ export function JsonDocument({ document, index }: JsonDocumentProps) {
         </span>
         
         <div className="ml-auto flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-sm transition-colors" title="Clone Document">
-            <Copy className="h-3 w-3" />
-          </button>
-          <button className="p-1.5 text-muted-foreground hover:text-primary hover:bg-secondary rounded-sm transition-colors" title="Edit Document">
-            <Pencil className="h-3 w-3" />
-          </button>
-          <button className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-secondary rounded-sm transition-colors" title="Delete Document">
-            <Trash2 className="h-3 w-3" />
-          </button>
+          <IconButton
+            variant="default"
+            size="md"
+            icon={<Copy className="h-3 w-3" />}
+            label="Clone Document"
+            onClick={handleClone}
+          />
+          <IconButton
+            variant="default"
+            size="md"
+            icon={<Pencil className="h-3 w-3" />}
+            label="Edit Document"
+          />
+          <IconButton
+            variant="danger"
+            size="md"
+            icon={<Trash2 className="h-3 w-3" />}
+            label="Delete Document"
+          />
         </div>
       </div>
       
