@@ -1,73 +1,60 @@
-# Welcome to your Lovable project
+# Compooss
 
-## Project info
+Compooss is a lightweight MongoDB database client designed to run **inside your `docker-compose` stack** during development. The goal is to give you an easy way to explore and manage your MongoDB data **without installing a separate GUI app** on your machine.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+### Features (planned)
 
-## How can I edit this code?
+- **Docker-first**: Run as a service alongside your app in `docker-compose`.
+- **No local install**: Access the UI from your browser, no native app required.
+- **MongoDB focused**: Simple workflows for browsing databases, collections, and documents.
+- **Dev-friendly**: Optimized for local development environments and throwaway stacks.
 
-There are several ways of editing your application.
+### Example `docker-compose` usage (conceptual)
 
-**Use Lovable**
+```yaml
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+  compooss:
+    image: compooss/app:latest
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+    ports:
+      - "8080:80"
+    depends_on:
+      - mongo
+```
 
-Changes made via Lovable will be committed automatically to this repo.
+Then open `http://localhost:8080` in your browser to access Compooss.
 
-**Use your preferred IDE**
+### Development
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+This repository contains the source code for Compooss. During early development, setup and usage may change frequently.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Basic local flow (subject to change):
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+git clone <REPO_URL>
+cd compass-companion
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Roadmap
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- **MVP**: Basic connection to MongoDB, list databases and collections, view documents.
+- **Improved UX**: Filters, pagination, and simple query builder.
+- **Write operations**: Insert, update, and delete documents with safeguards.
+- **Auth & security**: Configurable access controls for shared dev environments.
 
-**Use GitHub Codespaces**
+### Author
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **Name**: Abdullah  
+- **Project**: Compooss – MongoDB client for `docker-compose`-based development
 
-## What technologies are used for this project?
+### License
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is licensed under the **MIT License**. You are free to use, modify, and distribute this software, subject to the terms of the MIT License.
