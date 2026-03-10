@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { X, Database } from "lucide-react";
 
@@ -24,7 +26,7 @@ export function CreateDatabaseModal({ open, onClose, onCreate }: CreateDatabaseM
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-background/80 backdrop-blur-xs" onClick={onClose} />
       <div className="relative bg-card border border-border rounded-lg shadow-xl w-full max-w-md mx-4">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
@@ -32,7 +34,7 @@ export function CreateDatabaseModal({ open, onClose, onCreate }: CreateDatabaseM
             <Database className="h-4 w-4 text-primary" />
             <h2 className="text-sm font-semibold text-foreground">Create Database</h2>
           </div>
-          <button onClick={onClose} className="p-1 text-muted-foreground hover:text-foreground rounded hover:bg-secondary transition-colors">
+          <button onClick={onClose} className="p-1 text-muted-foreground hover:text-foreground rounded-sm hover:bg-secondary transition-colors">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -46,7 +48,7 @@ export function CreateDatabaseModal({ open, onClose, onCreate }: CreateDatabaseM
               value={dbName}
               onChange={(e) => setDbName(e.target.value)}
               placeholder="e.g. my_database"
-              className="w-full bg-secondary text-sm font-mono text-foreground px-3 py-2 rounded border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none transition-colors placeholder:text-muted-foreground"
+              className="w-full bg-secondary text-sm font-mono text-foreground px-3 py-2 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-hidden transition-colors placeholder:text-muted-foreground"
               autoFocus
             />
           </div>
@@ -57,10 +59,10 @@ export function CreateDatabaseModal({ open, onClose, onCreate }: CreateDatabaseM
               value={collectionName}
               onChange={(e) => setCollectionName(e.target.value)}
               placeholder="e.g. my_collection"
-              className="w-full bg-secondary text-sm font-mono text-foreground px-3 py-2 rounded border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none transition-colors placeholder:text-muted-foreground"
+              className="w-full bg-secondary text-sm font-mono text-foreground px-3 py-2 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-hidden transition-colors placeholder:text-muted-foreground"
             />
           </div>
-          <div className="bg-secondary/50 border border-border rounded p-3">
+          <div className="bg-secondary/50 border border-border rounded-sm p-3">
             <p className="text-[11px] text-muted-foreground">
               Before MongoDB can save your new database, a collection name must also be specified at the time of creation.
             </p>
@@ -71,14 +73,14 @@ export function CreateDatabaseModal({ open, onClose, onCreate }: CreateDatabaseM
         <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground rounded border border-border hover:bg-secondary transition-colors"
+            className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-secondary transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={handleCreate}
             disabled={!dbName.trim() || !collectionName.trim()}
-            className="px-4 py-2 text-xs font-medium bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-xs font-medium bg-primary text-primary-foreground rounded-sm hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Create Database
           </button>

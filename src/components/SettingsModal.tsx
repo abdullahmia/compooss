@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { X, Settings, Monitor, Palette, Shield, Database, Bell } from "lucide-react";
 
@@ -27,7 +29,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-background/80 backdrop-blur-xs" onClick={onClose} />
       <div className="relative bg-card border border-border rounded-lg shadow-xl w-full max-w-lg mx-4">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
@@ -35,7 +37,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             <Settings className="h-4 w-4 text-primary" />
             <h2 className="text-sm font-semibold text-foreground">Settings</h2>
           </div>
-          <button onClick={onClose} className="p-1 text-muted-foreground hover:text-foreground rounded hover:bg-secondary transition-colors">
+          <button onClick={onClose} className="p-1 text-muted-foreground hover:text-foreground rounded-sm hover:bg-secondary transition-colors">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -48,7 +50,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-2 px-3 py-2 rounded text-xs font-medium transition-colors ${
+                className={`w-full flex items-center gap-2 px-3 py-2 rounded-sm text-xs font-medium transition-colors ${
                   activeTab === tab.id
                     ? "bg-primary/15 text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary"
@@ -76,7 +78,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                         type="text"
                         value={maxTimeMS}
                         onChange={(e) => setMaxTimeMS(e.target.value)}
-                        className="w-full bg-secondary text-xs font-mono text-foreground px-3 py-2 rounded border border-border focus:border-primary outline-none transition-colors"
+                        className="w-full bg-secondary text-xs font-mono text-foreground px-3 py-2 rounded-sm border border-border focus:border-primary outline-hidden transition-colors"
                       />
                     </div>
                     <div>
@@ -85,7 +87,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                         type="text"
                         value={maxDocuments}
                         onChange={(e) => setMaxDocuments(e.target.value)}
-                        className="w-full bg-secondary text-xs font-mono text-foreground px-3 py-2 rounded border border-border focus:border-primary outline-none transition-colors"
+                        className="w-full bg-secondary text-xs font-mono text-foreground px-3 py-2 rounded-sm border border-border focus:border-primary outline-hidden transition-colors"
                       />
                     </div>
                   </div>
@@ -129,7 +131,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   {["Dark", "Light", "System"].map((theme) => (
                     <button
                       key={theme}
-                      className={`p-3 rounded border text-xs font-medium transition-colors ${
+                      className={`p-3 rounded-sm border text-xs font-medium transition-colors ${
                         theme === "Dark"
                           ? "border-primary bg-primary/15 text-primary"
                           : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
@@ -149,10 +151,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border">
-          <button onClick={onClose} className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground rounded border border-border hover:bg-secondary transition-colors">
+          <button onClick={onClose} className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-secondary transition-colors">
             Cancel
           </button>
-          <button onClick={onClose} className="px-4 py-2 text-xs font-medium bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
+          <button onClick={onClose} className="px-4 py-2 text-xs font-medium bg-primary text-primary-foreground rounded-sm hover:bg-primary/90 transition-colors">
             Save Changes
           </button>
         </div>
