@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import { type ButtonHTMLAttributes, forwardRef, type ReactNode } from "react";
 
 const buttonVariants = cva(
-  "transition-colors font-normal disabled:pointer-events-none disabled:opacity-50",
+  "transition-colors cursor-pointer font-normal disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -17,11 +17,12 @@ const buttonVariants = cva(
     defaultVariants: {
       variant: "primary",
     },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   loading?: boolean;
   icon?: ReactNode;
@@ -40,16 +41,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       ...props
     },
-    ref
+    ref,
   ) => {
     const isDisabled = disabled || loading;
 
     const resolvedIcon = loading ? (
       <Loader2 className="h-3.5 w-3.5 animate-spin" />
     ) : icon ? (
-      <span className="flex items-center justify-center">
-        {icon}
-      </span>
+      <span className="flex items-center justify-center">{icon}</span>
     ) : null;
 
     return (
@@ -59,7 +58,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           buttonVariants({ variant }),
           "flex items-center gap-1",
-          className
+          className,
         )}
         {...props}
       >
@@ -68,7 +67,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {iconPosition === "right" && resolvedIcon}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

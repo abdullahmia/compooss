@@ -1,7 +1,6 @@
 "use client";
 
 import { CollectionView } from "@/components/collection-view";
-import { ConnectionScreen } from "@/components/connection-screen";
 import { CreateDatabaseModal } from "@/components/create-database-modal";
 import { Sidebar } from "@/components/sidebar";
 import { TopBar } from "@/components/top-bar";
@@ -11,20 +10,15 @@ import { databases as initialDatabases } from "@/data/mockData";
 import { useState } from "react";
 
 export default function Home() {
-  const [connected, setConnected] = useState(false);
   const [connectionString, setConnectionString] = useState("");
   const [selectedDb, setSelectedDb] = useState<string | null>(null);
-  const [selectedCollection, setSelectedCollection] = useState<string | null>(null);
+  const [selectedCollection, setSelectedCollection] = useState<string | null>(
+    null,
+  );
   const [databases, setDatabases] = useState<Database[]>(initialDatabases);
   const [createDbOpen, setCreateDbOpen] = useState(false);
 
-  const handleConnect = (connStr: string) => {
-    setConnectionString(connStr);
-    setConnected(true);
-  };
-
   const handleDisconnect = () => {
-    setConnected(false);
     setConnectionString("");
     setSelectedDb(null);
     setSelectedCollection(null);
@@ -40,24 +34,31 @@ export default function Home() {
       name: dbName,
       sizeOnDisk: "0 B",
       collections: [
-        { name: collectionName, documentCount: 0, avgDocSize: "0 B", totalSize: "0 B", indexes: 1 },
+        {
+          name: collectionName,
+          documentCount: 0,
+          avgDocSize: "0 B",
+          totalSize: "0 B",
+          indexes: 1,
+        },
       ],
     };
-    setDatabases(prev => [...prev, newDb]);
+    setDatabases((prev) => [...prev, newDb]);
     setSelectedDb(dbName);
     setSelectedCollection(collectionName);
   };
 
-  if (!connected) {
-    return <ConnectionScreen onConnect={handleConnect} />;
-  }
-
   const currentDb = databases.find((d) => d.name === selectedDb);
-  const currentCollection = currentDb?.collections.find((c) => c.name === selectedCollection);
+  const currentCollection = currentDb?.collections.find(
+    (c) => c.name === selectedCollection,
+  );
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <TopBar connectionString={connectionString} onDisconnect={handleDisconnect} />
+      <TopBar
+        connectionString={connectionString}
+        onDisconnect={handleDisconnect}
+      />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
           databases={databases}
@@ -67,7 +68,10 @@ export default function Home() {
           onCreateDatabase={() => setCreateDbOpen(true)}
         />
         {currentDb && currentCollection ? (
-          <CollectionView dbName={currentDb.name} collection={currentCollection} />
+          <CollectionView
+            dbName={currentDb.name}
+            collection={currentCollection}
+          />
         ) : (
           <WelcomeView />
         )}
