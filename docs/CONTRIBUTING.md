@@ -77,4 +77,4 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for local setup, architecture, and developm
 
 ## Questions?
 
-Open a [Discussion](https://github.com/YOUR_ORG/compass-companion/discussions) or an issue if you have questions.
+Open a [Discussion](https://github.com/YOUR_ORG/compooss/discussions) or an issue if you have questions.
