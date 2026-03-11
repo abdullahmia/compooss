@@ -1,28 +1,19 @@
 "use client";
 
-import { Clock, Leaf, Star, StarOff, Trash2 } from "lucide-react";
-import { useForm, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ConnectionSchema,
   TConnectionSchema,
 } from "@/lib/schemas/connection.schema";
 import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formatDistanceToNow } from "date-fns";
+import { Clock, Leaf, Star, StarOff, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useForm, useWatch } from "react-hook-form";
 import { Button } from "../ui/button/button";
 import { Input } from "../ui/input/input";
-import { useRouter } from "next/navigation";
-import {
-  createConnection,
-  deleteConnection,
-} from "@/lib/services/connection";
-import type { ConnectionDTO } from "@/lib/types";
-import { formatDistanceToNow } from "date-fns";
 
-interface NewConnectionProps {
-  savedConnections: ConnectionDTO[];
-}
-
-export function NewConnection({ savedConnections }: NewConnectionProps) {
+export function NewConnection() {
   const form = useForm<TConnectionSchema>({
     resolver: zodResolver(ConnectionSchema),
     defaultValues: {
@@ -34,6 +25,21 @@ export function NewConnection({ savedConnections }: NewConnectionProps) {
 
   const router = useRouter();
 
+  const savedConnections = [
+    {
+      id: "conn_local",
+      name: "Local Development",
+      createdAt: "2026-02-25T10:00:00.000Z",
+      lastUsedAt: "2026-03-11T09:30:00.000Z",
+    },
+    {
+      id: "conn_staging",
+      name: "Staging Cluster",
+      createdAt: "2026-01-10T12:00:00.000Z",
+      lastUsedAt: null as string | null,
+    },
+  ] as const;
+
   const isFavorite = useWatch({
     control: form.control,
     name: "isFavorite",
@@ -41,8 +47,7 @@ export function NewConnection({ savedConnections }: NewConnectionProps) {
 
   const onFormSubmit = async (data: TConnectionSchema) => {
     try {
-      await createConnection(data);
-      router.push("/");
+      console.log(data);
     } catch (error) {
       console.error("Failed to create connection:", error);
     }
@@ -50,7 +55,7 @@ export function NewConnection({ savedConnections }: NewConnectionProps) {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteConnection(id);
+      console.log(id);
       router.refresh();
     } catch (error) {
       console.error("Failed to delete connection:", error);
@@ -143,10 +148,14 @@ export function NewConnection({ savedConnections }: NewConnectionProps) {
                 {savedConnections.map((conn) => (
                   <div
                     key={conn.id}
-                    className="bg-card border border-border rounded-lg p-4 hover:border-primary/30 transition-colors group cursor-pointer"
+                    className="bg-card border border-border rounded-lg p-4 hover:border-primary/30 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
-                      <button className="text-muted-foreground hover:text-warning transition-colors">
+                      <button
+                        type="button"
+                        className="text-muted-foreground hover:text-warning transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <StarOff className="h-4 w-4" />
                       </button>
                       <div className="flex-1 min-w-0">
@@ -171,19 +180,21 @@ export function NewConnection({ savedConnections }: NewConnectionProps) {
                           })}
                         </span>
                         <button
+                          type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDelete(conn.id);
                           }}
-                          className="p-1 text-muted-foreground hover:text-destructive rounded-sm opacity-0 group-hover:opacity-100 transition-all"
+                          className="p-1 text-muted-foreground hover:text-destructive rounded-sm transition-all"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                         <button
+                          type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                           }}
-                          className="bg-primary/15 text-primary px-3 py-1 rounded-sm text-xs font-medium hover:bg-primary/25 transition-colors opacity-0 group-hover:opacity-100"
+                          className="bg-primary/15 text-primary px-3 py-1 rounded-sm text-xs font-medium hover:bg-primary/25 transition-colors"
                         >
                           Connect
                         </button>
