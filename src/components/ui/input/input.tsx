@@ -116,7 +116,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               )}
 
               {errorMessage && (
-                <p className="mt-1 text-xs text-destructive">{errorMessage}</p>
+                <p className="mt-1.5 ms-0.5 text-xs text-destructive">{errorMessage}</p>
               )}
             </>
           );
