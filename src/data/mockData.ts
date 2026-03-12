@@ -3,21 +3,9 @@ export interface MongoDocument {
   [key: string]: any;
 }
 
-export interface Collection {
-  name: string;
-  documentCount: number;
-  avgDocSize: string;
-  totalSize: string;
-  indexes: number;
-}
+import type { ICollectionSummary, IDatabase } from "@/lib/types/database.types";
 
-export interface Database {
-  name: string;
-  collections: Collection[];
-  sizeOnDisk: string;
-}
-
-export const databases: Database[] = [
+export const databases: IDatabase[] = [
   {
     name: "ecommerce",
     sizeOnDisk: "245.8 MB",

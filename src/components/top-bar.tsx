@@ -8,9 +8,14 @@ import { IconButton } from "./ui/icon-button/icon-button";
 interface TopBarProps {
   connectionString: string;
   onDisconnect?: () => void;
+  onRefreshConnection?: () => void;
 }
 
-export function TopBar({ connectionString, onDisconnect }: TopBarProps) {
+export function TopBar({
+  connectionString,
+  onDisconnect,
+  onRefreshConnection,
+}: TopBarProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
@@ -22,8 +27,14 @@ export function TopBar({ connectionString, onDisconnect }: TopBarProps) {
         <div className="flex-1 mx-4">
           <div className="flex items-center gap-2 bg-secondary rounded-sm px-3 py-1.5 max-w-2xl">
             <Database className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-            <span className="text-xs font-mono text-muted-foreground truncate">{connectionString}</span>
-            <button className="ml-auto text-muted-foreground hover:text-foreground transition-colors">
+            <span className="text-xs font-mono text-muted-foreground truncate">
+              {connectionString}
+            </span>
+            <button
+              type="button"
+              className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
+              onClick={onRefreshConnection}
+            >
               <RefreshCw className="h-3.5 w-3.5" />
             </button>
           </div>
