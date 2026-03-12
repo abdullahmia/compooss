@@ -1,14 +1,21 @@
-import { getDocuments } from "@/data/mockData"
-import { ChevronLeft, ChevronRight, Code2, FileText, Grid3X3, Plus } from "lucide-react"
-import React, { useMemo, useState } from "react"
-import { JsonDocument } from "../json-document"
-import { QueryBar } from "../query-bar"
-import { IconButton } from "../ui/icon-button/icon-button"
+import { getDocuments } from "@/data/mockData";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Code2,
+  FileText,
+  Grid3X3,
+  Plus,
+} from "lucide-react";
+import React, { useMemo, useState } from "react";
+import { JsonDocument } from "../json-document";
+import { QueryBar } from "../query-bar";
+import { IconButton } from "../ui/icon-button/icon-button";
 
 type Props = {
-  dbName: string
-  collectionName: string
-}
+  dbName: string;
+  collectionName: string;
+};
 
 function getFieldsFromDocs(docs: any[]): string[] {
   const fields = new Set<string>();
@@ -26,100 +33,263 @@ function getFieldsFromDocs(docs: any[]): string[] {
   return Array.from(fields).sort();
 }
 
-export const DocumentsTab: React.FC<Props> = ({dbName, collectionName }) => {
-  const [viewMode, setViewMode] = useState<"list" | "json" | "table">("list");
-  const documents = getDocuments(dbName, collectionName);
-  const fieldSuggestions = useMemo(() => getFieldsFromDocs(documents), [documents]);
+type TSimpleFilter = {
+  path: string;
+  value: string | number | boolean | null;
+};
 
-  return <>
-  <QueryBar onRunQuery={() => { }} fieldSuggestions={fieldSuggestions} />
+function parseFilterQuery(raw: string): TSimpleFilter[] {
+  const trimmed = raw.trim();
+  if (!trimmed || trimmed === "{}" || trimmed === "{ }") {
+    return [];
+  }
 
-  {/* Toolbar */}
-  <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card/30">
-    <div className="flex items-center gap-2">
-      <IconButton
-        variant={viewMode === "list" ? "active" : "default"}
-        icon={<FileText className="h-3.5 w-3.5" />}
-        label="List view"
-        onClick={() => setViewMode("list")}
-      />
-      <IconButton
-        variant={viewMode === "json" ? "active" : "default"}
-        size="md"
-        icon={<Code2 className="h-3.5 w-3.5" />}
-        label="JSON view"
-        onClick={() => setViewMode("json")}
-      />
-      <IconButton
-        variant={viewMode === "table" ? "active" : "default"}
-        size="md"
-        icon={<Grid3X3 className="h-3.5 w-3.5" />}
-        label="Table view"
-        onClick={() => setViewMode("table")}
-      />
-      <span className="text-xs text-muted-foreground ml-2">
-        Displaying {documents.length} of {documents.length.toLocaleString()} documents
-      </span>
-    </div>
-    <div className="flex items-center gap-2">
-      <button className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors">
-        <Plus className="h-3.5 w-3.5" />
-        Add Data
-      </button>
-      <div className="flex items-center ml-3">
-        <IconButton
-          variant="default"
-          size="sm"
-          icon={<ChevronLeft className="h-3.5 w-3.5" />}
-          label="Previous page"
-        />
-        <span className="text-xs text-muted-foreground px-2">1 – 20</span>
-        <IconButton
-          variant="default"
-          size="sm"
-          icon={<ChevronRight className="h-3.5 w-3.5" />}
-          label="Next page"
-        />
-      </div>
-    </div>
-  </div>
+  if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
+    throw new Error('Filter must be in the form `{ field: value }`.');
+  }
 
-  {/* Document list */}
-  <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-0">
-    {viewMode === "list" && documents.map((doc, i) => (
-      <JsonDocument key={doc._id} document={doc} index={i} />
-    ))}
-    {viewMode === "json" && (
-      <pre className="text-xs font-mono text-foreground bg-card p-4 rounded-sm border border-border overflow-auto">
-        {JSON.stringify(documents, null, 2)}
-      </pre>
-    )}
-    {viewMode === "table" && (
-      <div className="overflow-auto">
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-border">
-              {documents.length > 0 && Object.keys(documents[0]).map((key) => (
-                <th key={key} className="px-3 py-2 text-left font-medium text-muted-foreground bg-muted/30 whitespace-nowrap">
-                  {key}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {documents.map((doc) => (
-              <tr key={doc._id} className="border-b border-border hover:bg-muted/20 transition-colors">
-                {Object.values(doc).map((val, i) => (
-                  <td key={i} className="px-3 py-2 font-mono text-foreground whitespace-nowrap max-w-[200px] truncate">
-                    {typeof val === "object" ? JSON.stringify(val) : String(val)}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )}
-  </div>
-</>
+  const inner = trimmed.slice(1, -1);
+  const parts = inner.split(",").map((p) => p.trim()).filter(Boolean);
+
+  const filters: TSimpleFilter[] = [];
+
+  for (const part of parts) {
+    const match = part.match(/^([\w.]+)\s*:\s*(.+)$/);
+    if (!match) {
+      throw new Error(
+        "Invalid filter segment. Use `field: value` pairs separated by commas.",
+      );
+    }
+    const [, path, rawValue] = match;
+
+    let value: string | number | boolean | null = rawValue.trim();
+
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    } else if (/^(true|false)$/i.test(value)) {
+      value = /^true$/i.test(value);
+    } else if (/^null$/i.test(value)) {
+      value = null;
+    } else if (!Number.isNaN(Number(value))) {
+      value = Number(value);
+    }
+
+    filters.push({ path, value });
+  }
+
+  return filters;
 }
+
+function matchesFilters(doc: any, filters: TSimpleFilter[]): boolean {
+  if (filters.length === 0) return true;
+
+  return filters.every(({ path, value }) => {
+    const segments = path.split(".");
+    let current: any = doc;
+
+    for (const seg of segments) {
+      if (current == null || typeof current !== "object") return false;
+      current = current[seg];
+    }
+
+    if (value === null) {
+      return current == null;
+    }
+
+    if (typeof value === "boolean") {
+      return Boolean(current) === value;
+    }
+
+    if (typeof value === "number") {
+      return Number(current) === value;
+    }
+
+    // string: case-insensitive contains match
+    return String(current ?? "")
+      .toLowerCase()
+      .includes(String(value).toLowerCase());
+  });
+}
+
+export const DocumentsTab: React.FC<Props> = ({ dbName, collectionName }) => {
+  const [viewMode, setViewMode] = useState<"list" | "json" | "table">("list");
+  const [page, setPage] = useState(1);
+  const [filterError, setFilterError] = useState<string | null>(null);
+  const [activeFilters, setActiveFilters] = useState<TSimpleFilter[]>([]);
+  const pageSize = 25;
+
+  const documents = getDocuments(dbName, collectionName);
+  const filteredDocs = useMemo(
+    () => documents.filter((doc) => matchesFilters(doc, activeFilters)),
+    [documents, activeFilters],
+  );
+
+  const total = filteredDocs.length;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const currentPage = Math.min(page, pageCount);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, total);
+  const pageDocs = filteredDocs.slice(startIndex, endIndex);
+
+  const fieldSuggestions = useMemo(
+    () => getFieldsFromDocs(documents),
+    [documents],
+  );
+
+  const handlePrev = () => {
+    setPage((prev) => Math.max(1, prev - 1));
+  };
+
+  const handleNext = () => {
+    setPage((prev) => Math.min(pageCount, prev + 1));
+  };
+
+  const handleRunQuery = (rawQuery: string) => {
+    try {
+      const filters = parseFilterQuery(rawQuery);
+      setActiveFilters(filters);
+      setFilterError(null);
+      setPage(1);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Invalid filter. Please check the syntax.";
+      setFilterError(message);
+    }
+  };
+
+  return (
+    <>
+      <QueryBar onRunQuery={handleRunQuery} fieldSuggestions={fieldSuggestions} />
+
+      {filterError && (
+        <div className="px-4 py-2 text-xs text-destructive bg-destructive/10 border-b border-destructive/30">
+          {filterError}
+        </div>
+      )}
+
+      {/* Toolbar */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card/30">
+        <div className="flex items-center gap-2">
+          <IconButton
+            variant={viewMode === "list" ? "active" : "default"}
+            icon={<FileText className="h-3.5 w-3.5" />}
+            label="List view"
+            onClick={() => setViewMode("list")}
+          />
+          <IconButton
+            variant={viewMode === "json" ? "active" : "default"}
+            size="md"
+            icon={<Code2 className="h-3.5 w-3.5" />}
+            label="JSON view"
+            onClick={() => setViewMode("json")}
+          />
+          <IconButton
+            variant={viewMode === "table" ? "active" : "default"}
+            size="md"
+            icon={<Grid3X3 className="h-3.5 w-3.5" />}
+            label="Table view"
+            onClick={() => setViewMode("table")}
+          />
+          <span className="text-xs text-muted-foreground ml-2">
+            Displaying{" "}
+            {total === 0 ? "0" : `${startIndex + 1}–${endIndex}`} of{" "}
+            {total.toLocaleString()} documents
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors">
+            <Plus className="h-3.5 w-3.5" />
+            Add Data
+          </button>
+          <div className="flex items-center ml-3">
+            <IconButton
+              variant="default"
+              size="sm"
+              icon={<ChevronLeft className="h-3.5 w-3.5" />}
+              label="Previous page"
+              onClick={handlePrev}
+              disabled={currentPage === 1}
+            />
+            <span className="text-xs text-muted-foreground px-2">
+              {currentPage} / {pageCount}
+            </span>
+            <IconButton
+              variant="default"
+              size="sm"
+              icon={<ChevronRight className="h-3.5 w-3.5" />}
+              label="Next page"
+              onClick={handleNext}
+              disabled={currentPage === pageCount || total === 0}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Document list */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-0">
+        {viewMode === "list" &&
+          (pageDocs.length > 0 ? (
+            pageDocs.map((doc, i) => (
+              <JsonDocument
+                key={doc._id}
+                document={doc}
+                index={startIndex + i}
+              />
+            ))
+          ) : (
+            <div className="text-xs text-muted-foreground px-1 py-2">
+              No documents match the current filter.
+            </div>
+          ))}
+        {viewMode === "json" && (
+          <pre className="text-xs font-mono text-foreground bg-card p-4 rounded-sm border border-border overflow-auto">
+            {JSON.stringify(pageDocs, null, 2)}
+          </pre>
+        )}
+        {viewMode === "table" && (
+          <div className="overflow-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-border">
+                  {pageDocs.length > 0 &&
+                    Object.keys(pageDocs[0]).map((key) => (
+                      <th
+                        key={key}
+                        className="px-3 py-2 text-left font-medium text-muted-foreground bg-muted/30 whitespace-nowrap"
+                      >
+                        {key}
+                      </th>
+                    ))}
+                </tr>
+              </thead>
+              <tbody>
+                {pageDocs.map((doc) => (
+                  <tr
+                    key={doc._id}
+                    className="border-b border-border hover:bg-muted/20 transition-colors"
+                  >
+                    {Object.values(doc).map((val, i) => (
+                      <td
+                        key={i}
+                        className="px-3 py-2 font-mono text-foreground whitespace-nowrap max-w-[200px] truncate"
+                      >
+                        {typeof val === "object"
+                          ? JSON.stringify(val)
+                          : String(val)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </>
+  );
+};

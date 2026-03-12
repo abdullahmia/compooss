@@ -13,5 +13,15 @@ services:
     volumes:
       - mongo_data:/data/db
 
+  # compooss:
+  #   build: .
+  #   container_name: compooss
+  #   depends_on:
+  #     - mongo
+  #   environment:
+  #     - MONGO_URI=mongodb://root:example@mongo:27017/?authSource=admin
+  #   ports:
+  #     - "8080:3000"
+
 volumes:
   mongo_data:
