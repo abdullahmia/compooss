@@ -10,10 +10,10 @@ export class CollectionRepository extends BaseRepository {
   async getCollections(databaseName: string): Promise<ICollection[]> {
     const db = await this.db(databaseName);
     const collections = await db.listCollections().toArray();
-    console.log("COLLECTIONS---> ", collections);
     return collections.map((col) => ({
       name: col.name,
       type: col.type ?? "collection",
+      documentCount: (col as CollectionInfo).documentCount ?? 0,
       options: (col as CollectionInfo).options ?? {},
     }));
   }
