@@ -1,60 +1,42 @@
 "use client";
 
 import { CollectionView } from "@/components/collection-view";
-import { CreateDatabaseModal } from "@/components/create-database-modal";
-import { Sidebar } from "@/components/sidebar";
+import { Sidebar } from "@/components/sidebar/sidebar";
 import { TopBar } from "@/components/top-bar";
 import { WelcomeView } from "@/components/welcome-view";
-import type { IDatabase } from "@/lib/types/database.types";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 interface IPlaygroundShellProps {
   initialConnectionString: string;
   initialConnectionError: string | null;
-  initialDatabases: IDatabase[];
 }
 
 export function PlaygroundShell({
   initialConnectionString,
   initialConnectionError,
-  initialDatabases,
 }: IPlaygroundShellProps) {
+  const searchParams = useSearchParams();
   const [connectionString, setConnectionString] = useState(
     initialConnectionString,
   );
   const [connectionError, setConnectionError] = useState<string | null>(
     initialConnectionError,
   );
-  const [selectedDb, setSelectedDb] = useState<string | null>(null);
-  const [selectedCollection, setSelectedCollection] = useState<string | null>(
-    null,
-  );
-  const [databases] = useState<IDatabase[]>(initialDatabases);
-  const [createDbOpen, setCreateDbOpen] = useState(false);
 
   const router = useRouter();
+
+  const dbName = searchParams.get("db");
+  const collectionName = searchParams.get("collection");
 
   const handleDisconnect = () => {
     setConnectionString("Not connected");
     setConnectionError(null);
-    setSelectedDb(null);
-    setSelectedCollection(null);
-  };
-
-  const handleSelectCollection = (db: string, collection: string) => {
-    setSelectedDb(db);
-    setSelectedCollection(collection);
   };
 
   const handleRefreshConnection = () => {
     router.refresh();
   };
-
-  const currentDb = databases.find((d) => d.name === selectedDb);
-  const currentCollection = currentDb?.collections.find(
-    (c) => c.name === selectedCollection,
-  );
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
@@ -69,27 +51,17 @@ export function PlaygroundShell({
         </div>
       )}
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar
-          databases={databases}
-          selectedDb={selectedDb}
-          selectedCollection={selectedCollection}
-          onSelectCollection={handleSelectCollection}
-          onCreateDatabase={() => setCreateDbOpen(true)}
-        />
-        {currentDb && currentCollection ? (
+        <Sidebar />
+
+        {dbName && collectionName ? (
           <CollectionView
-            dbName={currentDb.name}
-            collection={currentCollection}
+            dbName={dbName}
+            collectionName={collectionName}
           />
         ) : (
           <WelcomeView />
         )}
       </div>
-      <CreateDatabaseModal
-        open={createDbOpen}
-        onClose={() => setCreateDbOpen(false)}
-        onCreated={() => router.refresh()}
-      />
     </div>
   );
 }

@@ -12,3 +12,7 @@ export interface IDatabase {
   sizeOnDisk: string;
 }
 
+export type TDatabase = {
+  name: string;
+  sizeOnDisk: string;
+}

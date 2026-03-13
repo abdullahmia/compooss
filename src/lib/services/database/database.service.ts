@@ -5,15 +5,46 @@ import type {
   ICollectionSummary,
   IDatabase,
 } from "@/lib/types/database.types";
+import { CollectionInfo } from "mongodb";
 
-export const getDatabases = async (): Promise<IDatabase[]> => {
+export interface IDatabaseSummary {
+  name: string;
+  sizeOnDisk: string;
+}
+
+export const getDatabases = async (): Promise<IDatabaseSummary[]> => {
   const summaries = await mongoDriver.listDatabases();
 
   return summaries.map((summary) => ({
     name: summary.name,
     sizeOnDisk: summary.sizeOnDisk,
-    collections: [],
   }));
+};
+
+export const getDatabaseCollections = async (dbName: string): Promise<ICollectionSummary[]> => {
+  const db = await mongoDriver.getDb(dbName);
+  const collections = await db.listCollections().toArray();
+  return collections.map((collection: CollectionInfo) => ({
+    name: collection.name,
+    // TODO: Implement these
+    documentCount: 0,
+    avgDocSize: "-",
+    totalSize: "-",
+    indexes: 0,
+  }));
+};
+
+export const getCollectionSummary = async (dbName: string, collectionName: string): Promise<ICollectionSummary> => {
+  const db = await mongoDriver.getDb(dbName);
+  const collection = await db.collection(collectionName);
+  const documentCount = await collection.countDocuments();
+  return {
+    name: collectionName,
+    documentCount,
+    avgDocSize: "-",
+    totalSize: "-",
+    indexes: 0,
+  };
 };
 
 export const getDatabasesWithCollections = async (): Promise<
