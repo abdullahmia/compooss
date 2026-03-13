@@ -48,9 +48,7 @@ export function CollectionView({ dbName, collectionName }: CollectionViewProps) 
   const renderTabContent = () => {
     switch (activeTab) {
       case "documents":
-        return <Suspense fallback={<div>Loading...</div>}>
-          <DocumentsTab dbName={dbName} collectionName={collectionName} />
-        </Suspense>;
+        return <DocumentsTab />
       case "aggregations":
         return <AggregationsTab />;
       case "schema":

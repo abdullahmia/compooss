@@ -1,7 +1,7 @@
  "use client";
 
-import { MongoDocument, updateDocument } from "@/data/mockData";
-import { getDocuments } from "@/lib/services/document/document.service";
+import { updateDocument } from "@/data/mockData";
+import { useGetDocuments } from "@/lib/services/v2/documents/documents.service";
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,7 +9,8 @@ import {
   FileText,
   Grid3X3
 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import React, { useMemo, useState } from "react";
 import { JsonDocument } from "../../json-document";
 import { JsonEditor } from "../../json-editor";
 import { QueryBar } from "../../query-bar";
@@ -22,11 +23,6 @@ import {
   ModalHeader,
 } from "../../ui/modal/modal";
 import { AddDocument } from "./add-document";
-
-type Props = {
-  dbName: string;
-  collectionName: string;
-};
 
 function getFieldsFromDocs(docs: any[]): string[] {
   const fields = new Set<string>();
@@ -133,7 +129,7 @@ function matchesFilters(doc: any, filters: TSimpleFilter[]): boolean {
   });
 }
 
-export const DocumentsTab: React.FC<Props> = ({ dbName, collectionName }) => {
+export const DocumentsTab: React.FC = () => {
   const [viewMode, setViewMode] = useState<"list" | "json" | "table">("list");
   const [page, setPage] = useState(1);
   const [filterError, setFilterError] = useState<string | null>(null);
@@ -142,9 +138,19 @@ export const DocumentsTab: React.FC<Props> = ({ dbName, collectionName }) => {
   const [editJson, setEditJson] = useState("");
   const [editError, setEditError] = useState<string | null>(null);
   const [isSavingEdit, setIsSavingEdit] = useState(false);
-  const [documents, setDocuments] = useState<MongoDocument[]>([]);
   const pageSize = 25;
 
+  const searchParams = useSearchParams();
+  const dbName = searchParams.get("db");
+  const collectionName = searchParams.get("collection");
+
+  const { data } = useGetDocuments(dbName ?? "", collectionName ?? "", {
+    enabled: !!dbName && !!collectionName,
+  });
+  const documents = useMemo(
+    () => data?.data ?? [],
+    [data],
+  );
   const filteredDocs = useMemo(
     () => documents.filter((doc) => matchesFilters(doc, activeFilters)),
     [documents, activeFilters],
@@ -232,14 +238,6 @@ export const DocumentsTab: React.FC<Props> = ({ dbName, collectionName }) => {
       setIsSavingEdit(false);
     }
   };
-
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      const documents = await getDocuments(dbName, collectionName);
-      setDocuments(documents);
-    };
-    fetchDocuments();
-  }, [dbName, collectionName]);
 
   return (
     <>

@@ -5,4 +5,7 @@ export const ENDPOINTS = {
   collections: {
     root: (db: string) => `/databases/${db}/collections`,
   },
+  documents: {
+    all: (db: string, collection: string) => `/databases/${db}/collections/${collection}/documents`,
+  },
 }

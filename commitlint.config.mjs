@@ -8,6 +8,7 @@ export default {
       [
         'feat',
         'fix',
+        'wip',
         'docs',
         'style',
         'refactor',

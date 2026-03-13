@@ -5,9 +5,11 @@ import { IApiResponse, TQueryOptions } from "@/lib/types";
 import { TCollection } from "@/lib/types/collections.types";
 import { useQuery } from "@tanstack/react-query";
 
-
-export const useGetCollections = (db: string, options?: TQueryOptions) => {
-  return useQuery({
+export const useGetCollections = (
+  db: string,
+  options?: TQueryOptions<TCollection[]>,
+) => {
+  return useQuery<TCollection[], Error, TCollection[], readonly unknown[]>({
     queryKey: QUERY_KEYS.collections.all(db),
     queryFn: async () => {
       const response = await apiClient.get<IApiResponse<TCollection[]>>(ENDPOINTS.collections.root(db));
