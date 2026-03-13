@@ -1,6 +1,6 @@
 import { JsonEditor } from "@/components/json-editor";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@/components/ui/modal/modal";
-import { addDocuments } from "@/lib/services/document/document.service";
+import { useAddDocument } from "@/lib/services/v2/documents/documents.service";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -16,6 +16,16 @@ export const AddDocument = () => {
   const [open, setOpen]= useState<boolean>(false);
   const [newDocJson, setNewDocJson] = useState(NEW_DOCUMENT_TEMPLATE);
 
+  const { mutateAsync: addDocument } = useAddDocument({
+    onSuccess: () => {
+      setOpen(false)
+      setNewDocJson(NEW_DOCUMENT_TEMPLATE)
+    },
+    onError: (error) => {
+      console.error(error)
+    }
+  })
+
   const handleToggleModal = () => {
     setOpen(!open)
   }
@@ -25,9 +35,11 @@ export const AddDocument = () => {
 
   const handleAddDocuments = async () => {
     const document = JSON.parse(newDocJson);
-    await addDocuments(dbName, collectionName, document)
-    setOpen(false)
-    setNewDocJson(NEW_DOCUMENT_TEMPLATE)
+    await addDocument({
+      db: dbName,
+      collection: collectionName,
+      payload: document,
+    })
   }
 
   return (

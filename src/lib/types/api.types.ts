@@ -1,5 +1,4 @@
 import { UseQueryOptions } from "@tanstack/react-query";
-import { TCollection } from "./collections.types";
 
 export interface IApiResponse<TData = unknown> {
   status: number;
@@ -7,7 +6,7 @@ export interface IApiResponse<TData = unknown> {
   data: TData;
 }
 
-export type TQueryOptions = Omit<
-  UseQueryOptions<TCollection[], Error, TCollection[], readonly unknown[]>,
+export type TQueryOptions<TData> = Omit<
+  UseQueryOptions<TData, Error, TData, readonly unknown[]>,
   "queryKey" | "queryFn"
 >;
