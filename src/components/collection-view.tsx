@@ -1,10 +1,11 @@
 "use client";
 
-import type { Collection } from "@/data/mockData";
+import { getCollectionSummary } from "@/lib/services/database/database.service";
+import { ICollectionSummary } from "@/lib/types/database.types";
 import { BarChart3, Code2, FileText, Grid3X3, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { AggregationsTab } from "./collection-tabs/aggregations-tab";
-import { DocumentsTab } from "./collection-tabs/documents-tab";
+import { DocumentsTab } from "./collection-tabs/documents/documents-tab";
 import { ExplainTab } from "./collection-tabs/explain-tab";
 import { IndexesTab } from "./collection-tabs/indexex-tab";
 import { SchemaTab } from "./collection-tabs/schema-tab";
@@ -16,11 +17,20 @@ type ViewTab = "documents" | "aggregations" | "schema" | "explain" | "indexes" |
 
 interface CollectionViewProps {
   dbName: string;
-  collection: Collection;
+  collectionName: string;
 }
 
-export function CollectionView({ dbName, collection }: CollectionViewProps) {
+export function CollectionView({ dbName, collectionName }: CollectionViewProps) {
   const [activeTab, setActiveTab] = useState<ViewTab>("documents");
+  const [collectionSummary, setCollectionSummary] = useState<ICollectionSummary | null>(null);
+
+  useEffect(() => {
+    const fetchCollectionSummary = async () => {
+      const summary = await getCollectionSummary(dbName, collectionName);
+      setCollectionSummary(summary);
+    };
+    fetchCollectionSummary();
+  }, [dbName, collectionName]);
 
   const tabs: { id: ViewTab; label: string; icon: React.ReactNode }[] = [
     { id: "documents", label: "Documents", icon: <FileText className="h-3.5 w-3.5" /> },
@@ -38,7 +48,9 @@ export function CollectionView({ dbName, collection }: CollectionViewProps) {
   const renderTabContent = () => {
     switch (activeTab) {
       case "documents":
-        return <DocumentsTab dbName={dbName} collectionName={collection.name} />;
+        return <Suspense fallback={<div>Loading...</div>}>
+          <DocumentsTab dbName={dbName} collectionName={collectionName} />
+        </Suspense>;
       case "aggregations":
         return <AggregationsTab />;
       case "schema":
@@ -58,10 +70,10 @@ export function CollectionView({ dbName, collection }: CollectionViewProps) {
     <div className="flex-1 flex flex-col h-full overflow-hidden">
       <div className="px-4 py-3 border-b border-border bg-card/50">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold text-foreground">{dbName}.{collection.name}</h2>
-          <Badge>{collection.documentCount.toLocaleString()} docs</Badge>
+          <h2 className="text-sm font-semibold text-foreground">{dbName}.{collectionName}</h2>
+          <Badge>{collectionSummary?.documentCount.toLocaleString()} docs</Badge>
           <Badge variant="subtle" size="sm">
-            {collection.totalSize} • {collection.indexes} indexes • Avg: {collection.avgDocSize}
+            {collectionSummary?.totalSize} • {collectionSummary?.indexes} indexes • Avg: {collectionSummary?.avgDocSize}
           </Badge>
         </div>
       </div>

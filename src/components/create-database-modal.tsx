@@ -5,22 +5,25 @@ import {
   createDatabaseSchema,
   type TCreateDatabaseInput,
 } from "@/lib/schemas/database.schema";
-import { createDatabaseAction } from "@/lib/services/database/database.action";
+import { useCreateDatabase } from "@/lib/services/v2/database/database.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Database, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 
-interface ICreateDatabaseModalProps {
-  open: boolean;
+type Props = {
   onClose: () => void;
-  onCreated?: () => void;
 }
 
-export function CreateDatabaseModal({
-  open,
-  onClose,
-  onCreated,
-}: ICreateDatabaseModalProps) {
+export function CreateDatabaseModal({ onClose }: Props) {
+  const { mutateAsync: createDatabase, isPending } = useCreateDatabase({
+    onSuccess: () => {
+      onClose();
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   const form = useForm<TCreateDatabaseInput>({
     resolver: zodResolver(createDatabaseSchema),
     defaultValues: {
@@ -29,21 +32,8 @@ export function CreateDatabaseModal({
     },
   });
 
-  if (!open) return null;
-
   const handleSubmit = async (values: TCreateDatabaseInput) => {
-    try {
-      await createDatabaseAction({
-        dbName: values.dbName.trim(),
-        collectionName: values.collectionName.trim(),
-      });
-      form.reset();
-      onClose();
-      onCreated?.();
-    } catch (err: any) {
-      // map to field or form error as you see fit
-      form.setError("dbName", { message: err.message ?? "Unable to create database." });
-    }
+    await createDatabase(values);
   };
 
   return (
@@ -111,10 +101,10 @@ export function CreateDatabaseModal({
             </button>
             <button
               type="submit"
-              disabled={form.formState.isSubmitting}
+              disabled={isPending}
               className="px-4 py-2 text-xs font-medium bg-primary text-primary-foreground rounded-sm hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {form.formState.isSubmitting ? "Creating…" : "Create Database"}
+              {isPending ? "Creating…" : "Create Database"}
             </button>
           </div>
         </form>

@@ -1,20 +1,35 @@
-import { Admin, Db, MongoClient } from "mongodb";
+import { Admin, Db, MongoClient, MongoClientOptions } from "mongodb";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface IDatabaseSummary {
   name: string;
   sizeOnDisk: string;
+  sizeOnDiskRaw: number;
+}
+
+export interface IMongoDriverOptions {
+  maxPoolSize?: number;
+  serverSelectionTimeoutMS?: number;
+  connectTimeoutMS?: number;
 }
 
 export class MongoDriver {
   private static instance: MongoDriver | null = null;
   private clientPromise: Promise<MongoClient> | null = null;
-  private uri: string;
+  private readonly uri: string;
+  private readonly options: MongoClientOptions;
 
-  private constructor(uri: string) {
+  private constructor(uri: string, options: IMongoDriverOptions = {}) {
     this.uri = uri;
+    this.options = {
+      maxPoolSize: options.maxPoolSize ?? 10,
+      serverSelectionTimeoutMS: options.serverSelectionTimeoutMS ?? 5000,
+      connectTimeoutMS: options.connectTimeoutMS ?? 10000,
+    };
   }
 
-  static getInstance(): MongoDriver {
+  static getInstance(options?: IMongoDriverOptions): MongoDriver {
     if (!MongoDriver.instance) {
       const uri = process.env.MONGO_URI;
       if (!uri) {
@@ -22,24 +37,24 @@ export class MongoDriver {
           "MongoDB connection is not configured. Set the MONGO_URI environment variable."
         );
       }
-      MongoDriver.instance = new MongoDriver(uri);
+      MongoDriver.instance = new MongoDriver(uri, options);
     }
     return MongoDriver.instance;
   }
 
-  // Reset singleton — useful for testing or reconnecting
   static resetInstance(): void {
     MongoDriver.instance = null;
   }
 
   private async getClient(): Promise<MongoClient> {
     if (!this.clientPromise) {
-      const client = new MongoClient(this.uri, {
-        maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000,
-        connectTimeoutMS: 10000,
+      const client = new MongoClient(this.uri, this.options);
+      this.clientPromise = client.connect().then(() => {
+        // Clean up on process termination
+        process.once("SIGINT", () => this.disconnect());
+        process.once("SIGTERM", () => this.disconnect());
+        return client;
       });
-      this.clientPromise = client.connect().then(() => client);
     }
     return this.clientPromise;
   }
@@ -49,35 +64,49 @@ export class MongoDriver {
       const client = await this.clientPromise;
       await client.close();
       this.clientPromise = null;
+      MongoDriver.instance = null;
     }
   }
 
-  async ping(): Promise<void> {
+  async ping(): Promise<boolean> {
+    try {
+      const client = await this.getClient();
+      await client.db("admin").command({ ping: 1 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async isConnected(): Promise<boolean> {
+    return this.ping();
+  }
+
+  async getDb(dbName: string): Promise<Db> {
     const client = await this.getClient();
-    await client.db("admin").command({ ping: 1 });
+    return client.db(dbName);
   }
 
-  getDb(dbName: string): Promise<Db> {
-    return this.getClient().then((client) => client.db(dbName));
-  }
-
-  getAdmin(): Promise<Admin> {
-    return this.getClient().then((client) => client.db().admin());
+  async getAdmin(): Promise<Admin> {
+    const client = await this.getClient();
+    return client.db().admin();
   }
 
   async listDatabases(): Promise<IDatabaseSummary[]> {
     const admin = await this.getAdmin();
     const { databases } = await admin.listDatabases();
 
-    return databases.map((db) => ({
-      name: db.name,
-      sizeOnDisk: MongoDriver.formatSize(
-        typeof db.sizeOnDisk === "number" ? db.sizeOnDisk : 0
-      ),
-    }));
+    return databases.map((db) => {
+      const raw = typeof db.sizeOnDisk === "number" ? db.sizeOnDisk : 0;
+      return {
+        name: db.name,
+        sizeOnDisk: MongoDriver.formatSize(raw),
+        sizeOnDiskRaw: raw,
+      };
+    });
   }
 
-  private static formatSize(bytes: number): string {
+  static formatSize(bytes: number): string {
     if (bytes <= 0 || Number.isNaN(bytes)) return "0 B";
     const units = ["B", "KB", "MB", "GB", "TB"];
     let size = bytes;
