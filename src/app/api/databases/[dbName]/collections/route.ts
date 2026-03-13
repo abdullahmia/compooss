@@ -8,7 +8,6 @@ interface DbParamProps {
   };
 }
 
-
 export async function GET(req: NextRequest, { params }: DbParamProps) {
   const {dbName} = await params;
   if (!dbName) {

@@ -1,7 +1,8 @@
 'use client';
 
-import { getDatabaseCollections } from "@/lib/services/database/database.service";
-import { ICollectionSummary, TDatabase } from "@/lib/types/database.types";
+import { useGetCollections } from "@/lib/services/v2/collections/collection.service";
+import { TCollection } from "@/lib/types/collections.types";
+import { TDatabase } from "@/lib/types/database.types";
 import { ChevronDown, ChevronRight, DatabaseBackupIcon, Table } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
@@ -16,25 +17,17 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [collections, setCollections] = useState<ICollectionSummary[]>([]);
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { data: collections } = useGetCollections(db.name, {
+    enabled: isExpanded,
+  });
 
   const toggleDb = async () => {
-    // setIsLoading(true);
     setIsExpanded(!isExpanded);
-    setCollections([]);
-    try {
-      const collections = await getDatabaseCollections(db.name);
-      setCollections(collections);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      // setIsLoading(false);
-    }
   };
 
 
-  const handleSelectCollection = (collection: ICollectionSummary) => {
+  const handleSelectCollection = (collection: TCollection) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("db", db.name);
     params.set("collection", collection.name);
