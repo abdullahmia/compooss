@@ -22,11 +22,12 @@ export async function GET(req: Request, { params }: DocParams) {
 
 export async function POST(req: Request, { params }: DocParams) {
   const { dbName, colName } = await params;
-  const { document } = await req.json();
+  const body = await req.json();
+  const document = body?.document ?? body;
   const inserted = await documentRepository.addDocument({
     databaseName: dbName,
     collectionName: colName,
-    document,
+    document: document ?? {},
   });
   return NextResponse.json(createApiResponse(inserted, "Document inserted successfully", 201));
 }

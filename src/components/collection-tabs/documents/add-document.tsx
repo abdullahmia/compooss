@@ -5,14 +5,14 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 
 
-const NEW_DOCUMENT_TEMPLATE = `
-{
-  "_id": {
-    "$oid": "69b2cc67aed9c54775ea5563"
-  }
-}`;
+const NEW_DOCUMENT_TEMPLATE = "{}";
 
-export const AddDocument = () => {
+type AddDocumentProps = {
+  dbName: string;
+  collectionName: string;
+};
+
+export const AddDocument = ({ dbName, collectionName }: AddDocumentProps) => {
   const [open, setOpen]= useState<boolean>(false);
   const [newDocJson, setNewDocJson] = useState(NEW_DOCUMENT_TEMPLATE);
 
@@ -30,8 +30,7 @@ export const AddDocument = () => {
     setOpen(!open)
   }
 
-  const dbName = "test"
-  const collectionName = "test"
+  const canAdd = !!dbName && !!collectionName
 
   const handleAddDocuments = async () => {
     const document = JSON.parse(newDocJson);
@@ -45,9 +44,10 @@ export const AddDocument = () => {
   return (
     <div>
       <button
-            className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
+            className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             type="button"
             onClick={handleToggleModal}
+            disabled={!canAdd}
           >
             <Plus className="h-3.5 w-3.5" />
             Add Data

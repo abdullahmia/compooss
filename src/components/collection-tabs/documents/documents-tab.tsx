@@ -1,13 +1,14 @@
- "use client";
+"use client";
 
 import { updateDocument } from "@/data/mockData";
 import { useGetDocuments } from "@/lib/services/v2/documents/documents.service";
 import {
   ChevronLeft,
   ChevronRight,
+  ClipboardSignature,
   Code2,
   FileText,
-  Grid3X3
+  Grid3X3,
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React, { useMemo, useState } from "react";
@@ -31,12 +32,16 @@ function getFieldsFromDocs(docs: any[]): string[] {
     for (const key of Object.keys(obj)) {
       const path = prefix ? `${prefix}.${key}` : key;
       fields.add(path);
-      if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+      if (
+        typeof obj[key] === "object" &&
+        obj[key] !== null &&
+        !Array.isArray(obj[key])
+      ) {
         extract(obj[key], path);
       }
     }
   };
-  docs.forEach(doc => extract(doc));
+  docs.forEach((doc) => extract(doc));
   return Array.from(fields).sort();
 }
 
@@ -45,12 +50,8 @@ type TSimpleFilter = {
   value: string | number | boolean | null;
 };
 
-
-
 function stripJsonComments(raw: string): string {
-  return raw
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/\/\/.*$/gm, "");
+  return raw.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 }
 
 function parseFilterQuery(raw: string): TSimpleFilter[] {
@@ -60,11 +61,14 @@ function parseFilterQuery(raw: string): TSimpleFilter[] {
   }
 
   if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
-    throw new Error('Filter must be in the form `{ field: value }`.');
+    throw new Error("Filter must be in the form `{ field: value }`.");
   }
 
   const inner = trimmed.slice(1, -1);
-  const parts = inner.split(",").map((p) => p.trim()).filter(Boolean);
+  const parts = inner
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean);
 
   const filters: TSimpleFilter[] = [];
 
@@ -143,14 +147,10 @@ export const DocumentsTab: React.FC = () => {
   const searchParams = useSearchParams();
   const dbName = searchParams.get("db");
   const collectionName = searchParams.get("collection");
-
   const { data } = useGetDocuments(dbName ?? "", collectionName ?? "", {
     enabled: !!dbName && !!collectionName,
   });
-  const documents = useMemo(
-    () => data?.data ?? [],
-    [data],
-  );
+  const documents = useMemo(() => data?.data ?? [], [data]);
   const filteredDocs = useMemo(
     () => documents.filter((doc) => matchesFilters(doc, activeFilters)),
     [documents, activeFilters],
@@ -210,7 +210,9 @@ export const DocumentsTab: React.FC = () => {
 
       const parsed = JSON.parse(cleaned);
       if (Array.isArray(parsed)) {
-        throw new Error("Edit expects a single document JSON object, not an array.");
+        throw new Error(
+          "Edit expects a single document JSON object, not an array.",
+        );
       }
       if (!parsed || typeof parsed !== "object") {
         throw new Error("Edited document must be a JSON object.");
@@ -222,7 +224,9 @@ export const DocumentsTab: React.FC = () => {
         incomingId !== null &&
         incomingId !== editingDocId
       ) {
-        throw new Error("`_id` is read-only and cannot be changed during edit.");
+        throw new Error(
+          "`_id` is read-only and cannot be changed during edit.",
+        );
       }
 
       const updated = { ...parsed, _id: editingDocId };
@@ -241,7 +245,10 @@ export const DocumentsTab: React.FC = () => {
 
   return (
     <>
-      <QueryBar onRunQuery={handleRunQuery} fieldSuggestions={fieldSuggestions} />
+      <QueryBar
+        onRunQuery={handleRunQuery}
+        fieldSuggestions={fieldSuggestions}
+      />
 
       {filterError && (
         <div className="px-4 py-2 text-xs text-destructive bg-destructive/10 border-b border-destructive/30">
@@ -273,13 +280,15 @@ export const DocumentsTab: React.FC = () => {
             onClick={() => setViewMode("table")}
           />
           <span className="text-xs text-muted-foreground ml-2">
-            Displaying{" "}
-            {total === 0 ? "0" : `${startIndex + 1}–${endIndex}`} of{" "}
+            Displaying {total === 0 ? "0" : `${startIndex + 1}–${endIndex}`} of{" "}
             {total.toLocaleString()} documents
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <AddDocument />
+          <AddDocument
+            dbName={dbName ?? ""}
+            collectionName={collectionName ?? ""}
+          />
           <div className="flex items-center ml-3">
             <IconButton
               variant="default"
@@ -366,11 +375,7 @@ export const DocumentsTab: React.FC = () => {
         )}
       </div>
 
-      
-      <Modal
-        open={editingDocId !== null}
-        onClose={() => setEditingDocId(null)}
-      >
+      <Modal open={editingDocId !== null} onClose={() => setEditingDocId(null)}>
         <ModalContent size="lg">
           <ModalHeader
             title={`Edit document in ${dbName}.${collectionName}`}
