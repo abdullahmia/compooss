@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { CreateDatabaseModal } from "../create-database-modal";
+import { DatabaseSidebarSkeleton } from "../skeletons";
 import { IconButton } from "../ui/icon-button/icon-button";
 import { SidebarItem } from "./sidebar-item";
 
@@ -57,9 +58,7 @@ export function Sidebar() {
 
         <div className="flex-1 overflow-y-auto scrollbar-thin py-1">
           {isLoading ? (
-            <div className="px-3 py-2 text-xs text-muted-foreground">
-              Loading...
-            </div>
+            <DatabaseSidebarSkeleton />
           ) : filtered?.length === 0 ? (
             <div className="px-3 py-2 text-xs text-muted-foreground">
               No databases found
