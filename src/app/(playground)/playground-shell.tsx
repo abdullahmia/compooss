@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 
 interface IPlaygroundShellProps {
   children: React.ReactNode;
+  connectionString?: string;
 }
 
-export function PlaygroundShell({ children }: IPlaygroundShellProps) {
+export function PlaygroundShell({ children, connectionString }: IPlaygroundShellProps) {
   const router = useRouter();
 
   const handleRefreshConnection = () => {
@@ -17,7 +18,10 @@ export function PlaygroundShell({ children }: IPlaygroundShellProps) {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <TopBar onRefreshConnection={handleRefreshConnection} />
+      <TopBar
+        connectionString={connectionString}
+        onRefreshConnection={handleRefreshConnection}
+      />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
