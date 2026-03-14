@@ -17,7 +17,8 @@ import {
   Table,
   Trash2,
 } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Badge } from "../ui/badge/badge";
 import { IconButton } from "../ui/icon-button/icon-button";
@@ -28,8 +29,6 @@ type Props = {
 
 export const SidebarItem: React.FC<Props> = ({ db }) => {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [deleteDbModalOpen, setDeleteDbModalOpen] = useState(false);
   const [addCollectionModalOpen, setAddCollectionModalOpen] = useState(false);
@@ -50,17 +49,14 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
       onSuccess: () => setCollectionToDelete(null),
     });
 
-  const toggleDb = async () => {
-    setIsExpanded(!isExpanded);
+  const toggleExpand = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsExpanded((prev) => !prev);
   };
 
   const handleSelectCollection = (collection: TCollection) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("db", db.name);
-    params.set("collection", collection.name);
-
-    const queryString = params.toString();
-    router.push(queryString ? `${pathname}?${queryString}` : pathname);
+    router.push(`/databases/${db.name}/collections/${collection.name}`);
   };
 
   const handleDeleteDbClick = (e: React.MouseEvent) => {
@@ -96,19 +92,23 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
         <div className="group flex items-center w-full hover:bg-sidebar-accent transition-colors">
           <button
             type="button"
-            onClick={toggleDb}
-            className="flex-1 flex items-center gap-1.5 px-3 py-1.5 text-xs cursor-pointer text-left min-w-0"
+            onClick={toggleExpand}
+            className="flex items-center justify-center p-1.5 shrink-0 text-muted-foreground hover:text-foreground cursor-pointer"
+            aria-label={isExpanded ? "Collapse" : "Expand"}
           >
             {isExpanded ? (
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <ChevronDown className="h-3.5 w-3.5" />
             ) : (
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <ChevronRight className="h-3.5 w-3.5" />
             )}
-            <DatabaseBackupIcon className="h-3.5 w-3.5 text-primary shrink-0" />
-            <span className="font-medium text-sidebar-foreground truncate">
-              {db.name}
-            </span>
           </button>
+          <Link
+            href={`/databases/${db.name}`}
+            className="flex-1 flex items-center gap-1.5 px-1 py-1.5 text-xs cursor-pointer min-w-0 text-sidebar-foreground hover:text-sidebar-foreground no-underline"
+          >
+            <DatabaseBackupIcon className="h-3.5 w-3.5 text-primary shrink-0" />
+            <span className="font-medium truncate">{db.name}</span>
+          </Link>
           <div className="flex items-center shrink-0 pr-1">
             <Badge
               variant="subtle"

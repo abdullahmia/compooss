@@ -8,23 +8,50 @@ import {
 
 export class CollectionRepository extends BaseRepository {
   /**
-   * Lists all collections inside a database with document counts.
+   * Lists all collections inside a database with stats (storage size, data size, document count, avg size, indexes).
    */
   async getCollections(databaseName: string): Promise<ICollection[]> {
     const db = await this.db(databaseName);
     const collections = await db.listCollections().toArray();
-    const withCounts = await Promise.all(
+    const withStats = await Promise.all(
       collections.map(async (col) => {
-        const documentCount = await db.collection(col.name).countDocuments();
+        const options = (col as CollectionInfo).options ?? {};
+        const type = col.type ?? "collection";
+        let storageSize = 0;
+        let size = 0;
+        let documentCount = 0;
+        let avgObjSize = 0;
+        let indexCount = 0;
+        let totalIndexSize = 0;
+
+        try {
+          const stats = (await db.command({ collStats: col.name })) as Record<string, unknown> | null;
+          if (stats && typeof stats === "object") {
+            storageSize = Number(stats.storageSize) || 0;
+            size = Number(stats.size) || 0;
+            documentCount = Number(stats.count) || 0;
+            avgObjSize = Number(stats.avgObjSize) || 0;
+            indexCount = Number(stats.nindexes) || 0;
+            totalIndexSize = Number(stats.totalIndexSize) || 0;
+          }
+        } catch {
+          documentCount = await db.collection(col.name).countDocuments();
+        }
+
         return {
           name: col.name,
-          type: col.type ?? "collection",
+          type,
           documentCount,
-          options: (col as CollectionInfo).options ?? {},
+          options,
+          storageSize,
+          size,
+          avgObjSize,
+          indexCount,
+          totalIndexSize,
         };
       }),
     );
-    return withCounts;
+    return withStats;
   }
 
   /**
@@ -51,6 +78,11 @@ export class CollectionRepository extends BaseRepository {
       type: "collection",
       documentCount: 0,
       options: {},
+      storageSize: 0,
+      size: 0,
+      avgObjSize: 0,
+      indexCount: 0,
+      totalIndexSize: 0,
     };
   }
 

@@ -1,0 +1,102 @@
+"use client";
+
+import { useGetCollections } from "@/lib/services/v2/collections/collection.service";
+import { TCollection } from "@/lib/types/collections.types";
+import { DatabaseBackupIcon, Table } from "lucide-react";
+import Link from "next/link";
+
+function formatBytes(bytes: number): string {
+  if (bytes <= 0 || Number.isNaN(bytes)) return "0 B";
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  let size = bytes;
+  let unitIndex = 0;
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex += 1;
+  }
+  return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+}
+
+interface DatabaseViewProps {
+  dbName: string;
+}
+
+export function DatabaseView({ dbName }: DatabaseViewProps) {
+  const { data: collections, isLoading } = useGetCollections(dbName);
+
+  return (
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-background">
+      <div className="px-4 py-3 border-b border-border bg-card/50">
+        <div className="flex items-center gap-2">
+          <DatabaseBackupIcon className="h-4 w-4 text-primary" />
+          <h2 className="text-sm font-semibold text-foreground">{dbName}</h2>
+          <span className="text-xs text-muted-foreground">
+            {collections?.length ?? 0} collection{collections?.length === 1 ? "" : "s"}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-auto p-4">
+        {isLoading ? (
+          <div className="text-sm text-muted-foreground">Loading collections…</div>
+        ) : !collections?.length ? (
+          <div className="text-sm text-muted-foreground">No collections in this database.</div>
+        ) : (
+          <div className="border border-border rounded-lg overflow-hidden bg-card">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/50">
+                  <th className="px-4 py-3 font-medium text-foreground">Collection Name</th>
+                  <th className="px-4 py-3 font-medium text-foreground">Properties</th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">Storage size</th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">Data size</th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">Documents</th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">Avg. Document size</th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">Index</th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">Total Index size</th>
+                </tr>
+              </thead>
+              <tbody>
+                {collections.map((col: TCollection) => (
+                  <tr
+                    key={col.name}
+                    className="border-b border-border last:border-b-0 hover:bg-sidebar-accent/50 transition-colors"
+                  >
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/databases/${dbName}/collections/${col.name}`}
+                        className="flex items-center gap-2 text-primary hover:underline font-medium"
+                      >
+                        <Table className="h-3.5 w-3.5 shrink-0" />
+                        {col.name}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">{col.type ?? "collection"}</td>
+                    <td className="px-4 py-3 text-right text-muted-foreground tabular-nums whitespace-nowrap">
+                      {formatBytes(col.storageSize ?? 0)}
+                    </td>
+                    <td className="px-4 py-3 text-right text-muted-foreground tabular-nums whitespace-nowrap">
+                      {formatBytes(col.size ?? 0)}
+                    </td>
+                    <td className="px-4 py-3 text-right text-muted-foreground tabular-nums">
+                      {(col.documentCount ?? 0).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 text-right text-muted-foreground tabular-nums whitespace-nowrap">
+                      {formatBytes(col.avgObjSize ?? 0)}
+                    </td>
+                    <td className="px-4 py-3 text-right text-muted-foreground tabular-nums">
+                      {col.indexCount ?? 0}
+                    </td>
+                    <td className="px-4 py-3 text-right text-muted-foreground tabular-nums whitespace-nowrap">
+                      {formatBytes(col.totalIndexSize ?? 0)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
