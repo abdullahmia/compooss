@@ -31,29 +31,50 @@ export function DatabaseView({ dbName }: DatabaseViewProps) {
           <DatabaseBackupIcon className="h-4 w-4 text-primary" />
           <h2 className="text-sm font-semibold text-foreground">{dbName}</h2>
           <span className="text-xs text-muted-foreground">
-            {collections?.length ?? 0} collection{collections?.length === 1 ? "" : "s"}
+            {collections?.length ?? 0} collection
+            {collections?.length === 1 ? "" : "s"}
           </span>
         </div>
       </div>
 
       <div className="flex-1 overflow-auto p-4">
         {isLoading ? (
-          <div className="text-sm text-muted-foreground">Loading collections…</div>
+          <div className="text-sm text-muted-foreground">
+            Loading collections…
+          </div>
         ) : !collections?.length ? (
-          <div className="text-sm text-muted-foreground">No collections in this database.</div>
+          <div className="text-sm text-muted-foreground">
+            No collections in this database.
+          </div>
         ) : (
           <div className="border border-border rounded-lg overflow-hidden bg-card">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
-                  <th className="px-4 py-3 font-medium text-foreground">Collection Name</th>
-                  <th className="px-4 py-3 font-medium text-foreground">Properties</th>
-                  <th className="px-4 py-3 font-medium text-foreground text-right">Storage size</th>
-                  <th className="px-4 py-3 font-medium text-foreground text-right">Data size</th>
-                  <th className="px-4 py-3 font-medium text-foreground text-right">Documents</th>
-                  <th className="px-4 py-3 font-medium text-foreground text-right">Avg. Document size</th>
-                  <th className="px-4 py-3 font-medium text-foreground text-right">Index</th>
-                  <th className="px-4 py-3 font-medium text-foreground text-right">Total Index size</th>
+                  <th className="px-4 py-3 font-medium text-foreground">
+                    Collection Name
+                  </th>
+                  <th className="px-4 py-3 font-medium text-foreground">
+                    Properties
+                  </th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">
+                    Storage size
+                  </th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">
+                    Data size
+                  </th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">
+                    Documents
+                  </th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">
+                    Avg. Document size
+                  </th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">
+                    Index
+                  </th>
+                  <th className="px-4 py-3 font-medium text-foreground text-right">
+                    Total Index size
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -71,7 +92,9 @@ export function DatabaseView({ dbName }: DatabaseViewProps) {
                         {col.name}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">{col.type ?? "collection"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {col.type ?? "collection"}
+                    </td>
                     <td className="px-4 py-3 text-right text-muted-foreground tabular-nums whitespace-nowrap">
                       {formatBytes(col.storageSize ?? 0)}
                     </td>
