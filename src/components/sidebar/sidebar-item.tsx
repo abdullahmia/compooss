@@ -66,42 +66,65 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
   };
 
   return (
-    <div key={db.name}>
-      <div className="group flex items-center w-full hover:bg-sidebar-accent transition-colors">
-        <button
-          type="button"
-          onClick={toggleDb}
-          className="flex-1 flex items-center gap-1.5 px-3 py-1.5 text-xs cursor-pointer text-left min-w-0"
-        >
-          {isExpanded ? (
-            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          ) : (
-            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          )}
-          <DatabaseBackupIcon className="h-3.5 w-3.5 text-primary shrink-0" />
-          <span className="font-medium text-sidebar-foreground truncate">
-            {db.name}
-          </span>
-        </button>
-        <div className="flex items-center shrink-0 pr-1">
-          <Badge
-            variant="subtle"
-            size="sm"
-            className="shrink-0 transition-transform duration-200 ease-out group-hover:-translate-x-2"
+    <>
+      <div key={db.name}>
+        <div className="group flex items-center w-full hover:bg-sidebar-accent transition-colors">
+          <button
+            type="button"
+            onClick={toggleDb}
+            className="flex-1 flex items-center gap-1.5 px-3 py-1.5 text-xs cursor-pointer text-left min-w-0"
           >
-            {db.sizeOnDisk}
-          </Badge>
-          <IconButton
-            icon={<Trash2 className="h-3 w-3" />}
-            label="Delete database"
-            variant="danger"
-            size="sm"
-            className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out shrink-0"
-            onClick={handleDeleteClick}
-          />
+            {isExpanded ? (
+              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            ) : (
+              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            )}
+            <DatabaseBackupIcon className="h-3.5 w-3.5 text-primary shrink-0" />
+            <span className="font-medium text-sidebar-foreground truncate">
+              {db.name}
+            </span>
+          </button>
+          <div className="flex items-center shrink-0 pr-1">
+            <Badge
+              variant="subtle"
+              size="sm"
+              className="shrink-0 transition-transform duration-200 ease-out group-hover:-translate-x-2"
+            >
+              {db.sizeOnDisk}
+            </Badge>
+            <IconButton
+              icon={<Trash2 className="h-3 w-3" />}
+              label="Delete database"
+              variant="danger"
+              size="sm"
+              className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out shrink-0"
+              onClick={handleDeleteClick}
+            />
+          </div>
         </div>
+
+        {isExpanded && (
+          <div className="ml-4">
+            {collections?.map((col) => {
+              return (
+                <button
+                  key={col.name}
+                  onClick={() => handleSelectCollection(col)}
+                  className={`w-full flex items-center gap-1.5 pl-5 pr-3 py-1.5 text-xs transition-colors text-sidebar-foreground hover:bg-sidebar-accent cursor-pointer`}
+                >
+                  <Table className="h-3 w-3 shrink-0" />
+                  <span className="truncate">{col.name}</span>
+                  <Badge variant="subtle" size="sm" className="ml-auto">
+                    {col.documentCount.toLocaleString()}
+                  </Badge>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
+      {/* Delete database modal */}
       <Modal open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
         <ModalContent size="sm">
           <ModalHeader
@@ -135,26 +158,6 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-      {isExpanded && (
-        <div className="ml-4">
-          {collections?.map((col) => {
-            return (
-              <button
-                key={col.name}
-                onClick={() => handleSelectCollection(col)}
-                className={`w-full flex items-center gap-1.5 pl-5 pr-3 py-1.5 text-xs transition-colors text-sidebar-foreground hover:bg-sidebar-accent cursor-pointer`}
-              >
-                <Table className="h-3 w-3 shrink-0" />
-                <span className="truncate">{col.name}</span>
-                <Badge variant="subtle" size="sm" className="ml-auto">
-                  {col.documentCount.toLocaleString()}
-                </Badge>
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
+    </>
   );
 };

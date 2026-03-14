@@ -16,6 +16,7 @@ export interface ICreateDatabaseInput {
 export interface ICollection {
   name: string;
   type: string;
+  documentCount: number;
   options: Record<string, unknown>;
 }
 
