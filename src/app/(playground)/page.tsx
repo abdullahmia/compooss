@@ -1,86 +1,15 @@
-"use client";
-
-import { CollectionView } from "@/components/collection-view";
-import { CreateDatabaseModal } from "@/components/create-database-modal";
-import { Sidebar } from "@/components/sidebar";
-import { TopBar } from "@/components/top-bar";
+import { checkConnectionHealth } from "@/lib/services/connection/connection.service";
 import { WelcomeView } from "@/components/welcome-view";
-import type { Database } from "@/data/mockData";
-import { databases as initialDatabases } from "@/data/mockData";
-import { useState } from "react";
 
-export default function Home() {
-  const [connectionString, setConnectionString] = useState("");
-  const [selectedDb, setSelectedDb] = useState<string | null>(null);
-  const [selectedCollection, setSelectedCollection] = useState<string | null>(
-    null,
-  );
-  const [databases, setDatabases] = useState<Database[]>(initialDatabases);
-  const [createDbOpen, setCreateDbOpen] = useState(false);
+export default async function Home() {
+  try {
+    const health = await checkConnectionHealth();
+    if (health.ok) {
+    } else {
+    }
+  } catch {
+    // Connection check failed
+  }
 
-  const handleDisconnect = () => {
-    setConnectionString("");
-    setSelectedDb(null);
-    setSelectedCollection(null);
-  };
-
-  const handleSelectCollection = (db: string, collection: string) => {
-    setSelectedDb(db);
-    setSelectedCollection(collection);
-  };
-
-  const handleCreateDatabase = (dbName: string, collectionName: string) => {
-    const newDb: Database = {
-      name: dbName,
-      sizeOnDisk: "0 B",
-      collections: [
-        {
-          name: collectionName,
-          documentCount: 0,
-          avgDocSize: "0 B",
-          totalSize: "0 B",
-          indexes: 1,
-        },
-      ],
-    };
-    setDatabases((prev) => [...prev, newDb]);
-    setSelectedDb(dbName);
-    setSelectedCollection(collectionName);
-  };
-
-  const currentDb = databases.find((d) => d.name === selectedDb);
-  const currentCollection = currentDb?.collections.find(
-    (c) => c.name === selectedCollection,
-  );
-
-  return (
-    <div className="h-screen flex flex-col overflow-hidden">
-      <TopBar
-        connectionString={connectionString}
-        onDisconnect={handleDisconnect}
-      />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar
-          databases={databases}
-          selectedDb={selectedDb}
-          selectedCollection={selectedCollection}
-          onSelectCollection={handleSelectCollection}
-          onCreateDatabase={() => setCreateDbOpen(true)}
-        />
-        {currentDb && currentCollection ? (
-          <CollectionView
-            dbName={currentDb.name}
-            collection={currentCollection}
-          />
-        ) : (
-          <WelcomeView />
-        )}
-      </div>
-      <CreateDatabaseModal
-        open={createDbOpen}
-        onClose={() => setCreateDbOpen(false)}
-        onCreate={handleCreateDatabase}
-      />
-    </div>
-  );
+  return <WelcomeView />;
 }

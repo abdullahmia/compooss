@@ -1,13 +1,21 @@
 "use client";
 
 import type { MongoDocument } from "@/data/mockData";
-import { ChevronDown, ChevronRight, Copy, FileText, Pencil, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  FileText,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 import { IconButton } from "./ui/icon-button/icon-button";
 
 interface JsonDocumentProps {
   document: MongoDocument;
   index: number;
+  onEdit?: (document: MongoDocument) => void;
 }
 
 function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
@@ -76,7 +84,7 @@ function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
   return <span className="text-foreground font-mono text-xs">{String(value)}</span>;
 }
 
-export function JsonDocument({ document, index }: JsonDocumentProps) {
+export function JsonDocument({ document, index, onEdit }: JsonDocumentProps) {
   const [expanded, setExpanded] = useState(true);
 
   const handleClone = () => {
@@ -109,6 +117,7 @@ export function JsonDocument({ document, index }: JsonDocumentProps) {
             size="md"
             icon={<Pencil className="h-3 w-3" />}
             label="Edit Document"
+            onClick={() => onEdit?.(document)}
           />
           <IconButton
             variant="danger"

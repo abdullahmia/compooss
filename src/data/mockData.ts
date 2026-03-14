@@ -3,21 +3,9 @@ export interface MongoDocument {
   [key: string]: any;
 }
 
-export interface Collection {
-  name: string;
-  documentCount: number;
-  avgDocSize: string;
-  totalSize: string;
-  indexes: number;
-}
+import type { ICollectionSummary, IDatabase } from "@/lib/types/database.types";
 
-export interface Database {
-  name: string;
-  collections: Collection[];
-  sizeOnDisk: string;
-}
-
-export const databases: Database[] = [
+export const databases: IDatabase[] = [
   {
     name: "ecommerce",
     sizeOnDisk: "245.8 MB",
@@ -149,6 +137,30 @@ export const collectionDocuments: Record<string, MongoDocument[]> = {
   "ecommerce.products": productDocs,
   "ecommerce.orders": orderDocs,
 };
+
+export function addDocuments(
+  db: string,
+  collection: string,
+  docs: MongoDocument[],
+): void {
+  const key = `${db}.${collection}`;
+  const existing = collectionDocuments[key] ?? getDocuments(db, collection);
+  collectionDocuments[key] = [...docs, ...existing];
+}
+
+export function updateDocument(
+  db: string,
+  collection: string,
+  id: string,
+  updated: MongoDocument,
+): void {
+  const key = `${db}.${collection}`;
+  const docs = collectionDocuments[key] ?? getDocuments(db, collection);
+  const index = docs.findIndex((doc) => doc._id === id);
+  if (index === -1) return;
+  docs[index] = { ...updated, _id: id };
+  collectionDocuments[key] = [...docs];
+}
 
 export function getDocuments(db: string, collection: string): MongoDocument[] {
   const key = `${db}.${collection}`;
