@@ -1,5 +1,6 @@
 "use client";
 
+import { isProtectedDatabase } from "@/lib/constants/database.constants";
 import { getCollectionSummary } from "@/lib/services/database/database.service";
 import { ICollectionSummary } from "@/lib/types/database.types";
 import { BarChart3, Code2, FileText, Grid3X3, ShieldCheck } from "lucide-react";
@@ -45,10 +46,12 @@ export function CollectionView({ dbName, collectionName }: CollectionViewProps) 
     setActiveTab(id);
   };
 
+  const readOnly = isProtectedDatabase(dbName);
+
   const renderTabContent = () => {
     switch (activeTab) {
       case "documents":
-        return <DocumentsTab />
+        return <DocumentsTab readOnly={readOnly} />;
       case "aggregations":
         return <AggregationsTab />;
       case "schema":
@@ -83,7 +86,13 @@ export function CollectionView({ dbName, collectionName }: CollectionViewProps) 
         onTabChange={handleTabChange}
       />
 
-      {renderTabContent()}
+      <Suspense fallback={
+        <div className="flex-1 flex items-center justify-center p-8 text-muted-foreground text-sm">
+          Loading…
+        </div>
+      }>
+        {renderTabContent()}
+      </Suspense>
     </div>
   );
 }

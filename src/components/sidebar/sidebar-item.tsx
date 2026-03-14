@@ -2,6 +2,7 @@
 
 import { ConfirmDestructiveModal } from "@/components/confirm-destructive-modal";
 import { CreateCollectionModal } from "@/components/create-collection-modal";
+import { isProtectedDatabase } from "@/lib/constants/database.constants";
 import { useDeleteDatabase } from "@/lib/services/v2/database/database.service";
 import {
   useDeleteCollection,
@@ -29,6 +30,7 @@ type Props = {
 
 export const SidebarItem: React.FC<Props> = ({ db }) => {
   const router = useRouter();
+  const isProtected = isProtectedDatabase(db.name);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [deleteDbModalOpen, setDeleteDbModalOpen] = useState(false);
   const [addCollectionModalOpen, setAddCollectionModalOpen] = useState(false);
@@ -117,22 +119,26 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
             >
               {db.sizeOnDisk}
             </Badge>
-            <IconButton
-              icon={<Plus className="h-3 w-3" />}
-              label="Add collection"
-              variant="default"
-              size="sm"
-              className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out shrink-0"
-              onClick={handleAddCollectionClick}
-            />
-            <IconButton
-              icon={<Trash2 className="h-3 w-3" />}
-              label="Delete database"
-              variant="danger"
-              size="sm"
-              className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out shrink-0"
-              onClick={handleDeleteDbClick}
-            />
+            {!isProtected && (
+              <>
+                <IconButton
+                  icon={<Plus className="h-3 w-3" />}
+                  label="Add collection"
+                  variant="default"
+                  size="sm"
+                  className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out shrink-0"
+                  onClick={handleAddCollectionClick}
+                />
+                <IconButton
+                  icon={<Trash2 className="h-3 w-3" />}
+                  label="Delete database"
+                  variant="danger"
+                  size="sm"
+                  className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out shrink-0"
+                  onClick={handleDeleteDbClick}
+                />
+              </>
+            )}
           </div>
         </div>
 
@@ -159,14 +165,16 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
                   >
                     {col.documentCount.toLocaleString()}
                   </Badge>
-                  <IconButton
-                    icon={<Trash2 className="h-3 w-3" />}
-                    label="Delete collection"
-                    variant="danger"
-                    size="sm"
-                    className="opacity-0 translate-x-1 group-hover/col:opacity-100 group-hover/col:translate-x-0 transition-all duration-200 ease-out shrink-0"
-                    onClick={(e) => handleDeleteCollectionClick(e, col)}
-                  />
+                  {!isProtected && (
+                    <IconButton
+                      icon={<Trash2 className="h-3 w-3" />}
+                      label="Delete collection"
+                      variant="danger"
+                      size="sm"
+                      className="opacity-0 translate-x-1 group-hover/col:opacity-100 group-hover/col:translate-x-0 transition-all duration-200 ease-out shrink-0"
+                      onClick={(e) => handleDeleteCollectionClick(e, col)}
+                    />
+                  )}
                 </div>
               </div>
             ))}

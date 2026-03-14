@@ -1,10 +1,11 @@
+import { isProtectedDatabase } from "@/lib/constants/database.constants";
 import { BaseRepository } from "../base.repository";
 import { ICreateDatabaseInput, IDatabase } from "../repository.types";
 
 export class DatabaseRepository extends BaseRepository {
 
   /**
-   * Returns a list of all databases with size info.
+   * Returns a list of all databases with size info (including system databases; they are read-only in the UI).
    */
   async getAllDatabases(): Promise<IDatabase[]> {
     return this.driver.listDatabases();
@@ -25,6 +26,10 @@ export class DatabaseRepository extends BaseRepository {
   async createDatabase(input: ICreateDatabaseInput): Promise<IDatabase> {
     const { databaseName, initialCollection } = input;
 
+    if (isProtectedDatabase(databaseName)) {
+      throw new Error(`Creating a database named "${databaseName}" is prohibited (reserved for system use).`);
+    }
+
     const existing = await this.getDatabase(databaseName);
     if (existing) {
       throw new Error(`Database "${databaseName}" already exists.`);
@@ -41,16 +46,12 @@ export class DatabaseRepository extends BaseRepository {
     return created;
   }
 
-  /** MongoDB system databases that cannot be dropped. */
-  private static readonly PROTECTED_DATABASES = ["admin", "local", "config"];
-
   /**
    * Drops an entire database and all its collections.
    * Throws if the database is a protected system database (admin, local, config).
    */
   async deleteDatabase(databaseName: string): Promise<boolean> {
-    const name = databaseName.toLowerCase();
-    if (DatabaseRepository.PROTECTED_DATABASES.includes(name)) {
+    if (isProtectedDatabase(databaseName)) {
       throw new Error(`Dropping the '${databaseName}' database is prohibited.`);
     }
 

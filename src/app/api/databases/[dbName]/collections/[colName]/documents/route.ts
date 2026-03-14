@@ -1,8 +1,16 @@
+import { isProtectedDatabase } from "@/lib/constants/database.constants";
 import { documentRepository } from "@/lib/core-modules/document/document.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse, type NextRequest } from "next/server";
 
 type DocParams = { params: Promise<{ dbName: string; colName: string }> };
+
+function protectedDbResponse() {
+  return NextResponse.json(
+    createApiResponse(null, "Access to system databases (admin, local, config) is not allowed.", 403),
+    { status: 403 },
+  );
+}
 
 /**
  * Converts JS-style object keys (unquoted) to valid JSON by quoting them.
@@ -84,6 +92,7 @@ export async function GET(req: NextRequest, { params }: DocParams) {
 
 export async function POST(req: Request, { params }: DocParams) {
   const { dbName, colName } = await params;
+  if (isProtectedDatabase(dbName)) return protectedDbResponse();
   const body = await req.json();
   const document = body?.document ?? body;
   const inserted = await documentRepository.addDocument({

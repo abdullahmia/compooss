@@ -1,3 +1,4 @@
+import { isProtectedDatabase } from "@/lib/constants/database.constants";
 import { collectionRepository } from "@/lib/core-modules/collection/collection.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse, type NextRequest } from "next/server";
@@ -16,7 +17,6 @@ export async function GET(req: NextRequest, { params }: DbParamProps) {
       { status: 400 },
     );
   }
-
   const collections = await collectionRepository.getCollections(dbName);
   return NextResponse.json(
     createApiResponse(collections, "Collections fetched successfully", 200),
@@ -29,6 +29,12 @@ export async function POST(req: NextRequest, { params }: DbParamProps) {
     return NextResponse.json(
       createApiResponse(null, "Missing dbName parameter", 400),
       { status: 400 },
+    );
+  }
+  if (isProtectedDatabase(dbName)) {
+    return NextResponse.json(
+      createApiResponse(null, "Access to system databases (admin, local, config) is not allowed.", 403),
+      { status: 403 },
     );
   }
 
