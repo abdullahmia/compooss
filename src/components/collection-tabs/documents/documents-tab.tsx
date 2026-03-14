@@ -322,6 +322,8 @@ export const DocumentsTab: React.FC = () => {
                 document={doc}
                 index={startIndex + i}
                 onEdit={handleOpenEdit}
+                dbName={dbName}
+                collectionName={collectionName}
               />
             ))
           ) : (

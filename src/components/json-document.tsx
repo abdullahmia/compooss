@@ -1,6 +1,7 @@
 "use client";
 
 import type { MongoDocument } from "@/data/mockData";
+import { useDeleteDocument } from "@/lib/services/v2/documents/documents.service";
 import {
   ChevronDown,
   ChevronRight,
@@ -12,10 +13,25 @@ import {
 import { useState } from "react";
 import { IconButton } from "./ui/icon-button/icon-button";
 
+/** Normalize document _id to string (handles { $oid: "..." } or plain string). */
+function getDocumentId(doc: MongoDocument): string {
+  const id = doc._id;
+  if (id === undefined || id === null) return "";
+  if (typeof id === "object" && "$oid" in (id as object)) {
+    const oid = (id as { $oid: string }).$oid;
+    return typeof oid === "string" ? oid : "";
+  }
+  return String(id);
+}
+
 interface JsonDocumentProps {
   document: MongoDocument;
   index: number;
   onEdit?: (document: MongoDocument) => void;
+  onDeleted?: () => void;
+  /** Required for delete. If not provided, delete button is hidden or disabled. */
+  dbName?: string;
+  collectionName?: string;
 }
 
 function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
@@ -24,7 +40,7 @@ function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
   if (value === null) return <span className="text-json-null font-mono text-xs">null</span>;
   if (typeof value === "boolean") return <span className="text-json-boolean font-mono text-xs">{value.toString()}</span>;
   if (typeof value === "number") return <span className="text-json-number font-mono text-xs">{value}</span>;
-  if (typeof value === "string") return <span className="text-json-string font-mono text-xs">"{value}"</span>;
+  if (typeof value === "string") return <span className="text-json-string font-mono text-xs">&quot;{value}&quot;</span>;
 
   if (Array.isArray(value)) {
     if (value.length === 0) return <span className="text-muted-foreground font-mono text-xs">[ ]</span>;
@@ -54,10 +70,10 @@ function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
     if (keys.length === 0) return <span className="text-muted-foreground font-mono text-xs">{"{ }"}</span>;
     
     if (keys.length === 1 && keys[0] === "$oid") {
-      return <span className="text-json-string font-mono text-xs">ObjectId("{value.$oid}")</span>;
+      return <span className="text-json-string font-mono text-xs">ObjectId(&quot;{value.$oid}&quot;)</span>;
     }
     if (keys.length === 1 && keys[0] === "$date") {
-      return <span className="text-json-string font-mono text-xs">ISODate("{value.$date}")</span>;
+      return <span className="text-json-string font-mono text-xs">ISODate(&quot;{value.$date}&quot;)</span>;
     }
 
     return (
@@ -84,11 +100,36 @@ function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
   return <span className="text-foreground font-mono text-xs">{String(value)}</span>;
 }
 
-export function JsonDocument({ document, index, onEdit }: JsonDocumentProps) {
+export function JsonDocument({
+  document,
+  onEdit,
+  onDeleted,
+  dbName,
+  collectionName,
+}: JsonDocumentProps) {
   const [expanded, setExpanded] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const docId = getDocumentId(document);
+  const canDelete = !!(dbName && collectionName && docId);
+
+  const { mutateAsync: deleteDocument, isPending: isDeleting } = useDeleteDocument(dbName ?? "", collectionName ?? "", {
+    onSuccess: () => {
+      setShowDeleteConfirm(false);
+      onDeleted?.();
+    },
+  });
 
   const handleClone = () => {
     navigator.clipboard.writeText(JSON.stringify(document, null, 2));
+  };
+
+  const handleDeleteClick = () => {
+    if (canDelete) setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!canDelete) return;
+    await deleteDocument(docId);
   };
 
   return (
@@ -101,7 +142,7 @@ export function JsonDocument({ document, index, onEdit }: JsonDocumentProps) {
         </button>
         <FileText className="h-3.5 w-3.5 text-primary" />
         <span className="text-xs font-mono text-json-string truncate">
-          ObjectId("{document._id}")
+          ObjectId(&quot;{getDocumentId(document)}&quot;)
         </span>
         
         <div className="ml-auto flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -119,12 +160,15 @@ export function JsonDocument({ document, index, onEdit }: JsonDocumentProps) {
             label="Edit Document"
             onClick={() => onEdit?.(document)}
           />
-          <IconButton
-            variant="danger"
-            size="md"
-            icon={<Trash2 className="h-3 w-3" />}
-            label="Delete Document"
-          />
+          {canDelete && (
+            <IconButton
+              variant="danger"
+              size="md"
+              icon={<Trash2 className="h-3 w-3" />}
+              label="Delete Document"
+              onClick={handleDeleteClick}
+            />
+          )}
         </div>
       </div>
       
@@ -137,6 +181,33 @@ export function JsonDocument({ document, index, onEdit }: JsonDocumentProps) {
               <JsonValue value={value} />
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Delete confirmation bar at the bottom */}
+      {showDeleteConfirm && (
+        <div className="px-4 py-3 border-t border-border bg-destructive/10 rounded-b-lg flex items-center justify-between gap-3">
+          <p className="text-xs text-foreground">
+            Delete this document? This action cannot be undone.
+          </p>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setShowDeleteConfirm(false)}
+              disabled={isDeleting}
+              className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-muted transition-colors disabled:opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+              className="px-3 py-1.5 text-xs font-medium bg-destructive text-destructive-foreground rounded-sm hover:bg-destructive/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isDeleting ? "Deleting…" : "Delete"}
+            </button>
+          </div>
         </div>
       )}
     </div>
