@@ -1,21 +1,30 @@
 import { CollectionInfo } from "mongodb";
 import { BaseRepository } from "../base.repository";
-import { ICollection, ICreateCollectionInput, IDeleteCollectionInput } from "../repository.types";
+import {
+  ICollection,
+  ICreateCollectionInput,
+  IDeleteCollectionInput,
+} from "../repository.types";
 
 export class CollectionRepository extends BaseRepository {
-
   /**
-   * Lists all collections inside a database.
+   * Lists all collections inside a database with document counts.
    */
   async getCollections(databaseName: string): Promise<ICollection[]> {
     const db = await this.db(databaseName);
     const collections = await db.listCollections().toArray();
-    return collections.map((col) => ({
-      name: col.name,
-      type: col.type ?? "collection",
-      documentCount: (col as CollectionInfo).documentCount ?? 0,
-      options: (col as CollectionInfo).options ?? {},
-    }));
+    const withCounts = await Promise.all(
+      collections.map(async (col) => {
+        const documentCount = await db.collection(col.name).countDocuments();
+        return {
+          name: col.name,
+          type: col.type ?? "collection",
+          documentCount,
+          options: (col as CollectionInfo).options ?? {},
+        };
+      }),
+    );
+    return withCounts;
   }
 
   /**
@@ -23,25 +32,24 @@ export class CollectionRepository extends BaseRepository {
    */
   async createCollection(input: ICreateCollectionInput): Promise<ICollection> {
     const { databaseName, collectionName } = input;
-  
-    const db = await this.db(databaseName)
+
+    const db = await this.db(databaseName);
     const existing = await db
       .listCollections({ name: collectionName })
       .hasNext();
-    
-    
-  
+
     if (existing) {
       throw new Error(
-        `Collection "${collectionName}" already exists in "${databaseName}".`
+        `Collection "${collectionName}" already exists in "${databaseName}".`,
       );
     }
-  
+
     const collection = await db.createCollection(collectionName);
-  
+
     return {
       name: collection.collectionName,
       type: "collection",
+      documentCount: 0,
       options: {},
     };
   }
