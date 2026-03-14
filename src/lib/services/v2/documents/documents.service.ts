@@ -6,6 +6,14 @@ import { IApiResponse, TQueryOptions } from "@/lib/types";
 import { TGetDocumentsResponse } from "@/lib/types/document.types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+function getErrorMessage(error: Error): string {
+  const payload = (error as Error & { payload?: unknown }).payload;
+  if (payload && typeof payload === "object" && "message" in payload && typeof (payload as { message: unknown }).message === "string") {
+    return (payload as { message: string }).message;
+  }
+  return error.message;
+}
+
 export const useGetDocuments = (
   db: string,
   collection: string,
@@ -57,7 +65,43 @@ export const useAddDocument = ({
       onError?.(error);
       toast({
         title: "Error",
-        description: error.message,
+        description: getErrorMessage(error),
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+export const useDeleteDocument = (
+  db: string,
+  collection: string,
+  options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (documentId: string) => {
+      const response = await apiClient.delete<IApiResponse<null>>(
+        ENDPOINTS.documents.byId(db, collection, documentId),
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.documents.all(db, collection),
+      });
+      options?.onSuccess?.();
+      toast({
+        title: "Success",
+        description: "Document deleted successfully",
+        variant: "success",
+      });
+    },
+    onError: (error: Error) => {
+      options?.onError?.(error);
+      toast({
+        title: "Error",
+        description: getErrorMessage(error),
         variant: "destructive",
       });
     },

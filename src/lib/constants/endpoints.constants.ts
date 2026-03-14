@@ -9,5 +9,7 @@ export const ENDPOINTS = {
   },
   documents: {
     all: (db: string, collection: string) => `/databases/${db}/collections/${collection}/documents`,
+    byId: (db: string, collection: string, docId: string) =>
+      `/databases/${db}/collections/${collection}/documents/${encodeURIComponent(docId)}`,
   },
 }
