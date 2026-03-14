@@ -66,6 +66,20 @@ export interface IFilterDocumentsInput {
   pagination: IPaginationOptions;
 }
 
+/** Query documents with filter, sort, project, skip, limit (MongoDB-style). */
+export interface IQueryDocumentsInput {
+  databaseName: string;
+  collectionName: string;
+  /** MongoDB filter object */
+  filter: DocumentRecord;
+  /** MongoDB sort spec, e.g. { name: 1, age: -1 } */
+  sort?: DocumentRecord;
+  /** MongoDB projection, e.g. { name: 1, _id: 0 } */
+  project?: DocumentRecord;
+  skip: number;
+  limit: number;
+}
+
 export interface IAddDocumentInput {
   databaseName: string;
   collectionName: string;

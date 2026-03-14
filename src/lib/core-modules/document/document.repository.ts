@@ -1,6 +1,6 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, type Sort } from "mongodb";
 import { BaseRepository } from "../base.repository";
-import { DocumentRecord, IAddDocumentInput, IDeleteDocumentInput, IFilterDocumentsInput, IGetDocumentsInput, IPaginatedResult, IUpdateDocumentInput } from "../repository.types";
+import { DocumentRecord, IAddDocumentInput, IDeleteDocumentInput, IFilterDocumentsInput, IGetDocumentsInput, IQueryDocumentsInput, IPaginatedResult, IUpdateDocumentInput } from "../repository.types";
 
 export class DocumentRepository extends BaseRepository {
   private async getCollection(databaseName: string, collectionName: string) {
@@ -66,6 +66,33 @@ export class DocumentRepository extends BaseRepository {
       col.countDocuments(filter),
     ]);
 
+    return this.buildPaginatedResult(data, total, page, limit);
+  }
+
+  /**
+   * Query documents with filter, sort, project, skip and limit.
+   */
+  async queryDocuments(
+    input: IQueryDocumentsInput
+  ): Promise<IPaginatedResult<DocumentRecord>> {
+    const { databaseName, collectionName, filter, sort = {}, project, skip, limit } = input;
+
+    const col = await this.getCollection(databaseName, collectionName);
+    let cursor = col.find(filter).skip(skip).limit(limit);
+
+    if (Object.keys(sort).length > 0) {
+      cursor = cursor.sort(sort as Sort);
+    }
+    if (project && Object.keys(project).length > 0) {
+      cursor = cursor.project(project);
+    }
+
+    const [data, total] = await Promise.all([
+      cursor.toArray(),
+      col.countDocuments(filter),
+    ]);
+
+    const page = limit > 0 ? Math.floor(skip / limit) + 1 : 1;
     return this.buildPaginatedResult(data, total, page, limit);
   }
 

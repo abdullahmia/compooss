@@ -1,22 +1,84 @@
 import { documentRepository } from "@/lib/core-modules/document/document.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 type DocParams = { params: Promise<{ dbName: string; colName: string }> };
 
-export async function GET(req: Request, { params }: DocParams) {
+/**
+ * Converts JS-style object keys (unquoted) to valid JSON by quoting them.
+ * e.g. { email: "x" } -> { "email": "x" }
+ */
+function relaxToJson(str: string): string {
+  return str.replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)(\s*:)/g, '$1"$2"$3');
+}
+
+function parseJsonParam(value: string | null, fallback: Record<string, unknown>): Record<string, unknown> {
+  const trimmed = value?.trim();
+  if (!trimmed || trimmed === "" || trimmed === "{}" || trimmed === "{ }") {
+    return fallback;
+  }
+  try {
+    const parsed = JSON.parse(trimmed);
+    return typeof parsed === "object" && parsed !== null ? parsed : fallback;
+  } catch {
+    try {
+      const relaxed = relaxToJson(trimmed);
+      const parsed = JSON.parse(relaxed);
+      return typeof parsed === "object" && parsed !== null ? parsed : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+}
+
+/** Escape special regex characters so the string is matched literally as a substring. */
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Converts string values in the filter to partial, case-insensitive matches using MongoDB $regex.
+ * e.g. { email: "gmail" } -> { email: { $regex: "gmail", $options: "i" } }
+ */
+function filterStringsToPartialMatch(obj: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === "string") {
+      result[key] = { $regex: escapeRegex(value), $options: "i" };
+    } else if (value !== null && typeof value === "object" && !Array.isArray(value) && !(value instanceof RegExp)) {
+      result[key] = filterStringsToPartialMatch(value as Record<string, unknown>);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
+export async function GET(req: NextRequest, { params }: DocParams) {
   const { dbName, colName } = await params;
-  const { searchParams } = new URL(req.url);
- 
-  const result = await documentRepository.getDocuments({
+  const searchParams = req.nextUrl.searchParams;
+
+  const filterRaw = searchParams.get("filter");
+  const sortRaw = searchParams.get("sort");
+  const projectRaw = searchParams.get("project");
+  const limit = Math.min(Math.max(1, Number(searchParams.get("limit") ?? 20)), 1000);
+  const skip = Math.max(0, Number(searchParams.get("skip") ?? 0));
+
+  const filterParsed = parseJsonParam(filterRaw, {});
+  const filter = filterStringsToPartialMatch(filterParsed as Record<string, unknown>);
+  const sort = parseJsonParam(sortRaw, {});
+  const project = parseJsonParam(projectRaw, {});
+
+  const result = await documentRepository.queryDocuments({
     databaseName: dbName,
     collectionName: colName,
-    pagination: {
-      page: Number(searchParams.get("page") ?? 1),
-      limit: Number(searchParams.get("limit") ?? 20),
-    },
+    filter,
+    sort: Object.keys(sort).length > 0 ? sort : undefined,
+    project: Object.keys(project).length > 0 ? project : undefined,
+    skip,
+    limit,
   });
- 
+
   return NextResponse.json(createApiResponse(result, "Documents fetched successfully", 200));
 }
 
