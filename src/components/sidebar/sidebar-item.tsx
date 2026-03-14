@@ -1,14 +1,11 @@
 "use client";
 
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from "@/components/ui/modal/modal";
+import { ConfirmDestructiveModal } from "@/components/confirm-destructive-modal";
 import { useDeleteDatabase } from "@/lib/services/v2/database/database.service";
-import { useGetCollections } from "@/lib/services/v2/collections/collection.service";
+import {
+  useDeleteCollection,
+  useGetCollections,
+} from "@/lib/services/v2/collections/collection.service";
 import { TCollection } from "@/lib/types/collections.types";
 import { TDatabase } from "@/lib/types/database.types";
 import {
@@ -32,15 +29,22 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteDbModalOpen, setDeleteDbModalOpen] = useState(false);
+  const [collectionToDelete, setCollectionToDelete] =
+    useState<TCollection | null>(null);
 
   const { data: collections } = useGetCollections(db.name, {
     enabled: isExpanded,
   });
 
-  const { mutateAsync: deleteDatabase, isPending: isDeleting } =
+  const { mutateAsync: deleteDatabase, isPending: isDeletingDb } =
     useDeleteDatabase({
-      onSuccess: () => setDeleteModalOpen(false),
+      onSuccess: () => setDeleteDbModalOpen(false),
+    });
+
+  const { mutateAsync: deleteCollection, isPending: isDeletingCol } =
+    useDeleteCollection(db.name, {
+      onSuccess: () => setCollectionToDelete(null),
     });
 
   const toggleDb = async () => {
@@ -56,13 +60,26 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
     router.push(queryString ? `${pathname}?${queryString}` : pathname);
   };
 
-  const handleDeleteClick = (e: React.MouseEvent) => {
+  const handleDeleteDbClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setDeleteModalOpen(true);
+    setDeleteDbModalOpen(true);
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDeleteDb = async () => {
     await deleteDatabase(db.name);
+  };
+
+  const handleDeleteCollectionClick = (
+    e: React.MouseEvent,
+    collection: TCollection,
+  ) => {
+    e.stopPropagation();
+    setCollectionToDelete(collection);
+  };
+
+  const handleConfirmDeleteCollection = async () => {
+    if (!collectionToDelete) return;
+    await deleteCollection(collectionToDelete.name);
   };
 
   return (
@@ -98,66 +115,81 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
               variant="danger"
               size="sm"
               className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out shrink-0"
-              onClick={handleDeleteClick}
+              onClick={handleDeleteDbClick}
             />
           </div>
         </div>
 
         {isExpanded && (
           <div className="ml-4">
-            {collections?.map((col) => {
-              return (
+            {collections?.map((col) => (
+              <div
+                key={col.name}
+                className="group/col flex items-center w-full hover:bg-sidebar-accent transition-colors"
+              >
                 <button
-                  key={col.name}
+                  type="button"
                   onClick={() => handleSelectCollection(col)}
-                  className={`w-full flex items-center gap-1.5 pl-5 pr-3 py-1.5 text-xs transition-colors text-sidebar-foreground hover:bg-sidebar-accent cursor-pointer`}
+                  className="flex-1 flex items-center gap-1.5 pl-5 pr-2 py-1.5 text-xs text-sidebar-foreground cursor-pointer text-left min-w-0"
                 >
                   <Table className="h-3 w-3 shrink-0" />
                   <span className="truncate">{col.name}</span>
-                  <Badge variant="subtle" size="sm" className="ml-auto">
+                </button>
+                <div className="flex items-center shrink-0 pr-2">
+                  <Badge
+                    variant="subtle"
+                    size="sm"
+                    className="shrink-0 transition-transform duration-200 ease-out group-hover/col:-translate-x-1"
+                  >
                     {col.documentCount.toLocaleString()}
                   </Badge>
-                </button>
-              );
-            })}
+                  <IconButton
+                    icon={<Trash2 className="h-3 w-3" />}
+                    label="Delete collection"
+                    variant="danger"
+                    size="sm"
+                    className="opacity-0 translate-x-1 group-hover/col:opacity-100 group-hover/col:translate-x-0 transition-all duration-200 ease-out shrink-0"
+                    onClick={(e) => handleDeleteCollectionClick(e, col)}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
 
-      {/* Delete database modal */}
-      <Modal open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
-        <ModalContent size="sm">
-          <ModalHeader
-            title="Delete database"
-            icon={<Trash2 className="h-4 w-4" />}
-            onClose={() => setDeleteModalOpen(false)}
-          />
-          <ModalBody>
-            <p className="text-sm text-muted-foreground">
-              Are you sure you want to delete <strong>{db.name}</strong>? This
-              will remove the database and all its collections. This action
-              cannot be undone.
-            </p>
-          </ModalBody>
-          <ModalFooter>
-            <button
-              type="button"
-              onClick={() => setDeleteModalOpen(false)}
-              className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-secondary transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleConfirmDelete}
-              disabled={isDeleting}
-              className="px-4 py-2 text-xs font-medium bg-destructive text-destructive-foreground rounded-sm hover:bg-destructive/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {isDeleting ? "Deleting…" : "Delete"}
-            </button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ConfirmDestructiveModal
+        open={deleteDbModalOpen}
+        onClose={() => setDeleteDbModalOpen(false)}
+        title="Delete database"
+        icon={<Trash2 className="h-4 w-4" />}
+        description={
+          <>
+            Are you sure you want to delete <strong>{db.name}</strong>? This
+            will remove the database and all its collections. This action cannot
+            be undone.
+          </>
+        }
+        onConfirm={handleConfirmDeleteDb}
+        isPending={isDeletingDb}
+      />
+
+      <ConfirmDestructiveModal
+        open={!!collectionToDelete}
+        onClose={() => setCollectionToDelete(null)}
+        title="Delete collection"
+        icon={<Trash2 className="h-4 w-4" />}
+        description={
+          <>
+            Are you sure you want to delete{" "}
+            <strong>{collectionToDelete?.name}</strong> from{" "}
+            <strong>{db.name}</strong>? All documents in this collection will
+            be removed. This action cannot be undone.
+          </>
+        }
+        onConfirm={handleConfirmDeleteCollection}
+        isPending={isDeletingCol}
+      />
     </>
   );
 };
