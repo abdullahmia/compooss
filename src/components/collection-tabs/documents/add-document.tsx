@@ -1,11 +1,8 @@
-import { JsonEditor } from "@/components/json-editor";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@/components/ui/modal/modal";
-import { useAddDocument } from "@/lib/services/v2/documents/documents.service";
+"use client";
+
+import { DocumentFormModal } from "./document-form-modal";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-
-
-const NEW_DOCUMENT_TEMPLATE = "{}";
 
 type AddDocumentProps = {
   dbName: string;
@@ -13,80 +10,27 @@ type AddDocumentProps = {
 };
 
 export const AddDocument = ({ dbName, collectionName }: AddDocumentProps) => {
-  const [open, setOpen]= useState<boolean>(false);
-  const [newDocJson, setNewDocJson] = useState(NEW_DOCUMENT_TEMPLATE);
-
-  const { mutateAsync: addDocument } = useAddDocument({
-    onSuccess: () => {
-      setOpen(false)
-      setNewDocJson(NEW_DOCUMENT_TEMPLATE)
-    },
-    onError: (error) => {
-      console.error(error)
-    }
-  })
-
-  const handleToggleModal = () => {
-    setOpen(!open)
-  }
-
-  const canAdd = !!dbName && !!collectionName
-
-  const handleAddDocuments = async () => {
-    const document = JSON.parse(newDocJson);
-    await addDocument({
-      db: dbName,
-      collection: collectionName,
-      payload: document,
-    })
-  }
+  const [open, setOpen] = useState(false);
+  const canAdd = !!dbName && !!collectionName;
 
   return (
-    <div>
+    <>
       <button
-            className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            type="button"
-            onClick={handleToggleModal}
-            disabled={!canAdd}
-          >
-            <Plus className="h-3.5 w-3.5" />
-            Add Data
-          </button>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <ModalContent size="lg">
-          <ModalHeader
-            title={`Add documents to ${dbName}.${collectionName}`}
-            onClose={() => setOpen(false)}
-          />
-          <ModalBody>
-            <p className="text-xs text-muted-foreground">
-              Paste one or more MongoDB documents as JSON. Comments are allowed
-              and will be ignored. If you provide a single document, it will be
-              wrapped and inserted. An <code>_id</code> will be generated if
-              missing.
-            </p>
-            <div className="mt-2">
-              <JsonEditor value={newDocJson} onChange={setNewDocJson} />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <button
-              type="button"
-              className="text-xs px-3 py-1.5 rounded-sm border border-border text-muted-foreground hover:bg-muted transition-colors"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="text-xs px-3 py-1.5 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-              onClick={handleAddDocuments}
-            >
-              Insert documents
-            </button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </div>
-  )
-}
+        className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        type="button"
+        onClick={() => setOpen(true)}
+        disabled={!canAdd}
+      >
+        <Plus className="h-3.5 w-3.5" />
+        Add Data
+      </button>
+      <DocumentFormModal
+        open={open}
+        onClose={() => setOpen(false)}
+        mode="add"
+        dbName={dbName}
+        collectionName={collectionName}
+      />
+    </>
+  );
+};
