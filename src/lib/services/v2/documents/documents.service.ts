@@ -14,20 +14,44 @@ function getErrorMessage(error: Error): string {
   return error.message;
 }
 
+export type TDocumentsQueryParams = {
+  filter?: string;
+  sort?: string;
+  project?: string;
+  limit?: number;
+  skip?: number;
+};
+
+const defaultQueryParams: Required<TDocumentsQueryParams> = {
+  filter: "{}",
+  sort: "{}",
+  project: "{}",
+  limit: 20,
+  skip: 0,
+};
+
 export const useGetDocuments = (
   db: string,
   collection: string,
-  options?: TQueryOptions<TGetDocumentsResponse>,
+  options?: TQueryOptions<TGetDocumentsResponse> & { queryParams?: TDocumentsQueryParams },
 ) => {
+  const { queryParams: rawParams, ...queryOptions } = options ?? {};
+  const queryParams = { ...defaultQueryParams, ...rawParams };
+
   return useQuery<TGetDocumentsResponse, Error, TGetDocumentsResponse, readonly unknown[]>({
-    queryKey: QUERY_KEYS.documents.all(db, collection),
+    queryKey: QUERY_KEYS.documents.list(db, collection, queryParams),
     queryFn: async () => {
-      const response = await apiClient.get<IApiResponse<TGetDocumentsResponse>>(
-        ENDPOINTS.documents.all(db, collection),
-      );
+      const params = new URLSearchParams();
+      params.set("filter", queryParams.filter);
+      params.set("sort", queryParams.sort);
+      params.set("project", queryParams.project);
+      params.set("limit", String(queryParams.limit));
+      params.set("skip", String(queryParams.skip));
+      const url = `${ENDPOINTS.documents.all(db, collection)}?${params.toString()}`;
+      const response = await apiClient.get<IApiResponse<TGetDocumentsResponse>>(url);
       return response.data;
     },
-    ...options,
+    ...queryOptions,
   });
 };
 
@@ -52,7 +76,7 @@ export const useAddDocument = ({
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.documents.all(variables.db, variables.collection),
+        queryKey: ["documents", variables.db, variables.collection],
       });
       onSuccess?.();
       toast({
@@ -93,9 +117,9 @@ export const useUpdateDocument = (
       );
       return response.data;
     },
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.documents.all(db, collection),
+        queryKey: ["documents", db, collection],
       });
       options?.onSuccess?.();
       toast({
@@ -131,7 +155,7 @@ export const useDeleteDocument = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.documents.all(db, collection),
+        queryKey: ["documents", db, collection],
       });
       options?.onSuccess?.();
       toast({
