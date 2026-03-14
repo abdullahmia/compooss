@@ -71,7 +71,8 @@ export class DocumentRepository extends BaseRepository {
 
   /**
    * Inserts a new document into the collection.
-   * Returns the inserted document with its generated _id.
+   * If the document omits _id, MongoDB auto-generates one.
+   * Returns the inserted document with _id set to the one used by MongoDB.
    */
   async addDocument(input: IAddDocumentInput): Promise<DocumentRecord> {
     const { databaseName, collectionName, document } = input;
@@ -79,7 +80,7 @@ export class DocumentRepository extends BaseRepository {
 
     const result = await col.insertOne(document);
 
-    return { _id: result.insertedId, ...document };
+    return { ...document, _id: result.insertedId } as DocumentRecord;
   }
 
   /**

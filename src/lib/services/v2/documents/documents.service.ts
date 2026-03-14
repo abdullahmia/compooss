@@ -4,7 +4,7 @@ import { ENDPOINTS } from "@/lib/constants";
 import { QUERY_KEYS } from "@/lib/constants/query-key.contants";
 import { IApiResponse, TQueryOptions } from "@/lib/types";
 import { TGetDocumentsResponse } from "@/lib/types/document.types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGetDocuments = (
   db: string,
@@ -21,26 +21,31 @@ export const useGetDocuments = (
     },
     ...options,
   });
-}
+};
+
+type AddDocumentVariables = { db: string; collection: string; payload: Record<string, unknown> };
 
 export const useAddDocument = ({
   onSuccess,
   onError,
-}) => {
-  const { refetch } = useGetDocuments("", "", {
-    enabled: false
-  })
+}: {
+  onSuccess?: () => void;
+  onError?: (error: Error) => void;
+} = {}) => {
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ db, collection, payload }: { db: string, collection: string, payload: any }) => {
-      const response = await apiClient.post<IApiResponse<any>>(
+    mutationFn: async ({ db, collection, payload }: AddDocumentVariables) => {
+      const response = await apiClient.post<IApiResponse<unknown>>(
         ENDPOINTS.documents.all(db, collection),
         payload,
       );
       return response.data;
     },
-    onSuccess: () => {
-      refetch();
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.documents.all(variables.db, variables.collection),
+      });
       onSuccess?.();
       toast({
         title: "Success",
@@ -48,7 +53,7 @@ export const useAddDocument = ({
         variant: "success",
       });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       onError?.(error);
       toast({
         title: "Error",
@@ -56,5 +61,5 @@ export const useAddDocument = ({
         variant: "destructive",
       });
     },
-  })
-}
+  });
+};
