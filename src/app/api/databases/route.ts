@@ -16,6 +16,11 @@ export async function POST(req: Request) {
     });
     return NextResponse.json(createApiResponse(created, "Database created successfully", 201));
   } catch (error) {
-    return NextResponse.json(createApiResponse(null, String(error), 500));
+    const message = error instanceof Error ? error.message : String(error);
+    const isProhibited = message.toLowerCase().includes("prohibited");
+    if (isProhibited) {
+      return NextResponse.json(createApiResponse(null, message, 403), { status: 403 });
+    }
+    return NextResponse.json(createApiResponse(null, message, 500), { status: 500 });
   }
 }

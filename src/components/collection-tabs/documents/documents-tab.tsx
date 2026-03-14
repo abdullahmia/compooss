@@ -37,7 +37,9 @@ function getFieldsFromDocs(docs: any[]): string[] {
   return Array.from(fields).sort();
 }
 
-export const DocumentsTab: React.FC = () => {
+type DocumentsTabProps = { readOnly?: boolean };
+
+export const DocumentsTab: React.FC<DocumentsTabProps> = ({ readOnly = false }) => {
   const [viewMode, setViewMode] = useState<"list" | "json" | "table">("list");
   const [queryParams, setQueryParams] = useState<QueryBarState>(defaultState);
   const [editingDocument, setEditingDocument] = useState<{
@@ -140,10 +142,12 @@ export const DocumentsTab: React.FC = () => {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <AddDocument
-            dbName={dbName ?? ""}
-            collectionName={collectionName ?? ""}
-          />
+          {!readOnly && (
+            <AddDocument
+              dbName={dbName ?? ""}
+              collectionName={collectionName ?? ""}
+            />
+          )}
           <div className="flex items-center ml-3">
             <IconButton
               variant="default"
@@ -177,9 +181,10 @@ export const DocumentsTab: React.FC = () => {
                 key={doc._id}
                 document={doc}
                 index={startIndex - 1 + i}
-                onEdit={handleOpenEdit}
-                dbName={dbName}
-                collectionName={collectionName}
+                onEdit={readOnly ? undefined : handleOpenEdit}
+                dbName={readOnly ? undefined : dbName}
+                collectionName={readOnly ? undefined : collectionName}
+                readOnly={readOnly}
               />
             ))
           ) : (
@@ -232,15 +237,17 @@ export const DocumentsTab: React.FC = () => {
         )}
       </div>
 
-      <DocumentFormModal
-        open={editingDocument !== null}
-        onClose={() => setEditingDocument(null)}
-        mode="edit"
-        dbName={dbName}
-        collectionName={collectionName}
-        documentId={editingDocument?.id}
-        initialJson={editingDocument?.json}
-      />
+      {!readOnly && (
+        <DocumentFormModal
+          open={editingDocument !== null}
+          onClose={() => setEditingDocument(null)}
+          mode="edit"
+          dbName={dbName}
+          collectionName={collectionName}
+          documentId={editingDocument?.id}
+          initialJson={editingDocument?.json}
+        />
+      )}
     </>
   );
 };

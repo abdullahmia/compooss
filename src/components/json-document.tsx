@@ -33,6 +33,8 @@ interface JsonDocumentProps {
   /** Required for delete. If not provided, delete button is hidden or disabled. */
   dbName?: string;
   collectionName?: string;
+  /** When true, edit and delete actions are hidden (e.g. for system databases). */
+  readOnly?: boolean;
 }
 
 function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
@@ -155,11 +157,12 @@ export function JsonDocument({
   onDeleted,
   dbName,
   collectionName,
+  readOnly = false,
 }: JsonDocumentProps) {
   const [expanded, setExpanded] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const docId = getDocumentId(document);
-  const canDelete = !!(dbName && collectionName && docId);
+  const canDelete = !readOnly && !!(dbName && collectionName && docId);
 
   const { mutateAsync: deleteDocument, isPending: isDeleting } =
     useDeleteDocument(dbName ?? "", collectionName ?? "", {
@@ -211,13 +214,15 @@ export function JsonDocument({
             label="Copy Document"
             onClick={handleCopy}
           />
-          <IconButton
-            variant="default"
-            size="md"
-            icon={<Pencil className="h-3 w-3" />}
-            label="Edit Document"
-            onClick={() => onEdit?.(document)}
-          />
+          {!readOnly && (
+            <IconButton
+              variant="default"
+              size="md"
+              icon={<Pencil className="h-3 w-3" />}
+              label="Edit Document"
+              onClick={() => onEdit?.(document)}
+            />
+          )}
           {canDelete && (
             <IconButton
               variant="danger"

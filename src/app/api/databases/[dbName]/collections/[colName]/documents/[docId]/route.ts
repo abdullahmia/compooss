@@ -1,3 +1,4 @@
+import { isProtectedDatabase } from "@/lib/constants/database.constants";
 import { documentRepository } from "@/lib/core-modules/document/document.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
@@ -6,10 +7,17 @@ type DocMutationParams = {
   params: Promise<{ dbName: string; colName: string; docId: string }>;
 };
 
+function protectedDbResponse() {
+  return NextResponse.json(
+    createApiResponse(null, "Access to system databases (admin, local, config) is not allowed.", 403),
+    { status: 403 },
+  );
+}
 
 export async function PATCH(req: Request, { params }: DocMutationParams) {
   try {
     const { dbName, colName, docId } = await params;
+    if (isProtectedDatabase(dbName)) return protectedDbResponse();
     const body = await req.json();
 
     if (!body || typeof body !== "object" || Object.keys(body).length === 0) {
@@ -49,6 +57,7 @@ export async function PATCH(req: Request, { params }: DocMutationParams) {
 export async function DELETE(req: Request, { params }: DocMutationParams) {
   try {
     const { dbName, colName, docId } = await params;
+    if (isProtectedDatabase(dbName)) return protectedDbResponse();
  
     const deleted = await documentRepository.deleteDocument({
       databaseName: dbName,
