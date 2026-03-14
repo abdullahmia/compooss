@@ -1,6 +1,7 @@
 "use client";
 
-import { getDocumentId } from "@/components/json-document";
+import { EmptyState } from "@/components/empty-state";
+import { getDocumentId, JsonDocumentSkeleton } from "@/components/json-document";
 import { useGetDocuments } from "@/lib/services/v2/documents/documents.service";
 import {
   ChevronLeft,
@@ -42,6 +43,7 @@ type DocumentsTabProps = { readOnly?: boolean };
 export const DocumentsTab: React.FC<DocumentsTabProps> = ({ readOnly = false }) => {
   const [viewMode, setViewMode] = useState<"list" | "json" | "table">("list");
   const [queryParams, setQueryParams] = useState<QueryBarState>(defaultState);
+  const [addModalOpen, setAddModalOpen] = useState(false);
   const [editingDocument, setEditingDocument] = useState<{
     id: string;
     json: string;
@@ -50,7 +52,7 @@ export const DocumentsTab: React.FC<DocumentsTabProps> = ({ readOnly = false }) 
   const params = useParams();
   const dbName = (params?.dbName as string) ?? "";
   const collectionName = (params?.collectionName as string) ?? "";
-  const { data, error: queryError, isError } = useGetDocuments(dbName ?? "", collectionName ?? "", {
+  const { data, error: queryError, isError, isLoading } = useGetDocuments(dbName ?? "", collectionName ?? "", {
     enabled: !!dbName && !!collectionName,
     queryParams: {
       filter: queryParams.filter,
@@ -146,6 +148,8 @@ export const DocumentsTab: React.FC<DocumentsTabProps> = ({ readOnly = false }) 
             <AddDocument
               dbName={dbName ?? ""}
               collectionName={collectionName ?? ""}
+              open={addModalOpen}
+              onOpenChange={setAddModalOpen}
             />
           )}
           <div className="flex items-center ml-3">
@@ -172,45 +176,57 @@ export const DocumentsTab: React.FC<DocumentsTabProps> = ({ readOnly = false }) 
         </div>
       </div>
 
-      {/* Document list */}
+      {/* Document content: list / json / table */}
       <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-0">
-        {viewMode === "list" &&
-          (documents.length > 0 ? (
-            documents.map((doc, i) => (
-              <JsonDocument
-                key={doc._id}
-                document={doc}
-                index={startIndex - 1 + i}
-                onEdit={readOnly ? undefined : handleOpenEdit}
-                dbName={readOnly ? undefined : dbName}
-                collectionName={readOnly ? undefined : collectionName}
-                readOnly={readOnly}
-              />
+        {isLoading ? (
+          viewMode === "list" ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <JsonDocumentSkeleton key={i} />
             ))
           ) : (
-            <div className="text-xs text-muted-foreground px-1 py-2">
-              No documents match the current filter.
+            <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
+              Loading documents…
             </div>
-          ))}
-        {viewMode === "json" && (
+          )
+        ) : documents.length === 0 ? (
+          <EmptyState
+            title="No documents"
+            description="No documents match the current filter. Try adjusting the filter or add a new document."
+            primaryAction={
+              !readOnly
+                ? { label: "Add document", onClick: () => setAddModalOpen(true) }
+                : undefined
+            }
+          />
+        ) : viewMode === "list" ? (
+          documents.map((doc, i) => (
+            <JsonDocument
+              key={doc._id}
+              document={doc}
+              index={startIndex - 1 + i}
+              onEdit={readOnly ? undefined : handleOpenEdit}
+              dbName={readOnly ? undefined : dbName}
+              collectionName={readOnly ? undefined : collectionName}
+              readOnly={readOnly}
+            />
+          ))
+        ) : viewMode === "json" ? (
           <pre className="text-xs font-mono text-foreground bg-card p-4 rounded-sm border border-border overflow-auto">
             {JSON.stringify(documents, null, 2)}
           </pre>
-        )}
-        {viewMode === "table" && (
+        ) : (
           <div className="overflow-auto">
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-border">
-                  {documents.length > 0 &&
-                    Object.keys(documents[0]).map((key) => (
-                      <th
-                        key={key}
-                        className="px-3 py-2 text-left font-medium text-muted-foreground bg-muted/30 whitespace-nowrap"
-                      >
-                        {key}
-                      </th>
-                    ))}
+                  {Object.keys(documents[0]).map((key) => (
+                    <th
+                      key={key}
+                      className="px-3 py-2 text-left font-medium text-muted-foreground bg-muted/30 whitespace-nowrap"
+                    >
+                      {key}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>

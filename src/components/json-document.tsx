@@ -14,6 +14,36 @@ import { useState } from "react";
 import { IconButton } from "./ui/icon-button/icon-button";
 import { toast } from "sonner";
 
+/** Skeleton loader matching JsonDocument layout: card with header and key-value rows */
+export function JsonDocumentSkeleton() {
+  return (
+    <div className="border border-border rounded-lg bg-card mb-3 shadow-xs animate-pulse">
+      {/* Header - matches document card header */}
+      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-muted/30 rounded-t-lg relative overflow-hidden">
+        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-muted" />
+        <div className="w-5 h-5 rounded bg-muted shrink-0" />
+        <div className="w-5 h-5 rounded bg-muted shrink-0" />
+        <div className="h-3.5 bg-muted rounded w-32 font-mono shrink-0" />
+        <div className="ml-auto flex items-center gap-1">
+          <div className="w-8 h-8 rounded bg-muted" />
+          <div className="w-8 h-8 rounded bg-muted" />
+          <div className="w-8 h-8 rounded bg-muted" />
+        </div>
+      </div>
+      {/* Body - key-value rows */}
+      <div className="px-5 py-4 space-y-2">
+        {["w-16", "w-24", "w-20", "w-28", "w-20"].map((keyWidth, i) => (
+          <div key={i} className="flex items-start gap-2">
+            <div className={`h-3.5 bg-muted rounded shrink-0 ${keyWidth}`} />
+            <span className="text-muted-foreground shrink-0">:</span>
+            <div className="h-3.5 bg-muted rounded flex-1 max-w-[200px]" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /** Normalize document _id to string (handles { $oid: "..." } or plain string). */
 export function getDocumentId(doc: { _id?: unknown }): string {
   const id = doc._id;

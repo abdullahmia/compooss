@@ -7,10 +7,19 @@ import { useState } from "react";
 type AddDocumentProps = {
   dbName: string;
   collectionName: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-export const AddDocument = ({ dbName, collectionName }: AddDocumentProps) => {
-  const [open, setOpen] = useState(false);
+export const AddDocument = ({
+  dbName,
+  collectionName,
+  open: controlledOpen,
+  onOpenChange,
+}: AddDocumentProps) => {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
   const canAdd = !!dbName && !!collectionName;
 
   return (
