@@ -1,5 +1,6 @@
 "use client";
 
+import { CollectionsSkeleton } from "@/components/skeletons";
 import { useGetCollections } from "@/lib/services/v2/collections/collection.service";
 import { TCollection } from "@/lib/types/collections.types";
 import { DatabaseBackupIcon, Table } from "lucide-react";
@@ -39,9 +40,7 @@ export function DatabaseView({ dbName }: DatabaseViewProps) {
 
       <div className="flex-1 overflow-auto p-4">
         {isLoading ? (
-          <div className="text-sm text-muted-foreground">
-            Loading collections…
-          </div>
+          <CollectionsSkeleton />
         ) : !collections?.length ? (
           <div className="text-sm text-muted-foreground">
             No collections in this database.
