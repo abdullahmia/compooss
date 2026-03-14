@@ -1,4 +1,4 @@
-import { Database, Leaf, ArrowRight } from "lucide-react";
+import { Leaf } from "lucide-react";
 
 export function WelcomeView() {
   return (
@@ -9,9 +9,10 @@ export function WelcomeView() {
         </div>
         <h1 className="text-xl font-semibold text-foreground mb-2">Compooss</h1>
         <p className="text-sm text-muted-foreground mb-8">
-          Select a collection from the sidebar to explore your data, run queries, and manage documents.
+          Select a collection from the sidebar to explore your data, run
+          queries, and manage documents.
         </p>
-        <div className="space-y-3 text-left">
+        {/* <div className="space-y-3 text-left">
           {[
             { label: "Browse Documents", desc: "View and edit documents in list, JSON, or table view" },
             { label: "Run Queries", desc: "Filter documents with MongoDB query syntax" },
@@ -26,7 +27,7 @@ export function WelcomeView() {
               <ArrowRight className="h-3.5 w-3.5 text-muted-foreground ml-auto mt-0.5" />
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );
