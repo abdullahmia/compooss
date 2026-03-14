@@ -6,14 +6,12 @@ import { SettingsModal } from "./settings/settings-modal";
 import { IconButton } from "./ui/icon-button/icon-button";
 
 interface TopBarProps {
-  // connectionString: string;
-  // onDisconnect?: () => void;
+  connectionString?: string;
   onRefreshConnection?: () => void;
 }
 
 export function TopBar({
-  // connectionString,
-  // onDisconnect,
+  connectionString,
   onRefreshConnection,
 }: TopBarProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -29,9 +27,9 @@ export function TopBar({
         <div className="flex-1 mx-4">
           <div className="flex items-center gap-2 bg-secondary rounded-sm px-3 py-1.5 max-w-2xl">
             <Database className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-            {/* <span className="text-xs font-mono text-muted-foreground truncate">
-              {connectionString}
-            </span> */}
+            <span className="text-xs font-mono text-muted-foreground truncate min-w-0 flex-1">
+              {connectionString ?? "No connection"}
+            </span>
             <button
               type="button"
               className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
