@@ -10,15 +10,23 @@ type DocMutationParams = {
 export async function PATCH(req: Request, { params }: DocMutationParams) {
   try {
     const { dbName, colName, docId } = await params;
-    const payload = await req.json();
- 
-    if (!payload || typeof payload !== "object" || Object.keys(payload).length === 0) {
+    const body = await req.json();
+
+    if (!body || typeof body !== "object" || Object.keys(body).length === 0) {
       return NextResponse.json(
         { message: "A non-empty update object is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
- 
+
+    const { _id: _omit, ...payload } = body as Record<string, unknown>;
+    if (Object.keys(payload).length === 0) {
+      return NextResponse.json(
+        { message: "Update must contain at least one field besides _id" },
+        { status: 400 },
+      );
+    }
+
     const updated = await documentRepository.updateDocument({
       databaseName: dbName,
       collectionName: colName,

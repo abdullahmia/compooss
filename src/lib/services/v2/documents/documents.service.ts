@@ -72,6 +72,49 @@ export const useAddDocument = ({
   });
 };
 
+export const useUpdateDocument = (
+  db: string,
+  collection: string,
+  options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      documentId,
+      payload,
+    }: {
+      documentId: string;
+      payload: Record<string, unknown>;
+    }) => {
+      const response = await apiClient.patch<IApiResponse<unknown>>(
+        ENDPOINTS.documents.byId(db, collection, documentId),
+        { body: payload },
+      );
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.documents.all(db, collection),
+      });
+      options?.onSuccess?.();
+      toast({
+        title: "Success",
+        description: "Document updated successfully",
+        variant: "success",
+      });
+    },
+    onError: (error: Error) => {
+      options?.onError?.(error);
+      toast({
+        title: "Error",
+        description: getErrorMessage(error),
+        variant: "destructive",
+      });
+    },
+  });
+};
+
 export const useDeleteDocument = (
   db: string,
   collection: string,

@@ -1,6 +1,6 @@
 "use client";
 
-import { updateDocument } from "@/data/mockData";
+import { getDocumentId } from "@/components/json-document";
 import { useGetDocuments } from "@/lib/services/v2/documents/documents.service";
 import {
   ChevronLeft,
@@ -12,17 +12,10 @@ import {
 import { useParams } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { JsonDocument } from "../../json-document";
-import { JsonEditor } from "../../json-editor";
 import { QueryBar } from "../../query-bar";
 import { IconButton } from "../../ui/icon-button/icon-button";
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from "../../ui/modal/modal";
 import { AddDocument } from "./add-document";
+import { DocumentFormModal } from "./document-form-modal";
 
 function getFieldsFromDocs(docs: any[]): string[] {
   const fields = new Set<string>();
@@ -48,10 +41,6 @@ type TSimpleFilter = {
   path: string;
   value: string | number | boolean | null;
 };
-
-function stripJsonComments(raw: string): string {
-  return raw.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
-}
 
 function parseFilterQuery(raw: string): TSimpleFilter[] {
   const trimmed = raw.trim();
@@ -137,10 +126,10 @@ export const DocumentsTab: React.FC = () => {
   const [page, setPage] = useState(1);
   const [filterError, setFilterError] = useState<string | null>(null);
   const [activeFilters, setActiveFilters] = useState<TSimpleFilter[]>([]);
-  const [editingDocId, setEditingDocId] = useState<string | null>(null);
-  const [editJson, setEditJson] = useState("");
-  const [editError, setEditError] = useState<string | null>(null);
-  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [editingDocument, setEditingDocument] = useState<{
+    id: string;
+    json: string;
+  } | null>(null);
   const pageSize = 25;
 
   const params = useParams();
@@ -190,56 +179,11 @@ export const DocumentsTab: React.FC = () => {
     }
   };
 
-  const handleOpenEdit = (doc: any) => {
-    setEditingDocId(doc._id);
-    setEditJson(JSON.stringify(doc, null, 2));
-    setEditError(null);
-  };
-
-  const handleSaveEdit = () => {
-    if (!editingDocId) return;
-    try {
-      setIsSavingEdit(true);
-      setEditError(null);
-
-      const cleaned = stripJsonComments(editJson).trim();
-      if (!cleaned) {
-        throw new Error("Updated document JSON cannot be empty.");
-      }
-
-      const parsed = JSON.parse(cleaned);
-      if (Array.isArray(parsed)) {
-        throw new Error(
-          "Edit expects a single document JSON object, not an array.",
-        );
-      }
-      if (!parsed || typeof parsed !== "object") {
-        throw new Error("Edited document must be a JSON object.");
-      }
-
-      const incomingId = (parsed as any)._id;
-      if (
-        incomingId !== undefined &&
-        incomingId !== null &&
-        incomingId !== editingDocId
-      ) {
-        throw new Error(
-          "`_id` is read-only and cannot be changed during edit.",
-        );
-      }
-
-      const updated = { ...parsed, _id: editingDocId };
-      updateDocument(dbName, collectionName, editingDocId, updated);
-      setEditingDocId(null);
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Failed to parse edited document JSON. Please check the syntax.";
-      setEditError(message);
-    } finally {
-      setIsSavingEdit(false);
-    }
+  const handleOpenEdit = (doc: Record<string, unknown>) => {
+    setEditingDocument({
+      id: getDocumentId(doc),
+      json: JSON.stringify(doc, null, 2),
+    });
   };
 
   return (
@@ -376,44 +320,15 @@ export const DocumentsTab: React.FC = () => {
         )}
       </div>
 
-      <Modal open={editingDocId !== null} onClose={() => setEditingDocId(null)}>
-        <ModalContent size="lg">
-          <ModalHeader
-            title={`Edit document in ${dbName}.${collectionName}`}
-            onClose={() => setEditingDocId(null)}
-          />
-          <ModalBody>
-            <p className="text-xs text-muted-foreground">
-              Edit the document JSON below. The <code>_id</code> field is
-              treated as read-only and must not be changed.
-            </p>
-            <div className="mt-2">
-              <JsonEditor value={editJson} onChange={setEditJson} />
-            </div>
-            {editError && (
-              <p className="mt-2 text-xs text-destructive">{editError}</p>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <button
-              type="button"
-              className="text-xs px-3 py-1.5 rounded-sm border border-border text-muted-foreground hover:bg-muted transition-colors"
-              onClick={() => setEditingDocId(null)}
-              disabled={isSavingEdit}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="text-xs px-3 py-1.5 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-              onClick={handleSaveEdit}
-              disabled={isSavingEdit}
-            >
-              {isSavingEdit ? "Saving…" : "Save changes"}
-            </button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <DocumentFormModal
+        open={editingDocument !== null}
+        onClose={() => setEditingDocument(null)}
+        mode="edit"
+        dbName={dbName}
+        collectionName={collectionName}
+        documentId={editingDocument?.id}
+        initialJson={editingDocument?.json}
+      />
     </>
   );
 };
