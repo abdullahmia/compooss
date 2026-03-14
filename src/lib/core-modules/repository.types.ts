@@ -18,6 +18,11 @@ export interface ICollection {
   type: string;
   documentCount: number;
   options: Record<string, unknown>;
+  storageSize: number;
+  size: number;
+  avgObjSize: number;
+  indexCount: number;
+  totalIndexSize: number;
 }
 
 export interface ICreateCollectionInput {

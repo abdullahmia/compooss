@@ -5,12 +5,11 @@ import { useGetDocuments } from "@/lib/services/v2/documents/documents.service";
 import {
   ChevronLeft,
   ChevronRight,
-  ClipboardSignature,
   Code2,
   FileText,
   Grid3X3,
 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { JsonDocument } from "../../json-document";
 import { JsonEditor } from "../../json-editor";
@@ -144,9 +143,9 @@ export const DocumentsTab: React.FC = () => {
   const [isSavingEdit, setIsSavingEdit] = useState(false);
   const pageSize = 25;
 
-  const searchParams = useSearchParams();
-  const dbName = searchParams.get("db");
-  const collectionName = searchParams.get("collection");
+  const params = useParams();
+  const dbName = (params?.dbName as string) ?? "";
+  const collectionName = (params?.collectionName as string) ?? "";
   const { data } = useGetDocuments(dbName ?? "", collectionName ?? "", {
     enabled: !!dbName && !!collectionName,
   });
