@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmDestructiveModal } from "@/components/confirm-destructive-modal";
+import { CreateCollectionModal } from "@/components/create-collection-modal";
 import { useDeleteDatabase } from "@/lib/services/v2/database/database.service";
 import {
   useDeleteCollection,
@@ -12,6 +13,7 @@ import {
   ChevronDown,
   ChevronRight,
   DatabaseBackupIcon,
+  Plus,
   Table,
   Trash2,
 } from "lucide-react";
@@ -30,6 +32,7 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
   const searchParams = useSearchParams();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [deleteDbModalOpen, setDeleteDbModalOpen] = useState(false);
+  const [addCollectionModalOpen, setAddCollectionModalOpen] = useState(false);
   const [collectionToDelete, setCollectionToDelete] =
     useState<TCollection | null>(null);
 
@@ -63,6 +66,11 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
   const handleDeleteDbClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setDeleteDbModalOpen(true);
+  };
+
+  const handleAddCollectionClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setAddCollectionModalOpen(true);
   };
 
   const handleConfirmDeleteDb = async () => {
@@ -105,10 +113,18 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
             <Badge
               variant="subtle"
               size="sm"
-              className="shrink-0 transition-transform duration-200 ease-out group-hover:-translate-x-2"
+              className="shrink-0 transition-transform duration-200 ease-out group-hover:-translate-x-7"
             >
               {db.sizeOnDisk}
             </Badge>
+            <IconButton
+              icon={<Plus className="h-3 w-3" />}
+              label="Add collection"
+              variant="default"
+              size="sm"
+              className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out shrink-0"
+              onClick={handleAddCollectionClick}
+            />
             <IconButton
               icon={<Trash2 className="h-3 w-3" />}
               label="Delete database"
@@ -158,6 +174,12 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
         )}
       </div>
 
+      <CreateCollectionModal
+        open={addCollectionModalOpen}
+        dbName={db.name}
+        onClose={() => setAddCollectionModalOpen(false)}
+      />
+
       <ConfirmDestructiveModal
         open={deleteDbModalOpen}
         onClose={() => setDeleteDbModalOpen(false)}
@@ -183,8 +205,8 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
           <>
             Are you sure you want to delete{" "}
             <strong>{collectionToDelete?.name}</strong> from{" "}
-            <strong>{db.name}</strong>? All documents in this collection will
-            be removed. This action cannot be undone.
+            <strong>{db.name}</strong>? All documents in this collection will be
+            removed. This action cannot be undone.
           </>
         }
         onConfirm={handleConfirmDeleteCollection}

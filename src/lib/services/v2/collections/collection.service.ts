@@ -28,6 +28,32 @@ export const useGetCollections = (
   });
 };
 
+export const useCreateCollection = (
+  dbName: string,
+  options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (collectionName: string) => {
+      const response = await apiClient.post<IApiResponse<TCollection>>(
+        ENDPOINTS.collections.root(dbName),
+        { collectionName },
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.collections.all(dbName) });
+      options?.onSuccess?.();
+      toast.success("Collection created successfully.");
+    },
+    onError: (error: Error) => {
+      options?.onError?.(error);
+      toast.error(getErrorMessage(error));
+    },
+  });
+};
+
 export const useDeleteCollection = (dbName: string, options?: { onSuccess?: () => void; onError?: (error: Error) => void }) => {
   const queryClient = useQueryClient();
 
