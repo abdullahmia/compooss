@@ -6,6 +6,14 @@ import { IApiResponse, TDatabase } from "@/lib/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+function getErrorMessage(error: Error): string {
+  const payload = (error as Error & { payload?: unknown }).payload;
+  if (payload && typeof payload === "object" && "message" in payload && typeof (payload as { message: unknown }).message === "string") {
+    return (payload as { message: string }).message;
+  }
+  return error.message;
+}
+
 export const useGetDatabases = () => {
   return useQuery({
     queryKey: QUERY_KEYS.databases.all(),
@@ -36,7 +44,35 @@ export const useCreateDatabase = ({ onSuccess, onError }) => {
     },
     onError: (error) => {
       onError?.(error);
-      toast.error(error.message);
+      toast.error(getErrorMessage(error as Error));
+    },
+  });
+};
+
+export const useDeleteDatabase = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: (error: Error) => void;
+} = {}) => {
+  const { refetch } = useGetDatabases();
+
+  return useMutation({
+    mutationFn: async (dbName: string) => {
+      const response = await apiClient.delete<IApiResponse<null>>(
+        ENDPOINTS.databases.byName(dbName),
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      refetch();
+      onSuccess?.();
+      toast.success("Database deleted successfully");
+    },
+    onError: (error: Error) => {
+      onError?.(error);
+      toast.error(getErrorMessage(error));
     },
   });
 };

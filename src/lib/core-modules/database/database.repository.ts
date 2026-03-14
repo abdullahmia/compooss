@@ -41,10 +41,19 @@ export class DatabaseRepository extends BaseRepository {
     return created;
   }
 
+  /** MongoDB system databases that cannot be dropped. */
+  private static readonly PROTECTED_DATABASES = ["admin", "local", "config"];
+
   /**
    * Drops an entire database and all its collections.
+   * Throws if the database is a protected system database (admin, local, config).
    */
   async deleteDatabase(databaseName: string): Promise<boolean> {
+    const name = databaseName.toLowerCase();
+    if (DatabaseRepository.PROTECTED_DATABASES.includes(name)) {
+      throw new Error(`Dropping the '${databaseName}' database is prohibited.`);
+    }
+
     const db = await this.db(databaseName);
     const result = await db.dropDatabase();
     return result;
