@@ -1,43 +1,124 @@
-import { MongoClient } from "mongodb";
-import { connectionStore } from "@/lib/store/connection.store";
+import { Admin, Db, MongoClient, MongoClientOptions } from "mongodb";
 
-const clientCache = new Map<string, MongoClient>();
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-export async function getClient(connectionId: string): Promise<MongoClient> {
-  if (clientCache.has(connectionId)) {
-    return clientCache.get(connectionId)!;
-  }
-
-  const connection = await connectionStore.findById(connectionId);
-  if (!connection) {
-    throw new Error(`Connection "${connectionId}" not found`);
-  }
-
-  const client = new MongoClient(connection.uri, {
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    connectTimeoutMS: 10000,
-  });
-
-  await client.connect();
-  clientCache.set(connectionId, client);
-  return client;
+export interface IDatabaseSummary {
+  name: string;
+  sizeOnDisk: string;
+  sizeOnDiskRaw: number;
 }
 
-export async function removeClient(connectionId: string): Promise<void> {
-  const client = clientCache.get(connectionId);
-  if (client) {
-    await client.close();
-    clientCache.delete(connectionId);
+export interface IMongoDriverOptions {
+  maxPoolSize?: number;
+  serverSelectionTimeoutMS?: number;
+  connectTimeoutMS?: number;
+}
+
+export class MongoDriver {
+  private static instance: MongoDriver | null = null;
+  private clientPromise: Promise<MongoClient> | null = null;
+  private readonly uri: string;
+  private readonly options: MongoClientOptions;
+
+  private constructor(uri: string, options: IMongoDriverOptions = {}) {
+    this.uri = uri;
+    this.options = {
+      maxPoolSize: options.maxPoolSize ?? 10,
+      serverSelectionTimeoutMS: options.serverSelectionTimeoutMS ?? 5000,
+      connectTimeoutMS: options.connectTimeoutMS ?? 10000,
+    };
+  }
+
+  static getInstance(options?: IMongoDriverOptions): MongoDriver {
+    if (!MongoDriver.instance) {
+      const uri = process.env.MONGO_URI;
+      if (!uri) {
+        throw new Error(
+          "MongoDB connection is not configured. Set the MONGO_URI environment variable."
+        );
+      }
+      MongoDriver.instance = new MongoDriver(uri, options);
+    }
+    return MongoDriver.instance;
+  }
+
+  static resetInstance(): void {
+    MongoDriver.instance = null;
+  }
+
+  private async getClient(): Promise<MongoClient> {
+    if (!this.clientPromise) {
+      const client = new MongoClient(this.uri, this.options);
+      this.clientPromise = client.connect().then(() => {
+        // Clean up on process termination
+        process.once("SIGINT", () => this.disconnect());
+        process.once("SIGTERM", () => this.disconnect());
+        return client;
+      });
+    }
+    return this.clientPromise;
+  }
+
+  async disconnect(): Promise<void> {
+    if (this.clientPromise) {
+      const client = await this.clientPromise;
+      await client.close();
+      this.clientPromise = null;
+      MongoDriver.instance = null;
+    }
+  }
+
+  async ping(): Promise<boolean> {
+    try {
+      const client = await this.getClient();
+      await client.db("admin").command({ ping: 1 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async isConnected(): Promise<boolean> {
+    return this.ping();
+  }
+
+  async getDb(dbName: string): Promise<Db> {
+    const client = await this.getClient();
+    return client.db(dbName);
+  }
+
+  async getAdmin(): Promise<Admin> {
+    const client = await this.getClient();
+    return client.db().admin();
+  }
+
+  async listDatabases(): Promise<IDatabaseSummary[]> {
+    const admin = await this.getAdmin();
+    const { databases } = await admin.listDatabases();
+
+    return databases.map((db) => {
+      const raw = typeof db.sizeOnDisk === "number" ? db.sizeOnDisk : 0;
+      return {
+        name: db.name,
+        sizeOnDisk: MongoDriver.formatSize(raw),
+        sizeOnDiskRaw: raw,
+      };
+    });
+  }
+
+  static formatSize(bytes: number): string {
+    if (bytes <= 0 || Number.isNaN(bytes)) return "0 B";
+    const units = ["B", "KB", "MB", "GB", "TB"];
+    let size = bytes;
+    let unitIndex = 0;
+
+    while (size >= 1024 && unitIndex < units.length - 1) {
+      size /= 1024;
+      unitIndex += 1;
+    }
+
+    return `${size.toFixed(1)} ${units[unitIndex]}`;
   }
 }
 
-export async function testConnection(uri: string): Promise<void> {
-  const client = new MongoClient(uri, { serverSelectionTimeoutMS: 5000 });
-  try {
-    await client.connect();
-    await client.db("admin").command({ ping: 1 });
-  } finally {
-    await client.close();
-  }
-}
+export const mongoDriver = MongoDriver.getInstance();

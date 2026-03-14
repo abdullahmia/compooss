@@ -40,7 +40,7 @@ Basic local flow (subject to change):
 
 ```sh
 git clone <REPO_URL>
-cd compass-companion
+cd compooss
 npm install
 npm run dev
 ```

@@ -13,7 +13,7 @@ This document covers how to set up and work on Compooss locally.
 ```sh
 # Clone the repository
 git clone <REPO_URL>
-cd compass-companion
+cd compooss
 
 # Install dependencies (use --legacy-peer-deps if you hit peer dependency conflicts)
 npm install --legacy-peer-deps
@@ -47,7 +47,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## Project Structure
 
 ```
-compass-companion/
+compooss/
 ├── src/
 │   ├── app/           # Next.js app router (pages, layout)
 │   ├── components/    # React components
