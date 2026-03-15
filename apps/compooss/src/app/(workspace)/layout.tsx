@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { WorkspaceShell } from "./workspace-shell";
 
 type Props = {
@@ -20,8 +20,10 @@ export default function WorkspaceLayout({ children }: Props) {
     process.env.MONGODB_URI ?? process.env.MONGO_URI,
   );
   return (
-    <WorkspaceShell connectionString={connectionDisplay}>
-      {children}
-    </WorkspaceShell>
+    <Suspense>
+      <WorkspaceShell connectionString={connectionDisplay}>
+        {children}
+      </WorkspaceShell>
+    </Suspense>
   );
 }
