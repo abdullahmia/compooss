@@ -1,6 +1,6 @@
 # Compooss features
 
-Current release: **v1.2.0**.
+Current release: **v1.3.0**.
 
 ---
 
@@ -31,12 +31,28 @@ Current release: **v1.2.0**.
   - View index usage statistics (operation count from `$indexStats`).
   - Read-only mode enforced for system databases.
 
+## Shipped in v1.3.0
+
+### Schema Analysis
+
+- **Analyze collection schema** – Run schema analysis on any collection from the Schema tab.
+- **Sample documents** – Choose sample size (100, 500, 1000, 5000); analysis uses `$sample` aggregation.
+- **View detected fields** – See all top-level and nested fields in a card-based layout.
+- **Field data types distribution** – Per-field type bars (String, Number, Boolean, Date, ObjectId, Object, Array, Null, etc.) with percentages.
+- **Field frequency / occurrence** – See how often each field appears in the sample; "undefined" indicator when a field is missing in some documents.
+- **Visualize schema structure** – Card per field with type bars, sample values, and type-specific visualizations.
+- **Inspect nested fields and objects** – Expand documents to see nested fields; "Document with N nested fields" summary.
+- **View array field structures** – Array fields show element types and array length stats (min, average, max).
+- **Value distributions** – For string fields: value chips for high cardinality; segmented distribution bar for enum-like (low cardinality) fields.
+- **Identify missing or inconsistent fields** – Frequency bars and undefined indicators highlight fields not present in all documents; "mixed" badge for multi-type fields.
+- **Drill down** – Expand nested objects; view ObjectId first/last timestamps, array stats, and value samples inline.
+- **Refresh or rerun** – Re-run schema analysis with the same or different sample size via Analyze and Refresh.
+
 ---
 
 ## Planned for future releases
 
 - **Aggregations** – Aggregation pipeline builder and runner. (Stub: "Coming soon" in UI.)
-- **Schema** – Schema analysis and exploration for collections. (Stub: "Coming soon" in UI.)
 - **Validation** – Document validation rules and validation status. (Stub: "Coming soon" in UI.)
 
 These tabs exist as stubs in the codebase and will be enabled in the UI when implemented.
