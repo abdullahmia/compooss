@@ -7,9 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- (Nothing yet.)
+
+## [1.2.0] - 2026-03-16
+
 ### Added
 
-- (Nothing yet.)
+- Full index management for collections (Compass-style):
+  - View existing indexes in a table with name, type, fields, usage stats, and property badges.
+  - Create indexes: standard, compound, unique, text, geospatial (2dsphere, 2d), hashed, TTL, partial, sparse, and hidden.
+  - Drop indexes with confirmation dialog (default `_id_` index protected).
+  - Hide / unhide indexes via the `collMod` command.
+  - View index usage statistics from `$indexStats` aggregation.
+  - Inspect index properties (fields, type, options) inline.
+- New API routes: `GET/POST /indexes`, `DELETE/PATCH /indexes/[indexName]`.
+- `IndexRepository` with `getIndexes`, `getIndexStats`, `createIndex`, `dropIndex`, `hideIndex`.
+- React Query hooks: `useGetIndexes`, `useCreateIndex`, `useDropIndex`, `useHideIndex`.
+- Create Index modal with dynamic field rows, direction/type select, and options (unique, sparse, hidden, TTL, partial filter expression).
+- Zod validation schema for the create-index form.
+- Index-related types (`IndexDefinition`, `IndexUsageStats`, `CreateIndexInput`, `DropIndexInput`, `HideIndexInput`) in `@compooss/types`.
 
 ## [1.1.0] - 2025-03-16
 
