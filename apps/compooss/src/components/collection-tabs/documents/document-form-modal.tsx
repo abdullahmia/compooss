@@ -17,9 +17,7 @@ import { useEffect, useState } from "react";
 const NEW_DOCUMENT_TEMPLATE = "{}";
 
 function stripJsonComments(raw: string): string {
-  return raw
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/\/\/.*$/gm, "");
+  return raw.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 }
 
 export type DocumentFormMode = "add" | "edit";
@@ -59,10 +57,8 @@ export function DocumentFormModal({
     },
   });
 
-  const { mutateAsync: updateDocument, isPending: isUpdating } = useUpdateDocument(
-    dbName,
-    collectionName,
-    {
+  const { mutateAsync: updateDocument, isPending: isUpdating } =
+    useUpdateDocument(dbName, collectionName, {
       onSuccess: () => {
         onClose();
         setError(null);
@@ -70,8 +66,7 @@ export function DocumentFormModal({
       onError: (err) => {
         console.error(err);
       },
-    },
-  );
+    });
 
   const isPending = isAdding || isUpdating;
 
@@ -165,7 +160,7 @@ export function DocumentFormModal({
       </>
     );
 
-  const submitLabel = mode === "add" ? "Insert documents" : "Save changes";
+  const submitLabel = mode === "add" ? "Insert" : "Save";
 
   return (
     <Modal open={open} onClose={onClose}>

@@ -8,6 +8,47 @@ import type {
 
 export class CollectionRepository extends BaseRepository {
   /**
+   * Returns stats for a single collection (document count, sizes, index count).
+   */
+  async getCollectionStats(
+    databaseName: string,
+    collectionName: string,
+  ): Promise<{
+    documentCount: number;
+    storageSize: number;
+    size: number;
+    avgObjSize: number;
+    indexCount: number;
+    totalIndexSize: number;
+  }> {
+    const db = await this.db(databaseName);
+    const stats = (await db.command({
+      collStats: collectionName,
+    })) as Record<string, unknown> | null;
+
+    if (!stats || typeof stats !== "object") {
+      const documentCount = await db.collection(collectionName).countDocuments();
+      return {
+        documentCount,
+        storageSize: 0,
+        size: 0,
+        avgObjSize: 0,
+        indexCount: 0,
+        totalIndexSize: 0,
+      };
+    }
+
+    return {
+      documentCount: Number(stats.count) || 0,
+      storageSize: Number(stats.storageSize) || 0,
+      size: Number(stats.size) || 0,
+      avgObjSize: Number(stats.avgObjSize) || 0,
+      indexCount: Number(stats.nindexes) || 0,
+      totalIndexSize: Number(stats.totalIndexSize) || 0,
+    };
+  }
+
+  /**
    * Lists all collections inside a database with stats (storage size, data size, document count, avg size, indexes).
    */
   async getCollections(databaseName: string): Promise<Collection[]> {

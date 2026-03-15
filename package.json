@@ -1,15 +1,17 @@
 {
   "name": "compooss-monorepo",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.1.0",
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --ui tui",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "storybook": "turbo run storybook",
     "build-storybook": "turbo run build-storybook",
-    "prepare": "husky"
+    "prepare": "husky",
+    "docker:build": "docker build -t compooss:$(node -p \"require('./package.json').version\") --build-arg VERSION=$(node -p \"require('./package.json').version\") .",
+    "docker:push": "docker build -t ${DOCKERHUB_USER:-compooss}/compooss:$(node -p \"require('./package.json').version\") --build-arg VERSION=$(node -p \"require('./package.json').version\") . && docker push ${DOCKERHUB_USER:-compooss}/compooss:$(node -p \"require('./package.json').version\")"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.4.3",

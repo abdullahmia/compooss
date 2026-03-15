@@ -2,14 +2,18 @@
 
 Compooss is a lightweight MongoDB database client designed to run **inside your `docker-compose` stack** during development. The goal is to give you an easy way to explore and manage your MongoDB data **without installing a separate GUI app** on your machine.
 
+**Current release: v1.0.0 (MVP).**
+
 ![Compooss Preview](docs/preview.png)
 
-### Features (planned)
+### Features
 
-- **Docker-first**: Run as a service alongside your app in `docker-compose`.
-- **No local install**: Access the UI from your browser, no native app required.
-- **MongoDB focused**: Simple workflows for browsing databases, collections, and documents.
-- **Dev-friendly**: Optimized for local development environments and throwaway stacks.
+- **Docker-first** – Run as a service alongside your app in `docker-compose`.
+- **No local install** – Access the UI from your browser, no native app required.
+- **MongoDB focused** – Browse databases and collections; view and edit documents with query, filter, sort, and list/JSON/table views.
+- **Dev-friendly** – Optimized for local development; read-only protection for system databases (`admin`, `local`, `config`).
+
+See [docs/FEATURES.md](docs/FEATURES.md) for the full feature list and planned features (Aggregations, Schema, Indexes, Validation).
 
 ### Example `docker-compose` usage (conceptual)
 
@@ -47,10 +51,8 @@ npm run dev
 
 ### Roadmap
 
-- **MVP**: Basic connection to MongoDB, list databases and collections, view documents.
-- **Improved UX**: Filters, pagination, and simple query builder.
-- **Write operations**: Insert, update, and delete documents with safeguards.
-- **Auth & security**: Configurable access controls for shared dev environments.
+- **v1.0.0 (MVP)** – Shipped: connection, database/collection list and CRUD, document view and CRUD, Docker image.
+- **Planned**: Aggregations & schema analysis, index management, validation rules; improved UX (pagination, query builder); optional auth for shared dev environments.
 
 ### Author
 
@@ -59,6 +61,7 @@ npm run dev
 
 ### Documentation
 
+- [Features & roadmap](docs/FEATURES.md)
 - [Contributing](docs/CONTRIBUTING.md)
 - [Code of Conduct](docs/CODE_OF_CONDUCT.md)
 - [Development Guide](docs/DEVELOPMENT.md)
