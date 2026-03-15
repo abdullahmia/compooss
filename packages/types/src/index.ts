@@ -6,3 +6,4 @@ export * from "./database";
 export * from "./document";
 export * from "./index-types";
 export * from "./inputs";
+export * from "./schema";

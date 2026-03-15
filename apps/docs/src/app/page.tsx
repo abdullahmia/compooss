@@ -6,7 +6,6 @@ import Image from "next/image";
 import {
   Database,
   Search,
-  Table,
   Shield,
   Container,
   Terminal,
@@ -69,6 +68,12 @@ const FEATURES = [
     title: "Index Management",
     description:
       "Create, drop, hide, and inspect indexes with full support for unique, compound, text, geospatial, TTL, partial, and hashed indexes. View usage statistics at a glance.",
+  },
+  {
+    icon: <LayoutGrid size={20} />,
+    title: "Schema Analysis",
+    description:
+      "Analyze collection schema from sampled documents: view detected fields, type distribution, frequency, value distributions, nested and array structures, and missing or inconsistent fields. Refresh on demand.",
   },
   {
     icon: <Shield size={20} />,
@@ -484,6 +489,9 @@ export default function LandingPage() {
                   "Create and drop indexes",
                   "Hide / unhide indexes",
                   "View index usage statistics",
+                  "Analyze collection schema from samples",
+                  "View field types, frequency & value distributions",
+                  "Inspect nested fields and array structures",
                   "Masked connection strings",
                   "System DB read-only protection",
                 ].map((item) => (
@@ -541,6 +549,28 @@ export default function LandingPage() {
               </div>
             </motion.div>
 
+            {/* Schema Analysis - Shipped */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
+            >
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+                <LayoutGrid size={20} />
+              </div>
+              <h3 className="mb-1 text-base font-semibold text-zinc-100">
+                Schema Analysis
+              </h3>
+              <p className="text-sm text-zinc-400">
+                Analyze schema from sampled docs: fields, types, frequency, value distributions, nested/array structures.
+              </p>
+              <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
+                Shipped in v1.3.0
+              </div>
+            </motion.div>
+
             {/* Planned */}
             {[
               {
@@ -548,12 +578,6 @@ export default function LandingPage() {
                 title: "Aggregations",
                 description:
                   "Visual pipeline builder and runner for complex aggregation queries.",
-              },
-              {
-                icon: <Table size={20} />,
-                title: "Schema Analysis",
-                description:
-                  "Explore and validate your collection schemas with visual tools.",
               },
               {
                 icon: <Shield size={20} />,

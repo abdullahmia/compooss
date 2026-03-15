@@ -18,4 +18,7 @@ export const QUERY_KEYS = {
   indexes: {
     all: (db: string, col: string) => ["indexes", db, col],
   },
+  schema: {
+    all: (db: string, col: string) => ["schema", db, col],
+  },
 }
