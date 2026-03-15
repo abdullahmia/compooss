@@ -20,16 +20,32 @@ type ViewTab =
   | "indexes"
   | "validation";
 
+const VALID_TABS: ViewTab[] = [
+  "documents",
+  "aggregations",
+  "schema",
+  "explain",
+  "indexes",
+  "validation",
+];
+
 interface CollectionViewProps {
   dbName: string;
   collectionName: string;
+  initialTab?: string;
 }
 
 export function CollectionView({
   dbName,
   collectionName,
+  initialTab,
 }: CollectionViewProps) {
-  const [activeTab, setActiveTab] = useState<ViewTab>("documents");
+  const [activeTab, setActiveTab] = useState<ViewTab>(() => {
+    if (initialTab && VALID_TABS.includes(initialTab as ViewTab)) {
+      return initialTab as ViewTab;
+    }
+    return "documents";
+  });
   const [collectionSummary, setCollectionSummary] =
     useState<CollectionSummary | null>(null);
 
@@ -48,7 +64,11 @@ export function CollectionView({
       icon: <FileText className="h-3.5 w-3.5" />,
     },
     // { id: "aggregations", label: "Aggregations", icon: <BarChart3 className="h-3.5 w-3.5" /> },
-    // { id: "schema", label: "Schema", icon: <Grid3X3 className="h-3.5 w-3.5" /> },
+    {
+      id: "schema",
+      label: "Schema",
+      icon: <Grid3X3 className="h-3.5 w-3.5" />,
+    },
     {
       id: "indexes",
       label: "Indexes",

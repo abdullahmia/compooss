@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - (Nothing yet.)
 
+## [1.3.0] - 2026-03-16
+
+### Added
+
+- **Schema Analysis** – New Schema tab per collection:
+  - Analyze collection schema from sampled documents (configurable sample size: 100, 500, 1000, 5000).
+  - View detected fields in a card-based layout with type bars and frequency.
+  - See field data types distribution (String, Number, Boolean, Date, ObjectId, Object, Array, Null).
+  - View field frequency and occurrence; "undefined" indicator when a field is missing in some documents.
+  - Visualize schema structure; expand nested objects and view "Document with N nested fields".
+  - View array field structures with element types and array length stats (min, average, max).
+  - Value distributions: value chips for high-cardinality strings; segmented bar for enum-like fields.
+  - Identify missing or inconsistent fields; "mixed" badge for multi-type fields.
+  - ObjectId fields show first/last timestamps; refresh or rerun analysis on demand.
+- New API: `POST /databases/[dbName]/collections/[colName]/schema` with optional `sampleSize` in body.
+- Schema types and repository: `SchemaAnalysisResult`, `SchemaField`, `ArrayStats`, `ObjectIdDates`, value samples.
+
 ## [1.2.0] - 2026-03-16
 
 ### Added

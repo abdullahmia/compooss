@@ -18,4 +18,8 @@ export const ENDPOINTS = {
     byName: (db: string, col: string, indexName: string) =>
       `/databases/${db}/collections/${col}/indexes/${encodeURIComponent(indexName)}`,
   },
+  schema: {
+    root: (db: string, col: string) =>
+      `/databases/${db}/collections/${col}/schema`,
+  },
 }
