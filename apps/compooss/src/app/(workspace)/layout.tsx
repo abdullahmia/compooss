@@ -1,12 +1,12 @@
 import React from "react";
-import { PlaygroundShell } from "./playground-shell";
+import { WorkspaceShell } from "./workspace-shell";
 
 type Props = {
   children: React.ReactNode;
 };
 
 /** Masks password in MongoDB URI for safe display (e.g. mongodb://user:xxx@host -> user:***@host). */
-function getConnectionDisplayString(uri: string | undefined): string {
+function maskConnectionUri(uri: string | undefined): string {
   if (!uri) return "No connection";
   try {
     return uri.replace(/^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@/, "mongodb$1://$2:***@");
@@ -15,11 +15,13 @@ function getConnectionDisplayString(uri: string | undefined): string {
   }
 }
 
-export default function PlaygroundLayout({ children }: Props) {
-  const connectionDisplay = getConnectionDisplayString(process.env.MONGO_URI);
+export default function WorkspaceLayout({ children }: Props) {
+  const connectionDisplay = maskConnectionUri(
+    process.env.MONGODB_URI ?? process.env.MONGO_URI,
+  );
   return (
-    <PlaygroundShell connectionString={connectionDisplay}>
+    <WorkspaceShell connectionString={connectionDisplay}>
       {children}
-    </PlaygroundShell>
+    </WorkspaceShell>
   );
 }
