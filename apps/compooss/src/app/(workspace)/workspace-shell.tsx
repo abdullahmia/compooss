@@ -4,12 +4,12 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { TopBar } from "@/components/top-bar";
 import { useRouter } from "next/navigation";
 
-interface IPlaygroundShellProps {
+interface WorkspaceShellProps {
   children: React.ReactNode;
   connectionString?: string;
 }
 
-export function PlaygroundShell({ children, connectionString }: IPlaygroundShellProps) {
+export function WorkspaceShell({ children, connectionString }: WorkspaceShellProps) {
   const router = useRouter();
 
   const handleRefreshConnection = () => {
