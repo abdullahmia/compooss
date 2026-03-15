@@ -1,5 +1,7 @@
 'use server';
 
+import { collectionRepository } from "@/lib/core-modules/collection/collection.repository";
+import { formatSize } from "@/lib/driver/mongodb.driver";
 import { mongoDriver } from "@/lib/driver/mongodb.driver";
 import type { CollectionSummary, Database, DatabaseDetail } from "@compooss/types";
 import { CollectionInfo } from "mongodb";
@@ -27,15 +29,13 @@ export const getDatabaseCollections = async (dbName: string): Promise<Collection
 };
 
 export const getCollectionSummary = async (dbName: string, collectionName: string): Promise<CollectionSummary> => {
-  const db = await mongoDriver.getDb(dbName);
-  const collection = await db.collection(collectionName);
-  const documentCount = await collection.countDocuments();
+  const stats = await collectionRepository.getCollectionStats(dbName, collectionName);
   return {
     name: collectionName,
-    documentCount,
-    avgDocSize: "-",
-    totalSize: "-",
-    indexes: 0,
+    documentCount: stats.documentCount,
+    totalSize: formatSize(stats.size),
+    avgDocSize: formatSize(stats.avgObjSize),
+    indexes: stats.indexCount,
   };
 };
 

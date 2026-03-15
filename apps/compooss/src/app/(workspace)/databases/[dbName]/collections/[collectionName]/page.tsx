@@ -5,15 +5,11 @@ type Props = {
   params: Promise<{ dbName: string; collectionName: string }>;
 };
 
-async function CollectionPageContent({ params }: Props) {
+export default async function CollectionPage({ params }: Props) {
   const { dbName, collectionName } = await params;
-  return <CollectionView dbName={dbName} collectionName={collectionName} />;
-}
-
-export default function CollectionPage({ params }: Props) {
   return (
     <Suspense>
-      <CollectionPageContent params={params} />
+      <CollectionView dbName={dbName} collectionName={collectionName} />
     </Suspense>
   );
 }

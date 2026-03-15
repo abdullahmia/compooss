@@ -1,9 +1,37 @@
+import { isProtectedDatabase } from "@compooss/types";
 import { databaseRepository } from "@/lib/core-modules/database/database.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
 
 interface RouteParams {
   params: Promise<{ dbName?: string }>;
+}
+
+export async function GET(_req: Request, { params }: RouteParams) {
+  const { dbName } = await params;
+  if (!dbName) {
+    return NextResponse.json(
+      createApiResponse(null, "Missing database name.", 400),
+      { status: 400 },
+    );
+  }
+  if (isProtectedDatabase(dbName)) {
+    return NextResponse.json(
+      createApiResponse(null, "Access to system databases is not allowed.", 403),
+      { status: 403 },
+    );
+  }
+  const database = await databaseRepository.getDatabase(dbName);
+  if (!database) {
+    return NextResponse.json(
+      createApiResponse(null, "Database not found.", 404),
+      { status: 404 },
+    );
+  }
+  return NextResponse.json(
+    createApiResponse(database, "Database found.", 200),
+    { status: 200 },
+  );
 }
 
 export async function DELETE(_req: Request, { params }: RouteParams) {
