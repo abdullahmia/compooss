@@ -115,6 +115,11 @@ export class MongoDriver {
   }
 }
 
+/** Format byte count for display (e.g. 1024 -> "1.0 KB"). */
+export function formatSize(bytes: number): string {
+  return MongoDriver.formatSize(bytes);
+}
+
 let _driver: MongoDriver | null = null;
 export function getMongoDriver(): MongoDriver {
   if (!_driver) _driver = MongoDriver.getInstance();
