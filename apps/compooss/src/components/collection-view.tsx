@@ -2,7 +2,7 @@
 
 import { getCollectionSummary } from "@/lib/services/database/database.service";
 import { isProtectedDatabase, type CollectionSummary } from "@compooss/types";
-import { BarChart3, Code2, FileText, Grid3X3, ShieldCheck } from "lucide-react";
+import { FileText } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { AggregationsTab } from "./collection-tabs/aggregations-tab";
 import { DocumentsTab } from "./collection-tabs/documents/documents-tab";
@@ -49,11 +49,11 @@ export function CollectionView({
     },
     // { id: "aggregations", label: "Aggregations", icon: <BarChart3 className="h-3.5 w-3.5" /> },
     // { id: "schema", label: "Schema", icon: <Grid3X3 className="h-3.5 w-3.5" /> },
-    {
-      id: "indexes",
-      label: "Indexes",
-      icon: <Grid3X3 className="h-3.5 w-3.5" />,
-    },
+    // {
+    //   id: "indexes",
+    //   label: "Indexes",
+    //   icon: <Grid3X3 className="h-3.5 w-3.5" />,
+    // },
     // { id: "validation", label: "Validation", icon: <ShieldCheck className="h-3.5 w-3.5" /> },
   ];
 
