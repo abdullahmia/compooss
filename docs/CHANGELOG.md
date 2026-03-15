@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - (Nothing yet.)
 
+## [1.1.0] - 2025-03-16
+
+### Added
+
+- Loading skeletons and improved loading states for database and collection views.
+- Better error handling and user feedback for database connections in UI components.
+
+### Changed
+
+- Enhanced database page and API routes with improved error handling.
+
 ## [1.0.0] - 2025-03-15
 
 ### Added

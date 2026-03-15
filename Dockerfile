@@ -1,6 +1,8 @@
 # Build stage
 FROM node:20-alpine AS builder
 
+ARG VERSION=1.1.0
+
 # Enable pnpm via corepack
 RUN corepack enable && corepack prepare pnpm@9.14.2 --activate
 
@@ -26,6 +28,9 @@ RUN pnpm run build --filter=@compooss/app
 
 # Production stage - minimal image with standalone Next.js output
 FROM node:20-alpine AS runner
+
+ARG VERSION=1.1.0
+LABEL org.opencontainers.image.version="${VERSION}"
 
 WORKDIR /app
 
