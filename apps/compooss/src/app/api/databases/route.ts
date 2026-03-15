@@ -3,8 +3,17 @@ import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const databases = await databaseRepository.getAllDatabases();
-  return NextResponse.json(createApiResponse(databases, "Databases fetched successfully", 200));
+  try {
+    const databases = await databaseRepository.getAllDatabases();
+    return NextResponse.json(createApiResponse(databases, "Databases fetched successfully", 200));
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : String(error);
+    return NextResponse.json(
+      createApiResponse(null, `Connection failed: ${message}`, 503),
+      { status: 503 },
+    );
+  }
 }
 
 export async function POST(req: Request) {

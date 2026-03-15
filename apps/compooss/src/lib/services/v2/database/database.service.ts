@@ -23,6 +23,8 @@ export const useGetDatabases = () => {
       );
       return response.data;
     },
+    retry: 1,
+    retryDelay: 2000,
   });
 };
 
