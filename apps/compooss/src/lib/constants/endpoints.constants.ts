@@ -12,4 +12,10 @@ export const ENDPOINTS = {
     byId: (db: string, collection: string, docId: string) =>
       `/databases/${db}/collections/${collection}/documents/${encodeURIComponent(docId)}`,
   },
+  indexes: {
+    root: (db: string, col: string) =>
+      `/databases/${db}/collections/${col}/indexes`,
+    byName: (db: string, col: string, indexName: string) =>
+      `/databases/${db}/collections/${col}/indexes/${encodeURIComponent(indexName)}`,
+  },
 }
