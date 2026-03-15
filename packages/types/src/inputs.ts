@@ -1,5 +1,6 @@
 import type { DocumentRecord } from "./document";
 import type { PaginationOptions } from "./document";
+import type { IndexField } from "./index-types";
 
 export interface CreateDatabaseInput {
   /** Name of the new database */
@@ -64,4 +65,29 @@ export interface DeleteDocumentInput {
   databaseName: string;
   collectionName: string;
   documentId: string;
+}
+
+export interface CreateIndexInput {
+  databaseName: string;
+  collectionName: string;
+  fields: IndexField[];
+  name?: string;
+  unique?: boolean;
+  sparse?: boolean;
+  hidden?: boolean;
+  expireAfterSeconds?: number;
+  partialFilterExpression?: DocumentRecord;
+}
+
+export interface DropIndexInput {
+  databaseName: string;
+  collectionName: string;
+  indexName: string;
+}
+
+export interface HideIndexInput {
+  databaseName: string;
+  collectionName: string;
+  indexName: string;
+  hidden: boolean;
 }
