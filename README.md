@@ -2,7 +2,7 @@
 
 Compooss is a lightweight MongoDB database client designed to run **inside your `docker-compose` stack** during development. The goal is to give you an easy way to explore and manage your MongoDB data **without installing a separate GUI app** on your machine.
 
-**Current release: v1.0.0 (MVP).**
+**Current release: v1.2.0.**
 
 ![Compooss Preview](docs/preview.png)
 
@@ -11,9 +11,10 @@ Compooss is a lightweight MongoDB database client designed to run **inside your 
 - **Docker-first** – Run as a service alongside your app in `docker-compose`.
 - **No local install** – Access the UI from your browser, no native app required.
 - **MongoDB focused** – Browse databases and collections; view and edit documents with query, filter, sort, and list/JSON/table views.
+- **Index management** – Create, drop, hide/unhide, and inspect indexes (unique, compound, text, geospatial, TTL, partial, hashed) with usage statistics.
 - **Dev-friendly** – Optimized for local development; read-only protection for system databases (`admin`, `local`, `config`).
 
-See [docs/FEATURES.md](docs/FEATURES.md) for the full feature list and planned features (Aggregations, Schema, Indexes, Validation).
+See [docs/FEATURES.md](docs/FEATURES.md) for the full feature list and planned features (Aggregations, Schema, Validation).
 
 ### Example `docker-compose` usage (conceptual)
 
@@ -52,7 +53,9 @@ npm run dev
 ### Roadmap
 
 - **v1.0.0 (MVP)** – Shipped: connection, database/collection list and CRUD, document view and CRUD, Docker image.
-- **Planned**: Aggregations & schema analysis, index management, validation rules; improved UX (pagination, query builder); optional auth for shared dev environments.
+- **v1.1.0** – Loading skeletons, improved error handling and loading states.
+- **v1.2.0** – Full index management: create, drop, hide/unhide indexes; usage stats; all index types (unique, compound, text, geospatial, TTL, partial, hashed).
+- **Planned**: Aggregations & schema analysis, validation rules; improved UX (pagination, query builder); optional auth for shared dev environments.
 
 ### Author
 

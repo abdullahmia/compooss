@@ -15,4 +15,7 @@ export const QUERY_KEYS = {
       params: { filter?: string; sort?: string; project?: string; limit?: number; skip?: number }
     ) => ["documents", db, collection, "list", params],
   },
+  indexes: {
+    all: (db: string, col: string) => ["indexes", db, col],
+  },
 }

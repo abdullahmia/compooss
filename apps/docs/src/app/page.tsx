@@ -20,6 +20,7 @@ import {
   Check,
   FileJson,
   LayoutGrid,
+  Grid3X3,
 } from "lucide-react";
 import { AnimatedSection } from "@/components/animated-section";
 import { FeatureCard } from "@/components/feature-card";
@@ -62,6 +63,12 @@ const FEATURES = [
     title: "Full Document CRUD",
     description:
       "Create, read, update, and delete MongoDB documents with an intuitive Monaco-powered editor. Supports JSON validation and syntax highlighting.",
+  },
+  {
+    icon: <Grid3X3 size={20} />,
+    title: "Index Management",
+    description:
+      "Create, drop, hide, and inspect indexes with full support for unique, compound, text, geospatial, TTL, partial, and hashed indexes. View usage statistics at a glance.",
   },
   {
     icon: <Shield size={20} />,
@@ -199,7 +206,7 @@ export default function LandingPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                v1.1.0 — Now with improved loading states
+                v1.2.0 — Now with full index management
               </motion.div>
 
               <motion.h1
@@ -222,8 +229,8 @@ export default function LandingPage() {
               >
                 Compooss is a free, self-hosted MongoDB admin panel that runs as
                 a single Docker container. Browse databases, query documents,
-                manage collections, and explore your data — no signup, no cloud,
-                no configuration files.
+                manage collections and indexes, and explore your data — no
+                signup, no cloud, no configuration files.
               </motion.p>
 
               <motion.div
@@ -474,6 +481,9 @@ export default function LandingPage() {
                   "Edit documents inline",
                   "Delete documents safely",
                   "View collection stats",
+                  "Create and drop indexes",
+                  "Hide / unhide indexes",
+                  "View index usage statistics",
                   "Masked connection strings",
                   "System DB read-only protection",
                 ].map((item) => (
@@ -509,6 +519,29 @@ export default function LandingPage() {
           </AnimatedSection>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Shipped */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
+            >
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+                <Grid3X3 size={20} />
+              </div>
+              <h3 className="mb-1 text-base font-semibold text-zinc-100">
+                Index Management
+              </h3>
+              <p className="text-sm text-zinc-400">
+                Create, drop, hide, and inspect indexes with usage stats. Supports all index types.
+              </p>
+              <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
+                Shipped in v1.2.0
+              </div>
+            </motion.div>
+
+            {/* Planned */}
             {[
               {
                 icon: <Layers size={20} />,
@@ -523,12 +556,6 @@ export default function LandingPage() {
                   "Explore and validate your collection schemas with visual tools.",
               },
               {
-                icon: <Zap size={20} />,
-                title: "Index Management",
-                description:
-                  "View, create, and manage collection indexes for optimal performance.",
-              },
-              {
                 icon: <Shield size={20} />,
                 title: "Validation Rules",
                 description:
@@ -540,7 +567,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                transition={{ duration: 0.5, delay: (i + 1) * 0.1 }}
                 className="relative rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/20 p-6"
               >
                 <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800/50 text-zinc-500">
