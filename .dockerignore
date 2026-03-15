@@ -1,0 +1,54 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+.pnp.cjs
+
+# Build outputs
+.next
+out
+build
+dist
+*.tsbuildinfo
+storybook-static
+
+# Turbo
+.turbo
+
+# Git
+.git
+.gitignore
+
+# Environment (inject at runtime or build-arg instead)
+.env
+.env.*
+!.env.example
+
+# Debug & logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing & coverage
+coverage
+.nyc_output
+**/__tests__
+**/*.test.*
+**/*.spec.*
+
+# Docs / Storybook (not needed for compooss app image)
+**/storybook-static
+
+# Vercel
+.vercel
+
+# Misc
+.DS_Store
+*.pem
+Thumbs.db
+.vscode
+.idea
+*.md
+!README.md

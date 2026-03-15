@@ -17,26 +17,31 @@ import {
   Table,
   Trash2,
 } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Badge, IconButton } from "@compooss/ui";
 
 type Props = {
   db: Database;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
 };
 
-export const SidebarItem: React.FC<Props> = ({ db }) => {
+export const SidebarItem: React.FC<Props> = ({
+  db,
+  isExpanded: expanded,
+  onToggleExpand,
+}) => {
   const router = useRouter();
   const isProtected = isProtectedDatabase(db.name);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
   const [deleteDbModalOpen, setDeleteDbModalOpen] = useState(false);
   const [addCollectionModalOpen, setAddCollectionModalOpen] = useState(false);
   const [collectionToDelete, setCollectionToDelete] =
     useState<Collection | null>(null);
 
   const { data: collections } = useGetCollections(db.name, {
-    enabled: isExpanded,
+    enabled: expanded,
   });
 
   const { mutateAsync: deleteDatabase, isPending: isDeletingDb } =
@@ -48,12 +53,6 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
     useDeleteCollection(db.name, {
       onSuccess: () => setCollectionToDelete(null),
     });
-
-  const toggleExpand = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsExpanded((prev) => !prev);
-  };
 
   const handleSelectCollection = (collection: Collection) => {
     router.push(`/databases/${db.name}/collections/${collection.name}`);
@@ -86,29 +85,40 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
     await deleteCollection(collectionToDelete.name);
   };
 
+  const handleNavigate = () => {
+    router.push(`/databases/${db.name}`);
+  };
+
+  const handleChevronClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggleExpand();
+  };
+
   return (
     <>
       <div key={db.name}>
-        <div className="group flex items-center w-full hover:bg-sidebar-accent transition-colors">
-          <button
-            type="button"
-            onClick={toggleExpand}
-            className="flex items-center justify-center p-1.5 shrink-0 text-muted-foreground hover:text-foreground cursor-pointer"
-            aria-label={isExpanded ? "Collapse" : "Expand"}
-          >
-            {isExpanded ? (
-              <ChevronDown className="h-3.5 w-3.5" />
-            ) : (
-              <ChevronRight className="h-3.5 w-3.5" />
-            )}
-          </button>
-          <Link
-            href={`/databases/${db.name}`}
-            className="flex-1 flex items-center gap-1.5 px-1 py-1.5 text-xs cursor-pointer min-w-0 text-sidebar-foreground hover:text-sidebar-foreground no-underline"
-          >
+        <div
+          onClick={handleNavigate}
+          className="group flex items-center w-full hover:bg-sidebar-accent transition-colors"
+        >
+          <IconButton
+            icon={
+              expanded ? (
+                <ChevronDown className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5" />
+              )
+            }
+            label={expanded ? "Collapse" : "Expand"}
+            variant="ghost"
+            size="sm"
+            onClick={handleChevronClick}
+          />
+          <div className="flex-1 flex items-center gap-1.5 px-1 py-1.5 text-xs cursor-pointer min-w-0 text-sidebar-foreground hover:text-sidebar-foreground no-underline">
             <DatabaseBackupIcon className="h-3.5 w-3.5 text-primary shrink-0" />
             <span className="font-medium truncate">{db.name}</span>
-          </Link>
+          </div>
           <div className="flex items-center shrink-0 pr-1">
             <Badge
               variant="subtle"
@@ -140,7 +150,7 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
           </div>
         </div>
 
-        {isExpanded && (
+        {expanded && (
           <div className="ml-4">
             {collections?.map((col) => (
               <div
@@ -170,7 +180,9 @@ export const SidebarItem: React.FC<Props> = ({ db }) => {
                       variant="danger"
                       size="sm"
                       className="opacity-0 translate-x-1 group-hover/col:opacity-100 group-hover/col:translate-x-0 transition-all duration-200 ease-out shrink-0"
-                      onClick={(e) => handleDeleteCollectionClick(e, col)}
+                      onClick={(e: React.MouseEvent) =>
+                        handleDeleteCollectionClick(e, col)
+                      }
                     />
                   )}
                 </div>

@@ -2,19 +2,40 @@
 
 import { useGetDatabases } from "@/lib/services/v2/database/database.service";
 import type { Database } from "@compooss/types";
-import {
-  Plus,
-  RefreshCw,
-  Search
-} from "lucide-react";
-import { useMemo, useState } from "react";
+import { ChevronsUp, Plus, RefreshCw, Search } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
 import { CreateDatabaseModal } from "../create-database-modal";
 import { DatabaseSidebarSkeleton, IconButton } from "@compooss/ui";
 import { SidebarItem } from "./sidebar-item";
 
+/** Parses pathname to get the active database name (e.g. /databases/foo/... -> foo). */
+function getActiveDbNameFromPath(pathname: string): string | null {
+  const match = pathname.match(/^\/databases\/([^/]+)/);
+  return match ? match[1] : null;
+}
+
 export function Sidebar() {
+  const pathname = usePathname();
+  const activeDbName = getActiveDbNameFromPath(pathname ?? "");
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState<boolean>(false);
+  const [expandedDbNames, setExpandedDbNames] = useState<Set<string>>(
+    () => new Set(),
+  );
+
+  const handleToggleExpand = useCallback((dbName: string) => {
+    setExpandedDbNames((prev) => {
+      const next = new Set(prev);
+      if (next.has(dbName)) next.delete(dbName);
+      else next.add(dbName);
+      return next;
+    });
+  }, []);
+
+  const handleCollapseAll = useCallback(() => {
+    setExpandedDbNames(new Set());
+  }, []);
 
   const { data: databases, isLoading } = useGetDatabases();
 
@@ -28,6 +49,12 @@ export function Sidebar() {
         <div className="p-3 border-b border-border flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Databases</span>
           <div className="flex items-center gap-1">
+            <IconButton
+              variant="toolbar"
+              icon={<ChevronsUp className="h-3.5 w-3.5" />}
+              label="Collapse all"
+              onClick={handleCollapseAll}
+            />
             <IconButton
               variant="toolbar"
               icon={<Plus className="h-3.5 w-3.5" />}
@@ -64,7 +91,14 @@ export function Sidebar() {
             </div>
           ) : (
             filtered?.map((db: Database) => (
-              <SidebarItem key={db.name} db={db} />
+              <SidebarItem
+                key={db.name}
+                db={db}
+                isExpanded={
+                  expandedDbNames.has(db.name) || activeDbName === db.name
+                }
+                onToggleExpand={() => handleToggleExpand(db.name)}
+              />
             ))
           )}
         </div>

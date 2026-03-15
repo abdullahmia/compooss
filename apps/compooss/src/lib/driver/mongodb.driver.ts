@@ -24,10 +24,11 @@ export class MongoDriver {
 
   static getInstance(options?: IMongoDriverOptions): MongoDriver {
     if (!MongoDriver.instance) {
-      const uri = process.env.MONGO_URI;
+      const uri =
+        process.env.MONGODB_URI ?? process.env.MONGO_URI;
       if (!uri) {
         throw new Error(
-          "MongoDB connection is not configured. Set the MONGO_URI environment variable."
+          "MongoDB connection is not configured. Set the MONGO_URI or MONGODB_URI environment variable."
         );
       }
       MongoDriver.instance = new MongoDriver(uri, options);
