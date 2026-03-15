@@ -119,22 +119,22 @@ export const SidebarItem: React.FC<Props> = ({
             <DatabaseBackupIcon className="h-3.5 w-3.5 text-primary shrink-0" />
             <span className="font-medium truncate">{db.name}</span>
           </div>
-          <div className="flex items-center shrink-0 pr-1">
+          <div className="relative flex items-center shrink-0 pr-3">
             <Badge
               variant="subtle"
               size="sm"
-              className="shrink-0 transition-transform duration-200 ease-out group-hover:-translate-x-7"
+              className="shrink-0 transition-transform duration-200 ease-out group-hover:-translate-x-10"
             >
               {db.sizeOnDisk}
             </Badge>
             {!isProtected && (
-              <>
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 ml-5 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out pointer-events-none group-hover:pointer-events-auto">
                 <IconButton
                   icon={<Plus className="h-3 w-3" />}
                   label="Add collection"
                   variant="default"
                   size="sm"
-                  className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out shrink-0"
+                  className="shrink-0"
                   onClick={handleAddCollectionClick}
                 />
                 <IconButton
@@ -142,10 +142,10 @@ export const SidebarItem: React.FC<Props> = ({
                   label="Delete database"
                   variant="danger"
                   size="sm"
-                  className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out shrink-0"
+                  className="shrink-0"
                   onClick={handleDeleteDbClick}
                 />
-              </>
+              </div>
             )}
           </div>
         </div>

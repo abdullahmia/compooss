@@ -16,5 +16,11 @@ export { Tabs, tabListVariants, tabTriggerVariants, type TabItem } from "./tabs/
 export { Toggle, toggleVariants } from "./toggle/toggle";
 export { EmptyState, type EmptyStateProps, type EmptyStateAction } from "./empty-state";
 export { ConfirmDestructiveModal, type ConfirmDestructiveModalProps } from "./confirm-destructive-modal";
-export { CollectionsSkeleton, DatabaseSidebarSkeleton } from "./skeletons";
+export {
+  CollectionsSkeleton,
+  DatabasePageSkeleton,
+  DatabaseSidebarSkeleton,
+  DatabasesListSkeleton,
+  DatabasesListPageSkeleton,
+} from "./skeletons";
 export { cn } from "./lib/utils";
