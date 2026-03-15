@@ -2,7 +2,7 @@
 
 Compooss is a lightweight MongoDB database client designed to run **inside your `docker-compose` stack** during development. The goal is to give you an easy way to explore and manage your MongoDB data **without installing a separate GUI app** on your machine.
 
-**Current release: v1.2.0.**
+**Current release: v1.3.0.**
 
 ![Compooss Preview](docs/preview.png)
 
@@ -12,9 +12,10 @@ Compooss is a lightweight MongoDB database client designed to run **inside your 
 - **No local install** – Access the UI from your browser, no native app required.
 - **MongoDB focused** – Browse databases and collections; view and edit documents with query, filter, sort, and list/JSON/table views.
 - **Index management** – Create, drop, hide/unhide, and inspect indexes (unique, compound, text, geospatial, TTL, partial, hashed) with usage statistics.
+- **Schema analysis** – Analyze collection schema from sampled documents: view detected fields, type distribution, frequency, value distributions, nested/array structures, and missing or inconsistent fields; refresh on demand.
 - **Dev-friendly** – Optimized for local development; read-only protection for system databases (`admin`, `local`, `config`).
 
-See [docs/FEATURES.md](docs/FEATURES.md) for the full feature list and planned features (Aggregations, Schema, Validation).
+See [docs/FEATURES.md](docs/FEATURES.md) for the full feature list and planned features (Aggregations, Validation).
 
 ### Example `docker-compose` usage (conceptual)
 
@@ -55,7 +56,8 @@ npm run dev
 - **v1.0.0 (MVP)** – Shipped: connection, database/collection list and CRUD, document view and CRUD, Docker image.
 - **v1.1.0** – Loading skeletons, improved error handling and loading states.
 - **v1.2.0** – Full index management: create, drop, hide/unhide indexes; usage stats; all index types (unique, compound, text, geospatial, TTL, partial, hashed).
-- **Planned**: Aggregations & schema analysis, validation rules; improved UX (pagination, query builder); optional auth for shared dev environments.
+- **v1.3.0** – Schema analysis: analyze collection schema from samples; view fields, type distribution, frequency, value distributions, nested/array structures; refresh on demand.
+- **Planned**: Aggregations, validation rules; improved UX (pagination, query builder); optional auth for shared dev environments.
 
 ### Author
 
