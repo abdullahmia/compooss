@@ -21,6 +21,7 @@ import {
   FileJson,
   LayoutGrid,
   Grid3X3,
+  Plug2,
   X,
   Minus,
 } from "lucide-react";
@@ -96,6 +97,12 @@ const FEATURES = [
     title: "MongoDB Shell",
     description:
       "Run ad-hoc MongoDB commands from an embedded shell panel. Execute CRUD operations, aggregation pipelines, admin commands, and JavaScript scripts with autocomplete, syntax highlighting, and session persistence.",
+  },
+  {
+    icon: <Plug2 size={20} />,
+    title: "Multiple Connections",
+    description:
+      "Save, edit, and switch between MongoDB connection profiles from a dedicated connection page. Supports authentication (SCRAM, X.509, LDAP, Kerberos), TLS/SSL, color-coded profiles, favorites, and test-before-connect.",
   },
   {
     icon: <Shield size={20} />,
@@ -233,6 +240,13 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     studio3t: "no",
   },
   {
+    feature: "Multiple connection profiles",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "yes",
+  },
+  {
     feature: "System DB read-only protection",
     compooss: "yes",
     compass: "no",
@@ -358,7 +372,7 @@ export default function LandingPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                v1.6.0 — Now with embedded MongoDB Shell
+                v1.7.0 — Now with Multiple Connections
               </motion.div>
 
               <motion.h1
@@ -813,6 +827,10 @@ export default function LandingPage() {
                   "Run CRUD, aggregation, and admin commands from the shell",
                   "Access bulk operations and system collections",
                   "Switch databases with 'use' and run server status commands",
+                  "Save and manage multiple connection profiles",
+                  "Test connections before saving",
+                  "Color-code and label connections for quick identification",
+                  "Switch between MongoDB deployments from the top bar",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3">
                     <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
@@ -875,16 +893,16 @@ export default function LandingPage() {
               className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-                <Layers size={20} />
+                <Plug2 size={20} />
               </div>
               <h3 className="mb-1 text-base font-semibold text-zinc-100">
                 Multiple Connections
               </h3>
               <p className="text-sm text-zinc-400">
-                Save and switch between multiple MongoDB connection profiles for different projects and environments.
+                Save, edit, and switch between MongoDB connection profiles with authentication, TLS/SSL, color-coded labels, favorites, and test-before-connect — all from a dedicated connection page.
               </p>
-              <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                Coming soon
+              <div className="mt-3 inline-flex rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
+                Shipped in v1.7.0
               </div>
             </motion.div>
 

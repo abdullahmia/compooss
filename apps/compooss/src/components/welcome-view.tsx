@@ -1,13 +1,23 @@
 "use client";
 
-import { useGetDatabases } from "@/lib/services/v2/database/database.service";
+import { useShellPanel } from "@/lib/providers/shell-provider";
 import { useGetCollections } from "@/lib/services/v2/collections/collection.service";
+import { useGetDatabases } from "@/lib/services/v2/database/database.service";
 import { isProtectedDatabase } from "@compooss/types";
-import { ArrowRight, FileText, Grid3X3, Leaf, TerminalSquare } from "lucide-react";
+import {
+  ArrowRight,
+  FileText,
+  GitBranch,
+  Grid3X3,
+  Leaf,
+  ListTree,
+  Plug2,
+  ShieldCheck,
+  TerminalSquare,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { toast } from "sonner";
-import { useShellPanel } from "@/lib/providers/shell-provider";
 
 const FEATURES = [
   {
@@ -19,19 +29,51 @@ const FEATURES = [
     tab: "documents" as const,
   },
   {
+    id: "indexes",
+    label: "Manage Indexes",
+    desc: "Create, drop, and inspect indexes with usage statistics",
+    icon: ListTree,
+    action: "navigate" as const,
+    tab: "indexes" as const,
+  },
+  {
     id: "schema",
-    label: "Manage Schema",
-    desc: "Analyze and validate your collection schema",
+    label: "Analyze Schema",
+    desc: "Detect fields, type distributions, and nested structures",
     icon: Grid3X3,
     action: "navigate" as const,
     tab: "schema" as const,
   },
   {
+    id: "validation",
+    label: "Validation Rules",
+    desc: "Define JSON Schema validators and detect violations",
+    icon: ShieldCheck,
+    action: "navigate" as const,
+    tab: "validation" as const,
+  },
+  {
+    id: "aggregation",
+    label: "Aggregation Pipelines",
+    desc: "Build pipelines visually with per-stage previews",
+    icon: GitBranch,
+    action: "navigate" as const,
+    tab: "aggregation" as const,
+  },
+  {
     id: "shell",
-    label: "Run Query",
-    desc: "Open the MongoDB shell to run commands and scripts",
+    label: "MongoDB Shell",
+    desc: "Run commands, queries, and scripts interactively",
     icon: TerminalSquare,
     action: "shell" as const,
+    tab: null,
+  },
+  {
+    id: "connections",
+    label: "Manage Connections",
+    desc: "Save, switch, and configure MongoDB connection profiles",
+    icon: Plug2,
+    action: "connect" as const,
     tab: null,
   },
 ] as const;
@@ -64,6 +106,10 @@ export function WelcomeView() {
       openShell();
       return;
     }
+    if (item.action === "connect") {
+      router.push("/connect");
+      return;
+    }
     if (!canNavigate) {
       toast.info(
         "Create a database and collection from the sidebar to get started.",
@@ -71,7 +117,8 @@ export function WelcomeView() {
       return;
     }
     const path = `/databases/${firstDbName}/collections/${firstCollectionName}`;
-    const url = item.tab === "schema" ? `${path}?tab=schema` : path;
+    const url =
+      item.tab && item.tab !== "documents" ? `${path}?tab=${item.tab}` : path;
     router.push(url);
   };
 

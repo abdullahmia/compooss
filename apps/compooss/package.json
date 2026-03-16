@@ -1,7 +1,7 @@
 {
   "name": "@compooss/app",
   "private": true,
-  "version": "1.6.0",
+  "version": "1.7.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -23,6 +23,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
+    "idb": "^8.0.3",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
     "mongodb": "^7.1.0",
