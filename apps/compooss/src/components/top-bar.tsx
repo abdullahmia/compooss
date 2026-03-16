@@ -38,10 +38,7 @@ export function TopBar() {
         </span>
 
         <div className="flex-1 mx-4">
-          <Link
-            href="/connect"
-            className="flex items-center gap-2 bg-secondary rounded-sm px-3 py-1.5 max-w-2xl hover:bg-secondary/80 transition-colors"
-          >
+          <div className="flex items-center gap-2 bg-secondary rounded-sm px-3 py-1.5 max-w-2xl hover:bg-secondary/80 transition-colors">
             {activeConnection?.color && (
               <span
                 className="w-2.5 h-2.5 rounded-full shrink-0"
@@ -60,14 +57,12 @@ export function TopBar() {
             <span className="text-xs font-mono text-muted-foreground truncate min-w-0 flex-1">
               {maskedUri ?? ""}
             </span>
-          </Link>
+          </div>
         </div>
 
         <IconButton
           variant="default"
-          icon={
-            <LogOut className="h-4 w-4" />
-          }
+          icon={<LogOut className="h-4 w-4" />}
           label="Disconnect"
           onClick={handleDisconnect}
         />
@@ -81,22 +76,22 @@ export function TopBar() {
           label="MongoDB Shell"
           onClick={toggleShell}
         />
-        <IconButton
+        {/* <IconButton
           variant="default"
           icon={<Settings className="h-4 w-4" />}
           label="Settings"
           onClick={() => setSettingsOpen(true)}
-        />
+        /> */}
         <IconButton
           variant="default"
           icon={<HelpCircle className="h-4 w-4" />}
           label="Help"
         />
       </div>
-      <SettingsModal
+      {/* <SettingsModal
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
-      />
+      /> */}
     </>
   );
 }
