@@ -3,10 +3,11 @@
 import { useGetDatabases } from "@/lib/services/v2/database/database.service";
 import { useGetCollections } from "@/lib/services/v2/collections/collection.service";
 import { isProtectedDatabase } from "@compooss/types";
-import { ArrowRight, FileText, Grid3X3, Leaf } from "lucide-react";
+import { ArrowRight, FileText, Grid3X3, Leaf, TerminalSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { toast } from "sonner";
+import { useShellPanel } from "@/lib/providers/shell-provider";
 
 const FEATURES = [
   {
@@ -14,6 +15,7 @@ const FEATURES = [
     label: "Browse Documents",
     desc: "View and edit documents in list, JSON, or table view",
     icon: FileText,
+    action: "navigate" as const,
     tab: "documents" as const,
   },
   {
@@ -21,7 +23,16 @@ const FEATURES = [
     label: "Manage Schema",
     desc: "Analyze and validate your collection schema",
     icon: Grid3X3,
+    action: "navigate" as const,
     tab: "schema" as const,
+  },
+  {
+    id: "shell",
+    label: "Run Query",
+    desc: "Open the MongoDB shell to run commands and scripts",
+    icon: TerminalSquare,
+    action: "shell" as const,
+    tab: null,
   },
 ] as const;
 
@@ -46,7 +57,13 @@ export function WelcomeView() {
 
   const canNavigate = !!firstDbName && !!firstCollectionName;
 
-  const handleFeatureClick = (tab: "documents" | "schema") => {
+  const { open: openShell } = useShellPanel();
+
+  const handleFeatureClick = (item: (typeof FEATURES)[number]) => {
+    if (item.action === "shell") {
+      openShell();
+      return;
+    }
     if (!canNavigate) {
       toast.info(
         "Create a database and collection from the sidebar to get started.",
@@ -54,7 +71,7 @@ export function WelcomeView() {
       return;
     }
     const path = `/databases/${firstDbName}/collections/${firstCollectionName}`;
-    const url = tab === "schema" ? `${path}?tab=schema` : path;
+    const url = item.tab === "schema" ? `${path}?tab=schema` : path;
     router.push(url);
   };
 
@@ -78,7 +95,7 @@ export function WelcomeView() {
               <button
                 key={item.id}
                 type="button"
-                onClick={() => handleFeatureClick(item.tab)}
+                onClick={() => handleFeatureClick(item)}
                 className="w-full flex items-start gap-3 p-3 rounded-lg bg-card border border-border hover:border-primary/30 hover:bg-card/80 transition-colors cursor-pointer text-left"
               >
                 <Icon className="h-4 w-4 text-primary mt-0.5 shrink-0" />

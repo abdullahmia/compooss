@@ -6,9 +6,10 @@ import type { editor } from "monaco-editor";
 type Props = {
   value: string;
   onChange: (value: string) => void;
+  height?: string;
 };
 
-export function JsonEditor({ value, onChange }: Props) {
+export function JsonEditor({ value, onChange, height = "260px" }: Props) {
   const handleChange = (nextValue?: string) => {
     onChange(nextValue ?? "");
   };
@@ -25,7 +26,7 @@ export function JsonEditor({ value, onChange }: Props) {
   return (
     <div className="border border-border rounded-sm overflow-hidden bg-card">
       <Editor
-        height="260px"
+        height={height}
         defaultLanguage="json"
         theme="vs-dark"
         value={value}

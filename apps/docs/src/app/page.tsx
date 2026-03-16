@@ -7,6 +7,7 @@ import {
   Database,
   Search,
   Shield,
+  ShieldCheck,
   Container,
   Terminal,
   Layers,
@@ -20,6 +21,8 @@ import {
   FileJson,
   LayoutGrid,
   Grid3X3,
+  X,
+  Minus,
 } from "lucide-react";
 import { AnimatedSection } from "@/components/animated-section";
 import { FeatureCard } from "@/components/feature-card";
@@ -27,6 +30,7 @@ import { CodeBlock } from "@/components/code-block";
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
+  { label: "Why Compooss", href: "#why-compooss" },
   { label: "Installation", href: "#installation" },
   { label: "Usage", href: "#usage" },
   { label: "Roadmap", href: "#roadmap" },
@@ -76,6 +80,24 @@ const FEATURES = [
       "Analyze collection schema from sampled documents: view detected fields, type distribution, frequency, value distributions, nested and array structures, and missing or inconsistent fields. Refresh on demand.",
   },
   {
+    icon: <ShieldCheck size={20} />,
+    title: "Validation Rules",
+    description:
+      "View, create, and edit collection validation rules using JSON Schema. Set validation level and action, validate existing documents, and detect violations — all from a visual editor.",
+  },
+  {
+    icon: <Layers size={20} />,
+    title: "Aggregation Pipelines",
+    description:
+      "Build MongoDB aggregation pipelines visually with stage templates, drag-and-drop stages, per-stage previews, text mode editing, saved pipelines, and view creation from pipelines.",
+  },
+  {
+    icon: <Terminal size={20} />,
+    title: "MongoDB Shell",
+    description:
+      "Run ad-hoc MongoDB commands from an embedded shell panel. Execute CRUD operations, aggregation pipelines, admin commands, and JavaScript scripts with autocomplete, syntax highlighting, and session persistence.",
+  },
+  {
     icon: <Shield size={20} />,
     title: "Built-In Safety Guards",
     description:
@@ -98,6 +120,131 @@ const FEATURES = [
     title: "Modern Developer UI",
     description:
       "Clean, dark-themed interface built with Tailwind CSS and shadcn/ui. Designed to feel native to modern development workflows.",
+  },
+];
+
+type ComparisonValue = "yes" | "no" | "partial" | string;
+
+interface ComparisonRow {
+  feature: string;
+  compooss: ComparisonValue;
+  compass: ComparisonValue;
+  mongoExpress: ComparisonValue;
+  studio3t: ComparisonValue;
+}
+
+const COMPARISON_TOOLS = [
+  { name: "Compooss", highlight: true },
+  { name: "MongoDB Compass", highlight: false },
+  { name: "Mongo Express", highlight: false },
+  { name: "Studio 3T", highlight: false },
+];
+
+const COMPARISON_ROWS: ComparisonRow[] = [
+  {
+    feature: "Docker-native deployment",
+    compooss: "yes",
+    compass: "no",
+    mongoExpress: "partial",
+    studio3t: "no",
+  },
+  {
+    feature: "Zero configuration",
+    compooss: "yes",
+    compass: "no",
+    mongoExpress: "partial",
+    studio3t: "no",
+  },
+  {
+    feature: "Web-based (no install)",
+    compooss: "yes",
+    compass: "no",
+    mongoExpress: "yes",
+    studio3t: "no",
+  },
+  {
+    feature: "Modern UI / Dark theme",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "yes",
+  },
+  {
+    feature: "Document CRUD",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "yes",
+    studio3t: "yes",
+  },
+  {
+    feature: "Index management",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "yes",
+  },
+  {
+    feature: "Schema analysis",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "yes",
+  },
+  {
+    feature: "Validation rules",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "yes",
+  },
+  {
+    feature: "Aggregation pipeline builder",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "yes",
+  },
+  {
+    feature: "Built-in MongoDB shell",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "partial",
+  },
+  {
+    feature: "Query with MongoDB syntax",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "partial",
+    studio3t: "yes",
+  },
+  {
+    feature: "Free & open-source",
+    compooss: "yes",
+    compass: "partial",
+    mongoExpress: "yes",
+    studio3t: "no",
+  },
+  {
+    feature: "No signup or cloud required",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "yes",
+    studio3t: "no",
+  },
+  {
+    feature: "System DB read-only protection",
+    compooss: "yes",
+    compass: "no",
+    mongoExpress: "no",
+    studio3t: "no",
+  },
+  {
+    feature: "Single-container deployment",
+    compooss: "yes",
+    compass: "no",
+    mongoExpress: "yes",
+    studio3t: "no",
   },
 ];
 
@@ -197,7 +344,7 @@ export default function LandingPage() {
       </motion.nav>
 
       {/* Hero */}
-      <section ref={heroRef} className="relative pb-20 pt-20 md:pt-32">
+      <section ref={heroRef} className="relative pb-16 pt-16 md:pt-24">
         <motion.div style={{ y: heroY, opacity: heroOpacity }}>
           <div className="mx-auto max-w-6xl px-6">
             <div className="flex flex-col items-center text-center">
@@ -211,7 +358,7 @@ export default function LandingPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                v1.2.0 — Now with full index management
+                v1.6.0 — Now with embedded MongoDB Shell
               </motion.div>
 
               <motion.h1
@@ -315,38 +462,11 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="relative py-24 md:py-32">
-        <div className="mx-auto max-w-6xl px-6">
-          <AnimatedSection className="mb-16 text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
-              Features
-            </p>
-            <h2 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
-              A complete MongoDB management
-              <br />
-              tool inside your Docker stack
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-zinc-400">
-              Compooss gives developers a fast, visual MongoDB client that fits
-              into any Docker Compose workflow — no desktop apps, no cloud
-              services, no complex setup.
-            </p>
-          </AnimatedSection>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map((feature, i) => (
-              <FeatureCard key={feature.title} index={i} {...feature} />
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Installation */}
-      <section id="installation" className="relative pt-12 pb-24 md:pt-16 md:pb-32">
+      <section id="installation" className="relative pt-10 pb-20 md:pt-14 md:pb-24">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
         <div className="relative mx-auto max-w-6xl px-6">
-          <AnimatedSection className="mb-16 text-center">
+          <AnimatedSection className="mb-12 text-center">
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
               Installation
             </p>
@@ -433,8 +553,191 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Features */}
+      <section id="features" className="relative py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <AnimatedSection className="mb-16 text-center">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
+              Features
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
+              A complete MongoDB management
+              <br />
+              tool inside your Docker stack
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-zinc-400">
+              Compooss gives developers a fast, visual MongoDB client that fits
+              into any Docker Compose workflow — no desktop apps, no cloud
+              services, no complex setup.
+            </p>
+          </AnimatedSection>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((feature, i) => (
+              <FeatureCard key={feature.title} index={i} {...feature} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Compooss */}
+      <section id="why-compooss" className="relative py-16 md:py-20">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
+        <div className="relative mx-auto max-w-6xl px-6">
+          <AnimatedSection className="mb-16 text-center">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
+              Why Compooss
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
+              The MongoDB GUI that fits
+              <br />
+              your development workflow
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-zinc-400">
+              Most MongoDB GUIs are desktop apps that need installation,
+              configuration, and often a paid license. Compooss is the only one
+              purpose-built for Docker Compose — the way modern developers
+              actually work.
+            </p>
+          </AnimatedSection>
+
+          {/* Comparison table */}
+          <AnimatedSection>
+            <div className="overflow-hidden rounded-2xl border border-zinc-800/60">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[640px] text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-zinc-800/60 bg-zinc-900/60">
+                      <th className="px-6 py-4 text-sm font-semibold text-zinc-300">
+                        Feature
+                      </th>
+                      {COMPARISON_TOOLS.map((tool) => (
+                        <th
+                          key={tool.name}
+                          className={`px-6 py-4 text-center text-sm font-semibold ${
+                            tool.highlight
+                              ? "bg-emerald-500/5 text-emerald-400"
+                              : "text-zinc-400"
+                          }`}
+                        >
+                          {tool.name}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {COMPARISON_ROWS.map((row, i) => (
+                      <tr
+                        key={row.feature}
+                        className={`border-b border-zinc-800/40 transition-colors hover:bg-zinc-900/40 ${
+                          i === COMPARISON_ROWS.length - 1 ? "border-b-0" : ""
+                        }`}
+                      >
+                        <td className="px-6 py-3.5 text-sm text-zinc-300">
+                          {row.feature}
+                        </td>
+                        {(
+                          [
+                            row.compooss,
+                            row.compass,
+                            row.mongoExpress,
+                            row.studio3t,
+                          ] as ComparisonValue[]
+                        ).map((value, colIdx) => (
+                          <td
+                            key={colIdx}
+                            className={`px-6 py-3.5 text-center ${
+                              colIdx === 0 ? "bg-emerald-500/[0.03]" : ""
+                            }`}
+                          >
+                            {value === "yes" ? (
+                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10">
+                                <Check
+                                  size={14}
+                                  className="text-emerald-400"
+                                />
+                              </span>
+                            ) : value === "no" ? (
+                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800/50">
+                                <X size={14} className="text-zinc-600" />
+                              </span>
+                            ) : value === "partial" ? (
+                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500/10">
+                                <Minus
+                                  size={14}
+                                  className="text-yellow-500/60"
+                                />
+                              </span>
+                            ) : (
+                              <span className="text-sm text-zinc-400">
+                                {value}
+                              </span>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex items-center gap-6 border-t border-zinc-800/40 bg-zinc-900/30 px-6 py-3">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/10">
+                    <Check size={10} className="text-emerald-400" />
+                  </span>
+                  <span className="text-xs text-zinc-500">Full support</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-yellow-500/10">
+                    <Minus size={10} className="text-yellow-500/60" />
+                  </span>
+                  <span className="text-xs text-zinc-500">
+                    Partial / limited
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-zinc-800/50">
+                    <X size={10} className="text-zinc-600" />
+                  </span>
+                  <span className="text-xs text-zinc-500">Not supported</span>
+                </div>
+              </div>
+            </div>
+          </AnimatedSection>
+
+          {/* Bottom callout */}
+          <AnimatedSection delay={0.2} className="mt-10">
+            <div className="rounded-2xl border border-emerald-500/15 bg-emerald-500/[0.03] p-6 md:p-8">
+              <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-zinc-100">
+                    Designed for developers, not database admins
+                  </h3>
+                  <p className="mt-1 max-w-xl text-sm text-zinc-400">
+                    Compooss gives you exactly the features you need during
+                    development — browse data, debug queries, inspect schemas —
+                    without the complexity of enterprise-grade tools you&apos;ll
+                    never use locally.
+                  </p>
+                </div>
+                <a
+                  href="#installation"
+                  className="group flex shrink-0 items-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-zinc-950 transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25"
+                >
+                  Get Started
+                  <ArrowRight
+                    size={16}
+                    className="transition-transform group-hover:translate-x-0.5"
+                  />
+                </a>
+              </div>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
       {/* Usage / How it works */}
-      <section id="usage" className="relative py-24 md:py-32">
+      <section id="usage" className="relative py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6">
           <AnimatedSection className="mb-16 text-center">
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
@@ -492,8 +795,24 @@ export default function LandingPage() {
                   "Analyze collection schema from samples",
                   "View field types, frequency & value distributions",
                   "Inspect nested fields and array structures",
+                  "Define validation rules with JSON Schema",
+                  "Set validation level and action",
+                  "Validate existing documents",
+                  "Detect validation violations",
                   "Masked connection strings",
                   "System DB read-only protection",
+                  "Build aggregation pipelines with stage templates",
+                  "Reorder, enable, and disable aggregation stages",
+                  "Preview results for individual aggregation stages",
+                  "Save and reload aggregation pipelines per collection",
+                  "Export aggregation JSON and backend-ready code",
+                  "Create MongoDB views directly from aggregation pipelines",
+                  "Run ad-hoc MongoDB shell commands in the browser",
+                  "Execute JavaScript queries with autocomplete",
+                  "Navigate command history and persist shell sessions",
+                  "Run CRUD, aggregation, and admin commands from the shell",
+                  "Access bulk operations and system collections",
+                  "Switch databases with 'use' and run server status commands",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3">
                     <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
@@ -509,7 +828,7 @@ export default function LandingPage() {
       </section>
 
       {/* Roadmap */}
-      <section id="roadmap" className="relative py-24 md:py-32">
+      <section id="roadmap" className="relative py-16 md:py-20">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
         <div className="relative mx-auto max-w-6xl px-6">
           <AnimatedSection className="mb-16 text-center">
@@ -526,8 +845,7 @@ export default function LandingPage() {
             </p>
           </AnimatedSection>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Shipped */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -536,20 +854,19 @@ export default function LandingPage() {
               className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-                <Grid3X3 size={20} />
+                <Terminal size={20} />
               </div>
               <h3 className="mb-1 text-base font-semibold text-zinc-100">
-                Index Management
+                MongoDB Shell
               </h3>
               <p className="text-sm text-zinc-400">
-                Create, drop, hide, and inspect indexes with usage stats. Supports all index types.
+                Run ad-hoc MongoDB commands, JavaScript queries, CRUD operations, aggregation pipelines, and admin commands from an embedded shell with autocomplete, syntax highlighting, and session persistence.
               </p>
-              <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                Shipped in v1.2.0
+              <div className="mt-3 inline-flex rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
+                Shipped in v1.6.0
               </div>
             </motion.div>
 
-            {/* Schema Analysis - Shipped */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -558,60 +875,45 @@ export default function LandingPage() {
               className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-                <LayoutGrid size={20} />
+                <Layers size={20} />
               </div>
               <h3 className="mb-1 text-base font-semibold text-zinc-100">
-                Schema Analysis
+                Multiple Connections
               </h3>
               <p className="text-sm text-zinc-400">
-                Analyze schema from sampled docs: fields, types, frequency, value distributions, nested/array structures.
+                Save and switch between multiple MongoDB connection profiles for different projects and environments.
               </p>
               <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                Shipped in v1.3.0
+                Coming soon
               </div>
             </motion.div>
 
-            {/* Planned */}
-            {[
-              {
-                icon: <Layers size={20} />,
-                title: "Aggregations",
-                description:
-                  "Visual pipeline builder and runner for complex aggregation queries.",
-              },
-              {
-                icon: <Shield size={20} />,
-                title: "Validation Rules",
-                description:
-                  "Define and manage document validation rules with a visual editor.",
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: (i + 1) * 0.1 }}
-                className="relative rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/20 p-6"
-              >
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800/50 text-zinc-500">
-                  {item.icon}
-                </div>
-                <h3 className="mb-1 text-base font-semibold text-zinc-300">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-zinc-500">{item.description}</p>
-                <div className="mt-3 inline-flex rounded-full bg-zinc-800/50 px-2.5 py-0.5 text-xs text-zinc-500">
-                  Coming soon
-                </div>
-              </motion.div>
-            ))}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
+            >
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+                <LayoutGrid size={20} />
+              </div>
+              <h3 className="mb-1 text-base font-semibold text-zinc-100">
+                Theming Support
+              </h3>
+              <p className="text-sm text-zinc-400">
+                System-aware theming with dedicated dark and light modes, matching your OS preference.
+              </p>
+              <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
+                Coming soon
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="relative py-24 md:py-32">
+      <section className="relative py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6">
           <AnimatedSection>
             <div className="relative overflow-hidden rounded-3xl border border-zinc-800/60 bg-gradient-to-br from-zinc-900 via-zinc-900/80 to-zinc-900 p-10 text-center md:p-16">

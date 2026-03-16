@@ -2,9 +2,9 @@
 
 import { getCollectionSummary } from "@/lib/services/database/database.service";
 import { isProtectedDatabase, type CollectionSummary } from "@compooss/types";
-import { FileText, Grid3X3 } from "lucide-react";
+import { BarChart3, FileText, Grid3X3, ShieldCheck } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
-import { AggregationsTab } from "./collection-tabs/aggregations-tab";
+import { AggregationsTab } from "./collection-tabs/aggregations/aggregations-tab";
 import { DocumentsTab } from "./collection-tabs/documents/documents-tab";
 import { ExplainTab } from "./collection-tabs/explain-tab";
 import { IndexesTab } from "./collection-tabs/indexex-tab";
@@ -63,7 +63,11 @@ export function CollectionView({
       label: "Documents",
       icon: <FileText className="h-3.5 w-3.5" />,
     },
-    // { id: "aggregations", label: "Aggregations", icon: <BarChart3 className="h-3.5 w-3.5" /> },
+    {
+      id: "aggregations",
+      label: "Aggregations",
+      icon: <BarChart3 className="h-3.5 w-3.5" />,
+    },
     {
       id: "schema",
       label: "Schema",
@@ -74,7 +78,11 @@ export function CollectionView({
       label: "Indexes",
       icon: <Grid3X3 className="h-3.5 w-3.5" />,
     },
-    // { id: "validation", label: "Validation", icon: <ShieldCheck className="h-3.5 w-3.5" /> },
+    {
+      id: "validation",
+      label: "Validation",
+      icon: <ShieldCheck className="h-3.5 w-3.5" />,
+    },
   ];
 
   const handleTabChange = (id: string) => {
@@ -96,7 +104,7 @@ export function CollectionView({
       case "indexes":
         return <IndexesTab readOnly={readOnly} />;
       case "validation":
-        return <ValidationTab />;
+        return <ValidationTab readOnly={readOnly} />;
       default:
         return null;
     }

@@ -2,7 +2,7 @@
 
 Compooss is a lightweight MongoDB database client designed to run **inside your `docker-compose` stack** during development. The goal is to give you an easy way to explore and manage your MongoDB data **without installing a separate GUI app** on your machine.
 
-**Current release: v1.3.0.**
+**Current release: v1.5.0.**
 
 ![Compooss Preview](docs/preview.png)
 
@@ -13,9 +13,17 @@ Compooss is a lightweight MongoDB database client designed to run **inside your 
 - **MongoDB focused** – Browse databases and collections; view and edit documents with query, filter, sort, and list/JSON/table views.
 - **Index management** – Create, drop, hide/unhide, and inspect indexes (unique, compound, text, geospatial, TTL, partial, hashed) with usage statistics.
 - **Schema analysis** – Analyze collection schema from sampled documents: view detected fields, type distribution, frequency, value distributions, nested/array structures, and missing or inconsistent fields; refresh on demand.
+- **Validation rules** – View, create, and edit collection validation rules using JSON Schema. Set validation level (strict/moderate/off) and action (error/warn). Validate existing documents against the schema and detect violations.
+- **Aggregation pipelines** – Build MongoDB aggregations visually with stage templates, drag-and-drop ordering, per-stage previews, text mode editing, result viewer, and the ability to create views from pipelines.
 - **Dev-friendly** – Optimized for local development; read-only protection for system databases (`admin`, `local`, `config`).
 
-See [docs/FEATURES.md](docs/FEATURES.md) for the full feature list and planned features (Aggregations, Validation).
+#### Planned / coming soon
+
+- **MongoDB Shell** – Embedded MongoDB shell for running ad-hoc commands directly from the browser.
+- **Multiple connections** – Manage and switch between multiple MongoDB connections in a single UI.
+- **Theming support** – System, dark, and light themes with automatic system theme detection.
+
+See [docs/FEATURES.md](docs/FEATURES.md) for the full feature list and planned features.
 
 ### Example `docker-compose` usage (conceptual)
 
@@ -57,7 +65,9 @@ npm run dev
 - **v1.1.0** – Loading skeletons, improved error handling and loading states.
 - **v1.2.0** – Full index management: create, drop, hide/unhide indexes; usage stats; all index types (unique, compound, text, geospatial, TTL, partial, hashed).
 - **v1.3.0** – Schema analysis: analyze collection schema from samples; view fields, type distribution, frequency, value distributions, nested/array structures; refresh on demand.
-- **Planned**: Aggregations, validation rules; improved UX (pagination, query builder); optional auth for shared dev environments.
+- **v1.4.0** – Validation rules: view, create, and edit JSON Schema validators; set validation level and action; validate existing documents and detect violations.
+- **v1.5.0** – Aggregation pipelines: visual pipeline builder with stage templates, per-stage previews, saved pipelines, text mode editing, and view creation from pipelines.
+- **Planned**: Improved UX (pagination, query builder); optional auth for shared dev environments; embedded MongoDB shell; multiple connection profiles; full theming support (system, dark, light).
 
 ### Author
 
