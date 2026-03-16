@@ -130,6 +130,16 @@ const FEATURES = [
   },
 ];
 
+// Subset of core product features to highlight in the main grid
+const CORE_FEATURES = [
+  FEATURES[0], // Database Management
+  FEATURES[1], // Collection Explorer
+  FEATURES[4], // Full Document CRUD
+  FEATURES[9], // MongoDB Shell
+  FEATURES[10], // Multiple Connections
+  FEATURES[13], // Modern Developer UI
+];
+
 type ComparisonValue = "yes" | "no" | "partial" | string;
 
 interface ComparisonRow {
@@ -345,6 +355,7 @@ export default function LandingPage() {
               </a>
             ))}
           </div>
+          {/*
           <a
             href="https://github.com/abdullahmia/compooss"
             target="_blank"
@@ -354,6 +365,7 @@ export default function LandingPage() {
             <Github size={16} />
             <span className="hidden sm:inline">GitHub</span>
           </a>
+          */}
         </div>
       </motion.nav>
 
@@ -395,8 +407,8 @@ export default function LandingPage() {
               >
                 Compooss is a free, self-hosted MongoDB admin panel that runs as
                 a single Docker container. Browse databases, query documents,
-                manage collections and indexes, and explore your data — no
-                signup, no cloud, no configuration files.
+                manage collections and indexes, and explore your data no signup,
+                no cloud, no configuration files.
               </motion.p>
 
               <motion.div
@@ -415,6 +427,7 @@ export default function LandingPage() {
                     className="transition-transform group-hover:translate-x-0.5"
                   />
                 </a>
+                {/*
                 <a
                   href="https://github.com/abdullahmia/compooss"
                   target="_blank"
@@ -424,6 +437,7 @@ export default function LandingPage() {
                   <Github size={16} />
                   View on GitHub
                 </a>
+                */}
               </motion.div>
 
               {/* Quick install */}
@@ -477,7 +491,10 @@ export default function LandingPage() {
       </section>
 
       {/* Installation */}
-      <section id="installation" className="relative pt-10 pb-20 md:pt-14 md:pb-24">
+      <section
+        id="installation"
+        className="relative pt-10 pb-20 md:pt-14 md:pb-24"
+      >
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
         <div className="relative mx-auto max-w-6xl px-6">
           <AnimatedSection className="mb-12 text-center">
@@ -587,7 +604,7 @@ export default function LandingPage() {
           </AnimatedSection>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map((feature, i) => (
+            {CORE_FEATURES.map((feature, i) => (
               <FeatureCard key={feature.title} index={i} {...feature} />
             ))}
           </div>
@@ -666,10 +683,7 @@ export default function LandingPage() {
                           >
                             {value === "yes" ? (
                               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10">
-                                <Check
-                                  size={14}
-                                  className="text-emerald-400"
-                                />
+                                <Check size={14} className="text-emerald-400" />
                               </span>
                             ) : value === "no" ? (
                               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800/50">
@@ -878,7 +892,10 @@ export default function LandingPage() {
                 MongoDB Shell
               </h3>
               <p className="text-sm text-zinc-400">
-                Run ad-hoc MongoDB commands, JavaScript queries, CRUD operations, aggregation pipelines, and admin commands from an embedded shell with autocomplete, syntax highlighting, and session persistence.
+                Run ad-hoc MongoDB commands, JavaScript queries, CRUD
+                operations, aggregation pipelines, and admin commands from an
+                embedded shell with autocomplete, syntax highlighting, and
+                session persistence.
               </p>
               <div className="mt-3 inline-flex rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
                 Shipped in v1.6.0
@@ -899,7 +916,9 @@ export default function LandingPage() {
                 Multiple Connections
               </h3>
               <p className="text-sm text-zinc-400">
-                Save, edit, and switch between MongoDB connection profiles with authentication, TLS/SSL, color-coded labels, favorites, and test-before-connect — all from a dedicated connection page.
+                Save, edit, and switch between MongoDB connection profiles with
+                authentication, TLS/SSL, color-coded labels, favorites, and
+                test-before-connect — all from a dedicated connection page.
               </p>
               <div className="mt-3 inline-flex rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
                 Shipped in v1.7.0
@@ -920,7 +939,8 @@ export default function LandingPage() {
                 Theming Support
               </h3>
               <p className="text-sm text-zinc-400">
-                System-aware theming with dedicated dark and light modes, matching your OS preference.
+                System-aware theming with dedicated dark and light modes,
+                matching your OS preference.
               </p>
               <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
                 Coming soon
@@ -985,9 +1005,10 @@ export default function LandingPage() {
               </span>
             </div>
             <p className="text-sm text-zinc-600">
-              Free and open-source MongoDB GUI — MIT License.
+              Free and open-source MongoDB GUI MIT License.
             </p>
             <div className="flex items-center gap-4">
+              {/*
               <a
                 href="https://github.com/abdullahmia/compooss"
                 target="_blank"
@@ -996,6 +1017,7 @@ export default function LandingPage() {
               >
                 GitHub
               </a>
+              */}
               <a
                 href="https://hub.docker.com/r/abdullahmia/compooss"
                 target="_blank"

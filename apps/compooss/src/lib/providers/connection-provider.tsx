@@ -163,9 +163,7 @@ export function ConnectionProvider({
         ENDPOINTS.connection.test,
         { uri, options },
       );
-      return (
-        res.data ?? { ok: false, message: "No response data" }
-      );
+      return res.data ?? { ok: false, message: "No response data" };
     },
     [],
   );

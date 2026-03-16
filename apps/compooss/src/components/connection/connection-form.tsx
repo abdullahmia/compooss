@@ -17,7 +17,7 @@ import {
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { ColorPicker } from "./color-picker";
-import { AuthConfigForm } from "./auth-config-form";
+// import { AuthConfigForm } from "./auth-config-form";
 // import { TlsConfigForm } from "./tls-config-form";
 // import { AdvancedConfigForm } from "./advanced-config-form";
 
@@ -27,6 +27,7 @@ interface ConnectionFormProps {
   onTest: (uri: string) => Promise<{ ok: boolean; message: string }>;
   isConnecting?: boolean;
   editMode?: boolean;
+  submitError?: string | null;
 }
 
 export function ConnectionForm({
@@ -35,6 +36,7 @@ export function ConnectionForm({
   onTest,
   isConnecting,
   editMode,
+  submitError,
 }: ConnectionFormProps) {
   const [testResult, setTestResult] = useState<{
     ok: boolean;
@@ -168,13 +170,15 @@ export function ConnectionForm({
           </div>
         </div>
 
-        {/* Collapsible: Authentication */}
+        {/* Collapsible: Authentication (temporarily disabled on /connect) */}
+        {/*
         <div className="mt-3 border-t border-border pt-1">
           {sectionHeader("auth", "Authentication")}
           {expandedSections.has("auth") && (
             <AuthConfigForm form={form} />
           )}
         </div>
+        */}
 
         {/* TODO: TLS/SSL section — uncomment when ready
         <div className="border-t border-border pt-1">
@@ -208,6 +212,14 @@ export function ConnectionForm({
               <XCircle className="h-3.5 w-3.5" />
             )}
             {testResult.message}
+          </div>
+        )}
+
+        {/* Submit / connection error */}
+        {submitError && (
+          <div className="mt-2 flex items-center gap-2 text-xs px-3 py-2 rounded-sm bg-destructive/10 text-destructive">
+            <XCircle className="h-3.5 w-3.5" />
+            {submitError}
           </div>
         )}
 
