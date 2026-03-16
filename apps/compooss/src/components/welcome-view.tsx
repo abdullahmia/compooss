@@ -7,12 +7,8 @@ import { isProtectedDatabase } from "@compooss/types";
 import {
   ArrowRight,
   FileText,
-  GitBranch,
   Grid3X3,
   Leaf,
-  ListTree,
-  Plug2,
-  ShieldCheck,
   TerminalSquare,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -28,14 +24,14 @@ const FEATURES = [
     action: "navigate" as const,
     tab: "documents" as const,
   },
-  {
-    id: "indexes",
-    label: "Manage Indexes",
-    desc: "Create, drop, and inspect indexes with usage statistics",
-    icon: ListTree,
-    action: "navigate" as const,
-    tab: "indexes" as const,
-  },
+  // {
+  //   id: "indexes",
+  //   label: "Manage Indexes",
+  //   desc: "Create, drop, and inspect indexes with usage statistics",
+  //   icon: ListTree,
+  //   action: "navigate" as const,
+  //   tab: "indexes" as const,
+  // },
   {
     id: "schema",
     label: "Analyze Schema",
@@ -44,22 +40,22 @@ const FEATURES = [
     action: "navigate" as const,
     tab: "schema" as const,
   },
-  {
-    id: "validation",
-    label: "Validation Rules",
-    desc: "Define JSON Schema validators and detect violations",
-    icon: ShieldCheck,
-    action: "navigate" as const,
-    tab: "validation" as const,
-  },
-  {
-    id: "aggregation",
-    label: "Aggregation Pipelines",
-    desc: "Build pipelines visually with per-stage previews",
-    icon: GitBranch,
-    action: "navigate" as const,
-    tab: "aggregation" as const,
-  },
+  // {
+  //   id: "validation",
+  //   label: "Validation Rules",
+  //   desc: "Define JSON Schema validators and detect violations",
+  //   icon: ShieldCheck,
+  //   action: "navigate" as const,
+  //   tab: "validation" as const,
+  // },
+  // {
+  //   id: "aggregation",
+  //   label: "Aggregation Pipelines",
+  //   desc: "Build pipelines visually with per-stage previews",
+  //   icon: GitBranch,
+  //   action: "navigate" as const,
+  //   tab: "aggregation" as const,
+  // },
   {
     id: "shell",
     label: "MongoDB Shell",
@@ -68,14 +64,14 @@ const FEATURES = [
     action: "shell" as const,
     tab: null,
   },
-  {
-    id: "connections",
-    label: "Manage Connections",
-    desc: "Save, switch, and configure MongoDB connection profiles",
-    icon: Plug2,
-    action: "connect" as const,
-    tab: null,
-  },
+  // {
+  //   id: "connections",
+  //   label: "Manage Connections",
+  //   desc: "Save, switch, and configure MongoDB connection profiles",
+  //   icon: Plug2,
+  //   action: "connect" as const,
+  //   tab: null,
+  // },
 ] as const;
 
 export function WelcomeView() {
@@ -106,10 +102,6 @@ export function WelcomeView() {
       openShell();
       return;
     }
-    if (item.action === "connect") {
-      router.push("/connect");
-      return;
-    }
     if (!canNavigate) {
       toast.info(
         "Create a database and collection from the sidebar to get started.",
@@ -128,9 +120,7 @@ export function WelcomeView() {
         <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
           <Leaf className="h-8 w-8 text-primary" />
         </div>
-        <h1 className="text-xl font-semibold text-foreground mb-2">
-          Compooss
-        </h1>
+        <h1 className="text-xl font-semibold text-foreground mb-2">Compooss</h1>
         <p className="text-sm text-muted-foreground mb-8">
           Select a collection from the sidebar to explore your data, run
           queries, and manage documents.
