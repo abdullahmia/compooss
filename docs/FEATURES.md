@@ -1,6 +1,6 @@
 # Compooss features
 
-Current release: **v1.4.0**.
+Current release: **v1.5.0**.
 
 ---
 
@@ -61,10 +61,24 @@ Current release: **v1.4.0**.
 - **Detect violations** – See total/valid/invalid document counts; expand invalid documents to view their `_id` and error details.
 - **Read-only protection** – Validation rules are read-only for system databases (`admin`, `local`, `config`).
 
+## Shipped in v1.5.0
+
+### Aggregation Pipelines
+
+- **Visual pipeline builder** – Add, remove, duplicate, and reorder stages in a drag-and-drop builder with stage cards.
+- **Stage templates & categories** – Quickly start from curated stage templates grouped by category (match, group, sort, lookup, etc.).
+- **Per-stage previews** – Run the pipeline up to any stage and see sample documents for that stage.
+- **Builder & text modes** – Switch between visual builder and raw JSON text mode for full control over the pipeline.
+- **Saved pipelines** – Save pipelines locally, mark favorites, load and delete them per collection namespace.
+- **Export & sharing** – Copy pipeline JSON, copy ready-to-use backend `db.collection.aggregate([...])` code, or download pipelines as JSON files.
+- **Create views from pipelines** – Turn a pipeline into a MongoDB view directly from the UI.
+
 ---
 
 ## Planned for future releases
 
-- **Aggregations** – Aggregation pipeline builder and runner. (Stub: "Coming soon" in UI.)
-
-This tab exists as a stub in the codebase and will be enabled in the UI when implemented.
+- **Improved UX** – Pagination and query builder improvements, plus additional quality-of-life enhancements.
+- **Optional auth** – Authentication support for shared development environments.
+- **MongoDB Shell** – Built-in MongoDB shell panel for running commands and scripts without leaving the browser.
+- **Multiple connections** – Support for multiple saved connection profiles and quick switching between them.
+- **Theming support** – System, dark, and light themes with automatic system theme syncing.

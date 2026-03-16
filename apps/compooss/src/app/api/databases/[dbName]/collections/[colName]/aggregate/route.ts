@@ -1,0 +1,111 @@
+import { aggregationRepository } from "@/lib/core-modules/aggregation/aggregation.repository";
+import { createApiResponse } from "@/lib/utils/api-response.util";
+import { isProtectedDatabase } from "@compooss/types";
+import { NextResponse } from "next/server";
+
+type AggregateParams = {
+  params: Promise<{ dbName: string; colName: string }>;
+};
+
+function extractErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    const msg = error.message;
+    const causedBy = msg.match(/caused by :: (.+)/);
+    if (causedBy) return causedBy[1].trim();
+    return msg;
+  }
+  return String(error);
+}
+
+export async function POST(req: Request, { params }: AggregateParams) {
+  try {
+    const { dbName, colName } = await params;
+    const body = (await req.json()) as {
+      pipeline?: Record<string, unknown>[];
+      action?: "run" | "createView";
+      viewName?: string;
+      upToIndex?: number;
+      options?: {
+        maxTimeMS?: number;
+        sampleSize?: number;
+        limit?: number;
+        allowDiskUse?: boolean;
+      };
+    };
+
+    if (body.action === "createView") {
+      if (isProtectedDatabase(dbName)) {
+        return NextResponse.json(
+          createApiResponse(null, `Database "${dbName}" is read-only.`, 403),
+          { status: 403 },
+        );
+      }
+
+      if (!body.viewName || typeof body.viewName !== "string") {
+        return NextResponse.json(
+          createApiResponse(null, "viewName is required.", 400),
+          { status: 400 },
+        );
+      }
+
+      if (!Array.isArray(body.pipeline)) {
+        return NextResponse.json(
+          createApiResponse(null, "pipeline must be an array.", 400),
+          { status: 400 },
+        );
+      }
+
+      const result = await aggregationRepository.createView(
+        dbName,
+        body.viewName,
+        colName,
+        body.pipeline,
+      );
+
+      return NextResponse.json(
+        createApiResponse(result, "View created successfully", 201),
+        { status: 201 },
+      );
+    }
+
+    if (!Array.isArray(body.pipeline)) {
+      return NextResponse.json(
+        createApiResponse(null, "pipeline must be an array.", 400),
+        { status: 400 },
+      );
+    }
+
+    const options = body.options ?? {};
+
+    if (typeof body.upToIndex === "number") {
+      const result = await aggregationRepository.runPartialPipeline(
+        dbName,
+        colName,
+        body.pipeline,
+        body.upToIndex,
+        options,
+      );
+      return NextResponse.json(
+        createApiResponse(result, "Partial aggregation completed", 200),
+        { status: 200 },
+      );
+    }
+
+    const result = await aggregationRepository.runPipeline(
+      dbName,
+      colName,
+      body.pipeline,
+      options,
+    );
+
+    return NextResponse.json(
+      createApiResponse(result, "Aggregation completed", 200),
+      { status: 200 },
+    );
+  } catch (error) {
+    return NextResponse.json(
+      createApiResponse(null, extractErrorMessage(error), 500),
+      { status: 500 },
+    );
+  }
+}

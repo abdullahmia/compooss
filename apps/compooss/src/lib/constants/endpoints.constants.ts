@@ -26,4 +26,8 @@ export const ENDPOINTS = {
     root: (db: string, col: string) =>
       `/databases/${db}/collections/${col}/validation`,
   },
+  aggregation: {
+    root: (db: string, col: string) =>
+      `/databases/${db}/collections/${col}/aggregate`,
+  },
 }
