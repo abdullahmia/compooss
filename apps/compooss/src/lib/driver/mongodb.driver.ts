@@ -8,47 +8,28 @@ export interface IMongoDriverOptions {
 }
 
 export class MongoDriver {
-  private static instance: MongoDriver | null = null;
   private clientPromise: Promise<MongoClient> | null = null;
   private readonly uri: string;
   private readonly options: MongoClientOptions;
 
-  private constructor(uri: string, options: IMongoDriverOptions = {}) {
+  constructor(uri: string, options: MongoClientOptions = {}) {
     this.uri = uri;
     this.options = {
-      maxPoolSize: options.maxPoolSize ?? 10,
-      serverSelectionTimeoutMS: options.serverSelectionTimeoutMS ?? 5000,
-      connectTimeoutMS: options.connectTimeoutMS ?? 10000,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 10000,
+      ...options,
     };
   }
 
-  static getInstance(options?: IMongoDriverOptions): MongoDriver {
-    if (!MongoDriver.instance) {
-      const uri =
-        process.env.MONGODB_URI ?? process.env.MONGO_URI;
-      if (!uri) {
-        throw new Error(
-          "MongoDB connection is not configured. Set the MONGO_URI or MONGODB_URI environment variable."
-        );
-      }
-      MongoDriver.instance = new MongoDriver(uri, options);
-    }
-    return MongoDriver.instance;
-  }
-
-  static resetInstance(): void {
-    MongoDriver.instance = null;
+  getUri(): string {
+    return this.uri;
   }
 
   private async getClient(): Promise<MongoClient> {
     if (!this.clientPromise) {
       const client = new MongoClient(this.uri, this.options);
-      this.clientPromise = client.connect().then(() => {
-        // Clean up on process termination
-        process.once("SIGINT", () => this.disconnect());
-        process.once("SIGTERM", () => this.disconnect());
-        return client;
-      });
+      this.clientPromise = client.connect().then(() => client);
     }
     return this.clientPromise;
   }
@@ -58,7 +39,6 @@ export class MongoDriver {
       const client = await this.clientPromise;
       await client.close();
       this.clientPromise = null;
-      MongoDriver.instance = null;
     }
   }
 
@@ -84,6 +64,20 @@ export class MongoDriver {
   async getAdmin(): Promise<Admin> {
     const client = await this.getClient();
     return client.db().admin();
+  }
+
+  async getServerInfo(): Promise<{ version?: string; host?: string }> {
+    try {
+      const client = await this.getClient();
+      const info = await client.db("admin").command({ buildInfo: 1 });
+      const hello = await client.db("admin").command({ hello: 1 });
+      return {
+        version: info.version,
+        host: hello.me ?? hello.primary,
+      };
+    } catch {
+      return {};
+    }
   }
 
   async listDatabases(): Promise<Database[]> {
@@ -119,19 +113,3 @@ export class MongoDriver {
 export function formatSize(bytes: number): string {
   return MongoDriver.formatSize(bytes);
 }
-
-let _driver: MongoDriver | null = null;
-export function getMongoDriver(): MongoDriver {
-  if (!_driver) _driver = MongoDriver.getInstance();
-  return _driver;
-}
-export const mongoDriver = new Proxy({} as MongoDriver, {
-  get(_, prop: string) {
-    const driver = getMongoDriver();
-    const value = (driver as unknown as Record<string, unknown>)[prop];
-    if (typeof value === "function") {
-      return value.bind(driver);
-    }
-    return value;
-  },
-});

@@ -1,5 +1,5 @@
 import { ObjectId, type Db, type Document } from "mongodb";
-import { getMongoDriver } from "@/lib/driver/mongodb.driver";
+import { connectionManager } from "@/lib/driver/connection-manager";
 import type { ShellResponse, ShellResponseType } from "@compooss/types";
 
 interface EvalContext {
@@ -333,7 +333,7 @@ async function execDbMethod(
       return { result };
     }
     case "serverStatus": {
-      const admin = await getMongoDriver().getAdmin();
+      const admin = await connectionManager.getActiveDriver().getAdmin();
       const result = await admin.serverStatus();
       return { result };
     }
@@ -362,8 +362,8 @@ async function execDbMethod(
       return { result };
     }
     case "getMongo": {
-      const uri = process.env.MONGODB_URI ?? process.env.MONGO_URI ?? "";
-      return { result: uri.replace(/:([^@]+)@/, ":****@") };
+      const rawUri = connectionManager.getRawUri() ?? "";
+      return { result: rawUri.replace(/:([^@]+)@/, ":****@") };
     }
     case "getName": {
       return { result: database };
@@ -389,7 +389,7 @@ async function handleHelperCommand(
   const start = performance.now();
 
   if (/^show\s+(dbs|databases)\s*$/i.test(trimmed)) {
-    const dbs = await getMongoDriver().listDatabases();
+    const dbs = await connectionManager.getActiveDriver().listDatabases();
     const result = dbs.map((d) => ({
       name: d.name,
       sizeOnDisk: d.sizeOnDisk,
@@ -398,32 +398,32 @@ async function handleHelperCommand(
   }
 
   if (/^show\s+collections\s*$/i.test(trimmed)) {
-    const db = await getMongoDriver().getDb(ctx.database);
+    const db = await connectionManager.getActiveDriver().getDb(ctx.database);
     const cols = await db.listCollections().toArray();
     const names = cols.map((c) => c.name).sort();
     return makeResponse("result", names, ctx.database, performance.now() - start);
   }
 
   if (/^show\s+users\s*$/i.test(trimmed)) {
-    const db = await getMongoDriver().getDb(ctx.database);
+    const db = await connectionManager.getActiveDriver().getDb(ctx.database);
     const result = await db.command({ usersInfo: 1 });
     return makeResponse("result", result.users, ctx.database, performance.now() - start);
   }
 
   if (/^show\s+roles\s*$/i.test(trimmed)) {
-    const db = await getMongoDriver().getDb(ctx.database);
+    const db = await connectionManager.getActiveDriver().getDb(ctx.database);
     const result = await db.command({ rolesInfo: 1, showBuiltinRoles: true });
     return makeResponse("result", result.roles, ctx.database, performance.now() - start);
   }
 
   if (/^show\s+profile\s*$/i.test(trimmed)) {
-    const db = await getMongoDriver().getDb(ctx.database);
+    const db = await connectionManager.getActiveDriver().getDb(ctx.database);
     const result = await db.collection("system.profile").find().limit(5).toArray();
     return makeResponse("result", result, ctx.database, performance.now() - start);
   }
 
   if (/^show\s+log\s*$/i.test(trimmed) || /^show\s+logs\s*$/i.test(trimmed)) {
-    const admin = await getMongoDriver().getAdmin();
+    const admin = await connectionManager.getActiveDriver().getAdmin();
     const result = await admin.command({ getLog: "global" });
     return makeResponse("result", result, ctx.database, performance.now() - start);
   }
@@ -503,7 +503,7 @@ export async function evaluateShellCommand(
     const helperResult = await handleHelperCommand(trimmed, ctx);
     if (helperResult) return helperResult;
 
-    const db = await getMongoDriver().getDb(ctx.database);
+    const db = await connectionManager.getActiveDriver().getDb(ctx.database);
 
     if (/^db\s*$/i.test(trimmed)) {
       return makeResponse("result", ctx.database, ctx.database, performance.now() - start);

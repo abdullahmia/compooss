@@ -2,12 +2,12 @@
 
 import { collectionRepository } from "@/lib/core-modules/collection/collection.repository";
 import { formatSize } from "@/lib/driver/mongodb.driver";
-import { mongoDriver } from "@/lib/driver/mongodb.driver";
+import { connectionManager } from "@/lib/driver/connection-manager";
 import type { CollectionSummary, Database, DatabaseDetail } from "@compooss/types";
 import { CollectionInfo } from "mongodb";
 
 export const getDatabases = async (): Promise<Pick<Database, "name" | "sizeOnDisk">[]> => {
-  const summaries = await mongoDriver.listDatabases();
+  const summaries = await connectionManager.getActiveDriver().listDatabases();
 
   return summaries.map((summary) => ({
     name: summary.name,
@@ -16,7 +16,7 @@ export const getDatabases = async (): Promise<Pick<Database, "name" | "sizeOnDis
 };
 
 export const getDatabaseCollections = async (dbName: string): Promise<CollectionSummary[]> => {
-  const db = await mongoDriver.getDb(dbName);
+  const db = await connectionManager.getActiveDriver().getDb(dbName);
   const collections = await db.listCollections().toArray();
   return collections.map((collection: CollectionInfo) => ({
     name: collection.name,
@@ -42,12 +42,12 @@ export const getCollectionSummary = async (dbName: string, collectionName: strin
 export const getDatabasesWithCollections = async (): Promise<
   DatabaseDetail[]
 > => {
-  const summaries = await mongoDriver.listDatabases();
+  const summaries = await connectionManager.getActiveDriver().listDatabases();
 
   const databases: DatabaseDetail[] = [];
 
   for (const summary of summaries) {
-    const db = await mongoDriver.getDb(summary.name);
+    const db = await connectionManager.getActiveDriver().getDb(summary.name);
     const collectionsCursor = db.listCollections(
       {},
       { nameOnly: true },
@@ -78,7 +78,7 @@ export const createDatabase = async ({
   dbName,
   collectionName,
 }: { dbName: string; collectionName: string }): Promise<void> => {
-  const db = await mongoDriver.getDb(dbName);
+  const db = await connectionManager.getActiveDriver().getDb(dbName);
 
   const existing = await db
     .listCollections({ name: collectionName }, { nameOnly: true })
