@@ -92,6 +92,12 @@ const FEATURES = [
       "Build MongoDB aggregation pipelines visually with stage templates, drag-and-drop stages, per-stage previews, text mode editing, saved pipelines, and view creation from pipelines.",
   },
   {
+    icon: <Terminal size={20} />,
+    title: "MongoDB Shell",
+    description:
+      "Run ad-hoc MongoDB commands from an embedded shell panel. Execute CRUD operations, aggregation pipelines, admin commands, and JavaScript scripts with autocomplete, syntax highlighting, and session persistence.",
+  },
+  {
     icon: <Shield size={20} />,
     title: "Built-In Safety Guards",
     description:
@@ -197,6 +203,13 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     compass: "yes",
     mongoExpress: "no",
     studio3t: "yes",
+  },
+  {
+    feature: "Built-in MongoDB shell",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "partial",
   },
   {
     feature: "Query with MongoDB syntax",
@@ -345,7 +358,7 @@ export default function LandingPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                v1.5.0 — Now with aggregation pipelines
+                v1.6.0 — Now with embedded MongoDB Shell
               </motion.div>
 
               <motion.h1
@@ -794,6 +807,12 @@ export default function LandingPage() {
                   "Save and reload aggregation pipelines per collection",
                   "Export aggregation JSON and backend-ready code",
                   "Create MongoDB views directly from aggregation pipelines",
+                  "Run ad-hoc MongoDB shell commands in the browser",
+                  "Execute JavaScript queries with autocomplete",
+                  "Navigate command history and persist shell sessions",
+                  "Run CRUD, aggregation, and admin commands from the shell",
+                  "Access bulk operations and system collections",
+                  "Switch databases with 'use' and run server status commands",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3">
                     <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
@@ -841,10 +860,10 @@ export default function LandingPage() {
                 MongoDB Shell
               </h3>
               <p className="text-sm text-zinc-400">
-                Run ad-hoc MongoDB commands and scripts from an embedded shell panel directly in the UI.
+                Run ad-hoc MongoDB commands, JavaScript queries, CRUD operations, aggregation pipelines, and admin commands from an embedded shell with autocomplete, syntax highlighting, and session persistence.
               </p>
-              <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                Coming soon
+              <div className="mt-3 inline-flex rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
+                Shipped in v1.6.0
               </div>
             </motion.div>
 
