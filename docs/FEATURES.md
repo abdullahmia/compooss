@@ -1,6 +1,6 @@
 # Compooss features
 
-Current release: **v1.6.0**.
+Current release: **v1.7.0**.
 
 ---
 
@@ -104,11 +104,32 @@ Current release: **v1.6.0**.
 - **Execute bulk operations** – `db.collection.bulkWrite()` for batched insert/update/delete operations.
 - **Access MongoDB system collections** – Query `system.profile`, `system.users`, and other system collections directly.
 
+## Shipped in v1.7.0
+
+### Multiple Connections
+
+- **Dedicated connection page** – Full-screen connection manager at `/connect` with a form on the left and saved connections list on the right.
+- **Save, edit, and delete profiles** – Connection profiles stored locally in IndexedDB with all settings persisted across sessions.
+- **Favorite and pin connections** – Mark connections as favorites; filter favorites-only; sort by name, recent, or created date.
+- **Search connections** – Filter saved connections by name or label in real time.
+- **Color-coded connections** – Assign a color (red, orange, yellow, green, blue, purple, pink, slate) to each connection for quick identification; color dot shown in the sidebar and top bar.
+- **Custom labels** – Tag connections with labels (e.g. "dev", "staging") displayed as badges throughout the UI.
+- **Authentication options** – Choose from default, password (SCRAM-SHA-1/SCRAM-SHA-256), X.509, LDAP, or Kerberos authentication; configure username, password, auth source, and mechanism-specific fields.
+- **TLS/SSL configuration** – Enable TLS with CA file, certificate, key, and options for allowing invalid certificates or hostnames.
+- **Advanced options** – Configure replica set, read preference (primary, primaryPreferred, secondary, secondaryPreferred, nearest), connection timeout, server selection timeout, direct connection, and max pool size.
+- **Test connection before saving** – One-click test with pass/fail result and server info (version, host) displayed inline.
+- **Connect and disconnect** – Connect from the connection page or saved list; disconnect from the top bar and return to the connection page.
+- **Top bar connection display** – Active connection name, color dot, label badge, and masked URI shown in the top bar; click to navigate back to the connection manager.
+- **Connection context provider** – React context tracks active connection, loading state, and connection status; auto-restores the last active connection on reload.
+- **Sidebar integration** – Sidebar footer shows the active connection color indicator and connected database count.
+- **Connection manager (server)** – Singleton `ConnectionManager` handles connect, disconnect, test, and status; safely tears down the previous connection before establishing a new one.
+- **API routes** – `POST /connection/connect`, `POST /connection/disconnect`, `GET /connection/status`, `POST /connection/test`.
+- **Connection types** – `SavedConnection`, `ConnectionStatus`, `ConnectionTestResult`, `AuthConfig`, `TlsConfig`, `AdvancedConfig`, `AuthType`, `ReadPreference`, `ConnectionColor` in `@compooss/types`.
+
 ---
 
 ## Planned for future releases
 
 - **Improved UX** – Pagination and query builder improvements, plus additional quality-of-life enhancements.
 - **Optional auth** – Authentication support for shared development environments.
-- **Multiple connections** – Support for multiple saved connection profiles and quick switching between them.
 - **Theming support** – System, dark, and light themes with automatic system theme syncing.

@@ -1,29 +1,41 @@
-import React, { Suspense } from "react";
+"use client";
+
+import React, { Suspense, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useConnection } from "@/lib/providers/connection-provider";
 import { WorkspaceShell } from "./workspace-shell";
 
-type Props = {
+export default function WorkspaceLayout({
+  children,
+}: {
   children: React.ReactNode;
-};
+}) {
+  const { isConnected, isLoading } = useConnection();
+  const router = useRouter();
 
-/** Masks password in MongoDB URI for safe display (e.g. mongodb://user:xxx@host -> user:***@host). */
-function maskConnectionUri(uri: string | undefined): string {
-  if (!uri) return "No connection";
-  try {
-    return uri.replace(/^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@/, "mongodb$1://$2:***@");
-  } catch {
-    return uri;
+  useEffect(() => {
+    if (!isLoading && !isConnected) {
+      router.replace("/connect");
+    }
+  }, [isLoading, isConnected, router]);
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background">
+        <div className="animate-pulse text-muted-foreground text-sm">
+          Checking connection...
+        </div>
+      </div>
+    );
   }
-}
 
-export default function WorkspaceLayout({ children }: Props) {
-  const connectionDisplay = maskConnectionUri(
-    process.env.MONGODB_URI ?? process.env.MONGO_URI,
-  );
+  if (!isConnected) {
+    return null;
+  }
+
   return (
     <Suspense>
-      <WorkspaceShell connectionString={connectionDisplay}>
-        {children}
-      </WorkspaceShell>
+      <WorkspaceShell>{children}</WorkspaceShell>
     </Suspense>
   );
 }

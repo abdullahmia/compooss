@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import { mongoDriver } from "@/lib/driver/mongodb.driver";
+import { connectionManager } from "@/lib/driver/connection-manager";
 import type { DatabaseDetail } from "@compooss/types";
 
 export interface IConnectionHealth {
@@ -10,7 +10,8 @@ export interface IConnectionHealth {
 
 export async function checkConnectionHealth(): Promise<IConnectionHealth> {
   try {
-    await mongoDriver.ping();
+    const driver = connectionManager.getActiveDriver();
+    await driver.ping();
     return {
       ok: true,
       message: "Connected to MongoDB",
@@ -25,10 +26,11 @@ export async function checkConnectionHealth(): Promise<IConnectionHealth> {
 }
 
 export const getDatabases = async (): Promise<DatabaseDetail[]> => {
-  const summaries = await mongoDriver.listDatabases();
+  const driver = connectionManager.getActiveDriver();
+  const summaries = await driver.listDatabases();
   return summaries.map((summary) => ({
     name: summary.name,
     sizeOnDisk: summary.sizeOnDisk,
     collections: [],
   }));
-}
+};
