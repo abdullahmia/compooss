@@ -30,4 +30,7 @@ export const ENDPOINTS = {
     root: (db: string, col: string) =>
       `/databases/${db}/collections/${col}/aggregate`,
   },
+  shell: {
+    eval: "/shell/eval",
+  },
 }
