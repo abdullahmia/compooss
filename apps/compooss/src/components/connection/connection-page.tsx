@@ -18,6 +18,7 @@ export function ConnectionPage() {
   const [editingConnection, setEditingConnection] =
     useState<SavedConnection | null>(null);
   const [connectingId, setConnectingId] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const loadConnections = useCallback(async () => {
     const all = await connectionDB.getAll();
@@ -29,6 +30,21 @@ export function ConnectionPage() {
   }, [loadConnections]);
 
   const handleFormSubmit = async (data: TConnectionForm) => {
+    // Clear previous error shown on the form
+    setFormError(null);
+
+    // First, validate the connection string by testing the connection
+    try {
+      const result = await testConnection(data.connectionString);
+      if (!result.ok) {
+        setFormError(result.message || "Connection test failed");
+        return;
+      }
+    } catch {
+      setFormError("Connection test failed");
+      return;
+    }
+
     const id = editingConnection?.id ?? crypto.randomUUID();
     const now = new Date().toISOString();
 
@@ -55,7 +71,7 @@ export function ConnectionPage() {
       toast.success(`Connected to ${saved.name}`);
       router.push("/");
     } catch (err) {
-      toast.error(
+      setFormError(
         err instanceof Error ? err.message : "Connection failed",
       );
       await loadConnections();
@@ -73,13 +89,18 @@ export function ConnectionPage() {
   const handleConnect = async (connection: SavedConnection) => {
     setConnectingId(connection.id);
     try {
+      // Validate the saved connection before actually connecting
+      const result = await testConnection(connection.uri);
+      if (!result.ok) {
+        toast.error(result.message || "Connection test failed");
+        return;
+      }
+
       await connect(connection);
       toast.success(`Connected to ${connection.name}`);
       router.push("/");
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Connection failed",
-      );
+      toast.error(err instanceof Error ? err.message : "Connection failed");
     } finally {
       setConnectingId(null);
     }
@@ -107,20 +128,19 @@ export function ConnectionPage() {
     setEditingConnection(null);
   };
 
-  const formDefaults: Partial<TConnectionForm> | undefined =
-    editingConnection
-      ? {
-          connectionString: editingConnection.uri,
-          connectionName: editingConnection.name,
-          isFavorite: editingConnection.isFavorite,
-          color: editingConnection.color,
-          label: editingConnection.label,
-          authType: editingConnection.authType,
-          authConfig: editingConnection.authConfig,
-          tlsConfig: editingConnection.tlsConfig,
-          advancedConfig: editingConnection.advancedConfig,
-        }
-      : undefined;
+  const formDefaults: Partial<TConnectionForm> | undefined = editingConnection
+    ? {
+        connectionString: editingConnection.uri,
+        connectionName: editingConnection.name,
+        isFavorite: editingConnection.isFavorite,
+        color: editingConnection.color,
+        label: editingConnection.label,
+        authType: editingConnection.authType,
+        authConfig: editingConnection.authConfig,
+        tlsConfig: editingConnection.tlsConfig,
+        advancedConfig: editingConnection.advancedConfig,
+      }
+    : undefined;
 
   return (
     <div className="h-screen flex flex-col bg-background">
@@ -165,6 +185,7 @@ export function ConnectionPage() {
               onTest={handleTest}
               isConnecting={isConnecting}
               editMode={!!editingConnection}
+              submitError={formError}
             />
           </div>
         </div>
