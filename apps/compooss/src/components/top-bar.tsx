@@ -1,9 +1,10 @@
 "use client";
 
-import { Database, HelpCircle, Leaf, RefreshCw, Settings } from "lucide-react";
+import { Database, HelpCircle, Leaf, RefreshCw, Settings, TerminalSquare } from "lucide-react";
 import { useState } from "react";
 import { SettingsModal } from "./settings/settings-modal";
 import { IconButton } from "@compooss/ui";
+import { useShellPanel } from "@/lib/providers/shell-provider";
 
 interface TopBarProps {
   connectionString?: string;
@@ -15,6 +16,7 @@ export function TopBar({
   onRefreshConnection,
 }: TopBarProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const { isOpen: isShellOpen, toggle: toggleShell } = useShellPanel();
 
   return (
     <>
@@ -40,14 +42,12 @@ export function TopBar({
           </div>
         </div>
 
-        {/* {onDisconnect && (
-          <button
-            onClick={onDisconnect}
-            className="px-3 py-1 text-xs text-muted-foreground hover:text-destructive border border-border rounded-sm hover:border-destructive/30 transition-colors"
-          >
-            Disconnect
-          </button>
-        )} */}
+        <IconButton
+          variant="default"
+          icon={<TerminalSquare className={`h-4 w-4 ${isShellOpen ? "text-primary" : ""}`} />}
+          label="MongoDB Shell"
+          onClick={toggleShell}
+        />
         <IconButton
           variant="default"
           icon={<Settings className="h-4 w-4" />}

@@ -21,4 +21,10 @@ export const QUERY_KEYS = {
   schema: {
     all: (db: string, col: string) => ["schema", db, col],
   },
+  validation: {
+    all: (db: string, col: string) => ["validation", db, col],
+  },
+  aggregation: {
+    all: (db: string, col: string) => ["aggregation", db, col],
+  },
 }

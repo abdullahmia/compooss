@@ -17,7 +17,30 @@ import { useEffect, useState } from "react";
 const NEW_DOCUMENT_TEMPLATE = "{}";
 
 function stripJsonComments(raw: string): string {
-  return raw.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  let result = "";
+  let i = 0;
+  while (i < raw.length) {
+    if (raw[i] === '"') {
+      const start = i;
+      i++;
+      while (i < raw.length && raw[i] !== '"') {
+        if (raw[i] === "\\") i++;
+        i++;
+      }
+      i++;
+      result += raw.slice(start, i);
+    } else if (raw[i] === "/" && raw[i + 1] === "/") {
+      while (i < raw.length && raw[i] !== "\n") i++;
+    } else if (raw[i] === "/" && raw[i + 1] === "*") {
+      i += 2;
+      while (i < raw.length && !(raw[i] === "*" && raw[i + 1] === "/")) i++;
+      i += 2;
+    } else {
+      result += raw[i];
+      i++;
+    }
+  }
+  return result;
 }
 
 export type DocumentFormMode = "add" | "edit";
@@ -134,10 +157,20 @@ export function DocumentFormModal({
         await updateDocument({ documentId, payload });
       }
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Invalid JSON. Please check the syntax.";
+      let message = "Invalid JSON. Please check the syntax.";
+      if (err instanceof Error) {
+        const payload = (err as Error & { payload?: unknown }).payload;
+        if (
+          payload &&
+          typeof payload === "object" &&
+          "message" in payload &&
+          typeof (payload as { message: unknown }).message === "string"
+        ) {
+          message = (payload as { message: string }).message;
+        } else {
+          message = err.message;
+        }
+      }
       setError(message);
     }
   };

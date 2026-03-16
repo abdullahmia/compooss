@@ -1,6 +1,7 @@
 "use client";
 
 import { Sidebar } from "@/components/sidebar/sidebar";
+import { ShellPanel } from "@/components/shell/shell-panel";
 import { TopBar } from "@/components/top-bar";
 import { useRouter } from "next/navigation";
 
@@ -24,9 +25,12 @@ export function WorkspaceShell({ children, connectionString }: WorkspaceShellPro
       />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {children}
-        </main>
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            {children}
+          </main>
+          <ShellPanel />
+        </div>
       </div>
     </div>
   );

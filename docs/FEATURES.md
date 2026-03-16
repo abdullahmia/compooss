@@ -1,6 +1,6 @@
 # Compooss features
 
-Current release: **v1.3.0**.
+Current release: **v1.6.0**.
 
 ---
 
@@ -48,11 +48,67 @@ Current release: **v1.3.0**.
 - **Drill down** – Expand nested objects; view ObjectId first/last timestamps, array stats, and value samples inline.
 - **Refresh or rerun** – Re-run schema analysis with the same or different sample size via Analyze and Refresh.
 
+## Shipped in v1.4.0
+
+### Validation Rules
+
+- **View validation rules** – See the current collection validator, validation level, and validation action from the Validation tab.
+- **Create or edit rules** – Write validation rules using MongoDB's JSON Schema (`$jsonSchema`) in a Monaco-powered JSON editor.
+- **Set validation level** – Choose between strict (all inserts and updates), moderate (existing valid documents only), or off.
+- **Set validation action** – Choose error (reject invalid documents) or warn (allow but log a warning).
+- **Apply rules** – Save validation rules to the collection via the `collMod` command.
+- **Validate existing documents** – Run a validation check against the current rules with configurable sample size (100, 500, 1000, 5000).
+- **Detect violations** – See total/valid/invalid document counts; expand invalid documents to view their `_id` and error details.
+- **Read-only protection** – Validation rules are read-only for system databases (`admin`, `local`, `config`).
+
+## Shipped in v1.5.0
+
+### Aggregation Pipelines
+
+- **Visual pipeline builder** – Add, remove, duplicate, and reorder stages in a drag-and-drop builder with stage cards.
+- **Stage templates & categories** – Quickly start from curated stage templates grouped by category (match, group, sort, lookup, etc.).
+- **Per-stage previews** – Run the pipeline up to any stage and see sample documents for that stage.
+- **Builder & text modes** – Switch between visual builder and raw JSON text mode for full control over the pipeline.
+- **Saved pipelines** – Save pipelines locally, mark favorites, load and delete them per collection namespace.
+- **Export & sharing** – Copy pipeline JSON, copy ready-to-use backend `db.collection.aggregate([...])` code, or download pipelines as JSON files.
+- **Create views from pipelines** – Turn a pipeline into a MongoDB view directly from the UI.
+
+## Shipped in v1.6.0
+
+### MongoDB Shell
+
+- **Embedded MongoDB Shell** – Interactive CLI panel inside Compass, toggled from the top bar; runs entirely in the browser without external tools.
+- **Execute MongoDB commands** – Run any MongoDB command (`db.runCommand()`, `db.adminCommand()`, `db.serverStatus()`, etc.) directly from the shell.
+- **Execute JavaScript queries** – Evaluate JavaScript expressions with a controlled context containing `db`, `ObjectId`, `ISODate`, `NumberLong`, `NumberDecimal`, and `UUID` helpers.
+- **Auto-complete for commands and collections** – Monaco-powered autocomplete suggests shell helpers, database methods, collection names, and collection methods as you type.
+- **Command history navigation** – Navigate through previous commands with Up/Down arrow keys; history persists across sessions via localStorage.
+- **Multi-line command support** – Press Shift+Enter for new lines; Enter executes the full command.
+- **Syntax highlighting** – Full JavaScript syntax highlighting via Monaco editor.
+- **Query result viewer (JSON output)** – Results displayed as pretty-printed JSON with execution time.
+- **Pretty print results** – All results serialized and formatted with 2-space indentation for readability.
+- **Error display and debug output** – Errors shown in red with MongoDB-specific error messages parsed from the driver.
+- **Access current database context** – The shell tracks the active database; type `db` to see it.
+- **Switch database (`use dbName`)** – Change the active database with the `use` command; the prompt updates immediately.
+- **Run CRUD operations** – Full support for `find`, `findOne`, `insertOne`, `insertMany`, `updateOne`, `updateMany`, `replaceOne`, `deleteOne`, `deleteMany`, `findOneAndUpdate`, `findOneAndReplace`, `findOneAndDelete`.
+- **Run aggregation pipelines** – Execute `db.collection.aggregate([...])` with full pipeline support.
+- **Collection management commands** – `db.collection.drop()`, `db.collection.renameCollection()`, `db.collection.stats()`, `db.createCollection()`, `db.getCollectionNames()`.
+- **Index management commands** – `db.collection.createIndex()`, `db.collection.createIndexes()`, `db.collection.dropIndex()`, `db.collection.dropIndexes()`, `db.collection.getIndexes()`.
+- **Database administration commands** – `db.dropDatabase()`, `db.stats()`, `db.serverStatus()`, `db.hostInfo()`, `db.currentOp()`, `db.killOp()`, `db.listCommands()`.
+- **Access MongoDB helper functions** – `show dbs`, `show collections`, `show users`, `show roles`, `show profile`, `show logs`, `help`.
+- **Run server status commands** – `db.serverStatus()`, `db.hostInfo()`, `db.currentOp()` for server monitoring.
+- **Script execution support** – Evaluate multi-line JavaScript blocks with `db` proxy for arbitrary scripting.
+- **Copy command results** – One-click copy of the last result to clipboard from the toolbar.
+- **Clear shell output** – Clear button in toolbar or type `cls`/`clear` to reset the output.
+- **Shell session persistence** – Database context, command history, and output entries saved to localStorage and restored on reload.
+- **Run advanced MongoDB expressions** – `db.runCommand()` and `db.adminCommand()` for arbitrary server commands.
+- **Execute bulk operations** – `db.collection.bulkWrite()` for batched insert/update/delete operations.
+- **Access MongoDB system collections** – Query `system.profile`, `system.users`, and other system collections directly.
+
 ---
 
 ## Planned for future releases
 
-- **Aggregations** – Aggregation pipeline builder and runner. (Stub: "Coming soon" in UI.)
-- **Validation** – Document validation rules and validation status. (Stub: "Coming soon" in UI.)
-
-These tabs exist as stubs in the codebase and will be enabled in the UI when implemented.
+- **Improved UX** – Pagination and query builder improvements, plus additional quality-of-life enhancements.
+- **Optional auth** – Authentication support for shared development environments.
+- **Multiple connections** – Support for multiple saved connection profiles and quick switching between them.
+- **Theming support** – System, dark, and light themes with automatic system theme syncing.
