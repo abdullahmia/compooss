@@ -1,4 +1,10 @@
 export const ENDPOINTS = {
+  connection: {
+    connect: "/connection/connect",
+    disconnect: "/connection/disconnect",
+    status: "/connection/status",
+    test: "/connection/test",
+  },
   databases: {
     root: "/databases",
     byName: (dbName: string) => `/databases/${dbName}`,

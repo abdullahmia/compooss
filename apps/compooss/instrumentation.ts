@@ -1,12 +1,8 @@
 /**
- * Runs when the Next.js server starts. Validates that MONGO_URI is set.
- * Throws so the server does not start without a MongoDB connection string.
+ * Next.js instrumentation hook.
+ * Connection is now managed dynamically via the ConnectionManager,
+ * so no startup URI validation is needed.
  */
 export async function register() {
-  const uri = process.env.MONGODB_URI ?? process.env.MONGO_URI;
-  if (!uri || typeof uri !== "string" || uri.trim() === "") {
-    throw new Error(
-      "MONGO_URI or MONGODB_URI is required. Set one in .env or your environment (e.g. MONGO_URI=mongodb://localhost:27017)."
-    );
-  }
+  // No-op: connections are established on demand via /api/connection/connect
 }

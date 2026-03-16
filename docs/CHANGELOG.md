@@ -9,6 +9,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - (Nothing yet.)
 
+## [1.7.0] - 2026-03-16
+
+### Added
+
+- **Multiple Connections** – Dedicated connection page and connection management:
+  - Full-screen connection page at `/connect` with a connection form and saved connections list.
+  - Save, edit, and delete connection profiles stored in IndexedDB (persisted across sessions).
+  - Favorite connections; filter favorites-only; sort by name, recent, or created date.
+  - Search connections by name or label in real time.
+  - Color-coded connections (8 colors) with color dot in sidebar and top bar.
+  - Custom labels (e.g. "dev", "staging") displayed as badges in the connection list and top bar.
+  - Authentication: default, password (SCRAM-SHA-1/256), X.509, LDAP, and Kerberos with per-mechanism configuration.
+  - TLS/SSL: CA file, certificate, key, allow invalid certificates/hostnames.
+  - Advanced options: replica set, read preference, connection/server-selection timeouts, direct connection, max pool size.
+  - Test connection before saving with inline pass/fail result and server info.
+  - Connect from the form or saved list; disconnect from the top bar.
+  - Top bar shows active connection name, color, label, and masked URI; links back to connection manager.
+  - Connection context provider auto-restores the last active connection on reload.
+  - Sidebar footer displays active connection color and database count.
+- New API routes: `POST /connection/connect`, `POST /connection/disconnect`, `GET /connection/status`, `POST /connection/test`.
+- `ConnectionManager` singleton on the server for connect, disconnect, test, and status.
+- `ConnectionProvider` React context with `useConnection` hook.
+- `connectionDB` IndexedDB wrapper for CRUD, favorites, recent, and search operations.
+- Connection types (`SavedConnection`, `ConnectionStatus`, `ConnectionTestResult`, `AuthConfig`, `TlsConfig`, `AdvancedConfig`, `AuthType`, `ReadPreference`, `ConnectionColor`) in `@compooss/types`.
+
+## [1.6.0] - 2026-03-16
+
+### Added
+
+- **MongoDB Shell** – Embedded interactive CLI panel toggled from the top bar:
+  - Execute MongoDB commands (`db.runCommand()`, `db.adminCommand()`, `db.serverStatus()`, etc.) and JavaScript expressions directly in the browser.
+  - Full CRUD support: `find`, `findOne`, `insertOne`, `insertMany`, `updateOne`, `updateMany`, `replaceOne`, `deleteOne`, `deleteMany`, `findOneAndUpdate`, `findOneAndReplace`, `findOneAndDelete`.
+  - Run aggregation pipelines via `db.collection.aggregate([...])`.
+  - Collection management: `drop()`, `renameCollection()`, `stats()`, `db.createCollection()`, `db.getCollectionNames()`.
+  - Index management: `createIndex()`, `createIndexes()`, `dropIndex()`, `dropIndexes()`, `getIndexes()`.
+  - Database administration: `db.dropDatabase()`, `db.stats()`, `db.serverStatus()`, `db.hostInfo()`, `db.currentOp()`, `db.killOp()`, `db.listCommands()`.
+  - Shell helpers: `show dbs`, `show collections`, `show users`, `show roles`, `show profile`, `show logs`, `help`.
+  - `use dbName` to switch active database; `db` to inspect current context.
+  - Bulk operations via `db.collection.bulkWrite()`.
+  - Monaco-powered autocomplete for commands, database methods, collection names, and collection methods.
+  - Command history navigation with Up/Down arrow keys; history persists via localStorage.
+  - Multi-line editing with Shift+Enter; Enter to execute.
+  - JavaScript syntax highlighting via Monaco editor.
+  - Pretty-printed JSON output with execution time.
+  - Error display with MongoDB-specific error message parsing.
+  - Copy result to clipboard and clear output (`cls`/`clear`) from toolbar.
+  - Session persistence: database context, history, and output restored on reload.
+
+## [1.5.0] - 2026-03-16
+
+### Added
+
+- **Aggregation Pipelines** – Visual pipeline builder for MongoDB aggregations:
+  - Add, remove, duplicate, and reorder stages with drag-and-drop.
+  - Curated stage templates grouped by category (match, group, sort, lookup, etc.).
+  - Per-stage previews: run the pipeline up to any stage and see sample documents.
+  - Builder and text modes: switch between visual builder and raw JSON editing.
+  - Save pipelines locally; mark favorites; load and delete per collection namespace.
+  - Export and sharing: copy pipeline JSON, copy `db.collection.aggregate([...])` code, or download as JSON.
+  - Create MongoDB views directly from a pipeline.
+
 ## [1.4.0] - 2026-03-16
 
 ### Added

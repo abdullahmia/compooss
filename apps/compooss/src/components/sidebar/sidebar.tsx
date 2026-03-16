@@ -1,12 +1,13 @@
 "use client";
 
+import { useConnection } from "@/lib/providers/connection-provider";
 import { useGetDatabases } from "@/lib/services/v2/database/database.service";
 import type { Database } from "@compooss/types";
+import { DatabaseSidebarSkeleton, IconButton } from "@compooss/ui";
 import { AlertTriangle, Plus, RefreshCw, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { CreateDatabaseModal } from "../create-database-modal";
-import { DatabaseSidebarSkeleton, IconButton } from "@compooss/ui";
 import { SidebarItem } from "./sidebar-item";
 
 /** Parses pathname to get the active database name (e.g. /databases/foo/... -> foo). */
@@ -18,6 +19,7 @@ function getActiveDbNameFromPath(pathname: string): string | null {
 export function Sidebar() {
   const pathname = usePathname();
   const activeDbName = getActiveDbNameFromPath(pathname ?? "");
+  const { activeConnection } = useConnection();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState<boolean>(false);
   const [expandedDbNames, setExpandedDbNames] = useState<Set<string>>(
@@ -126,7 +128,7 @@ export function Sidebar() {
         </div>
 
         <div className="p-3 border-t border-border">
-          <div className="text-[10px] text-muted-foreground">
+          <div className="text-[10px] text-muted-foreground flex items-center gap-1.5">
             {isError ? (
               <>
                 <span className="text-destructive font-medium">●</span>{" "}
@@ -134,7 +136,14 @@ export function Sidebar() {
               </>
             ) : (filtered?.length ?? 0) > 0 ? (
               <>
-                <span className="text-primary font-medium">●</span>{" "}
+                  {activeConnection?.color ? (
+                    <span
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: activeConnection.color }}
+                    />
+                  ) : (
+                    <span className="text-primary font-medium">●</span>
+                  )}
                 {`Connected — ${filtered?.length ?? 0} databases`}
               </>
             ) : (
