@@ -91,14 +91,23 @@ export async function GET(req: NextRequest, { params }: DocParams) {
 }
 
 export async function POST(req: Request, { params }: DocParams) {
-  const { dbName, colName } = await params;
-  if (isProtectedDatabase(dbName)) return protectedDbResponse();
-  const body = await req.json();
-  const document = body?.document ?? body;
-  const inserted = await documentRepository.addDocument({
-    databaseName: dbName,
-    collectionName: colName,
-    document: document ?? {},
-  });
-  return NextResponse.json(createApiResponse(inserted, "Document inserted successfully", 201));
+  try {
+    const { dbName, colName } = await params;
+    if (isProtectedDatabase(dbName)) return protectedDbResponse();
+    const body = await req.json();
+    const document = body?.document ?? body;
+    const inserted = await documentRepository.addDocument({
+      databaseName: dbName,
+      collectionName: colName,
+      document: document ?? {},
+    });
+    return NextResponse.json(createApiResponse(inserted, "Document inserted successfully", 201));
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : String(error);
+    return NextResponse.json(
+      createApiResponse(null, message, 400),
+      { status: 400 },
+    );
+  }
 }

@@ -1,6 +1,6 @@
 # Compooss features
 
-Current release: **v1.3.0**.
+Current release: **v1.4.0**.
 
 ---
 
@@ -48,11 +48,23 @@ Current release: **v1.3.0**.
 - **Drill down** – Expand nested objects; view ObjectId first/last timestamps, array stats, and value samples inline.
 - **Refresh or rerun** – Re-run schema analysis with the same or different sample size via Analyze and Refresh.
 
+## Shipped in v1.4.0
+
+### Validation Rules
+
+- **View validation rules** – See the current collection validator, validation level, and validation action from the Validation tab.
+- **Create or edit rules** – Write validation rules using MongoDB's JSON Schema (`$jsonSchema`) in a Monaco-powered JSON editor.
+- **Set validation level** – Choose between strict (all inserts and updates), moderate (existing valid documents only), or off.
+- **Set validation action** – Choose error (reject invalid documents) or warn (allow but log a warning).
+- **Apply rules** – Save validation rules to the collection via the `collMod` command.
+- **Validate existing documents** – Run a validation check against the current rules with configurable sample size (100, 500, 1000, 5000).
+- **Detect violations** – See total/valid/invalid document counts; expand invalid documents to view their `_id` and error details.
+- **Read-only protection** – Validation rules are read-only for system databases (`admin`, `local`, `config`).
+
 ---
 
 ## Planned for future releases
 
 - **Aggregations** – Aggregation pipeline builder and runner. (Stub: "Coming soon" in UI.)
-- **Validation** – Document validation rules and validation status. (Stub: "Coming soon" in UI.)
 
-These tabs exist as stubs in the codebase and will be enabled in the UI when implemented.
+This tab exists as a stub in the codebase and will be enabled in the UI when implemented.

@@ -22,4 +22,8 @@ export const ENDPOINTS = {
     root: (db: string, col: string) =>
       `/databases/${db}/collections/${col}/schema`,
   },
+  validation: {
+    root: (db: string, col: string) =>
+      `/databases/${db}/collections/${col}/validation`,
+  },
 }
