@@ -7,6 +7,7 @@ import {
   Database,
   Search,
   Shield,
+  ShieldCheck,
   Container,
   Terminal,
   Layers,
@@ -77,6 +78,12 @@ const FEATURES = [
     title: "Schema Analysis",
     description:
       "Analyze collection schema from sampled documents: view detected fields, type distribution, frequency, value distributions, nested and array structures, and missing or inconsistent fields. Refresh on demand.",
+  },
+  {
+    icon: <ShieldCheck size={20} />,
+    title: "Validation Rules",
+    description:
+      "View, create, and edit collection validation rules using JSON Schema. Set validation level and action, validate existing documents, and detect violations — all from a visual editor.",
   },
   {
     icon: <Shield size={20} />,
@@ -166,6 +173,13 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   },
   {
     feature: "Schema analysis",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "yes",
+  },
+  {
+    feature: "Validation rules",
     compooss: "yes",
     compass: "yes",
     mongoExpress: "no",
@@ -318,7 +332,7 @@ export default function LandingPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                v1.2.0 — Now with full index management
+                v1.4.0 — Now with validation rules
               </motion.div>
 
               <motion.h1
@@ -755,6 +769,10 @@ export default function LandingPage() {
                   "Analyze collection schema from samples",
                   "View field types, frequency & value distributions",
                   "Inspect nested fields and array structures",
+                  "Define validation rules with JSON Schema",
+                  "Set validation level and action",
+                  "Validate existing documents",
+                  "Detect validation violations",
                   "Masked connection strings",
                   "System DB read-only protection",
                 ].map((item) => (
@@ -834,41 +852,49 @@ export default function LandingPage() {
               </div>
             </motion.div>
 
+            {/* Validation Rules - Shipped */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
+            >
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+                <ShieldCheck size={20} />
+              </div>
+              <h3 className="mb-1 text-base font-semibold text-zinc-100">
+                Validation Rules
+              </h3>
+              <p className="text-sm text-zinc-400">
+                Define and manage JSON Schema validators. Set validation level and action, validate documents, and detect violations.
+              </p>
+              <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
+                Shipped in v1.4.0
+              </div>
+            </motion.div>
+
             {/* Planned */}
-            {[
-              {
-                icon: <Layers size={20} />,
-                title: "Aggregations",
-                description:
-                  "Visual pipeline builder and runner for complex aggregation queries.",
-              },
-              {
-                icon: <Shield size={20} />,
-                title: "Validation Rules",
-                description:
-                  "Define and manage document validation rules with a visual editor.",
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: (i + 1) * 0.1 }}
-                className="relative rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/20 p-6"
-              >
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800/50 text-zinc-500">
-                  {item.icon}
-                </div>
-                <h3 className="mb-1 text-base font-semibold text-zinc-300">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-zinc-500">{item.description}</p>
-                <div className="mt-3 inline-flex rounded-full bg-zinc-800/50 px-2.5 py-0.5 text-xs text-zinc-500">
-                  Coming soon
-                </div>
-              </motion.div>
-            ))}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="relative rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/20 p-6"
+            >
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800/50 text-zinc-500">
+                <Layers size={20} />
+              </div>
+              <h3 className="mb-1 text-base font-semibold text-zinc-300">
+                Aggregations
+              </h3>
+              <p className="text-sm text-zinc-500">
+                Visual pipeline builder and runner for complex aggregation queries.
+              </p>
+              <div className="mt-3 inline-flex rounded-full bg-zinc-800/50 px-2.5 py-0.5 text-xs text-zinc-500">
+                Coming soon
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>

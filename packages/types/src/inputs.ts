@@ -1,6 +1,7 @@
 import type { DocumentRecord } from "./document";
 import type { PaginationOptions } from "./document";
 import type { IndexField } from "./index-types";
+import type { ValidationLevel, ValidationAction } from "./validation";
 
 export interface CreateDatabaseInput {
   /** Name of the new database */
@@ -90,4 +91,18 @@ export interface HideIndexInput {
   collectionName: string;
   indexName: string;
   hidden: boolean;
+}
+
+export interface UpdateValidationInput {
+  databaseName: string;
+  collectionName: string;
+  validator: Record<string, unknown>;
+  validationLevel: ValidationLevel;
+  validationAction: ValidationAction;
+}
+
+export interface CheckValidationInput {
+  databaseName: string;
+  collectionName: string;
+  sampleSize?: number;
 }

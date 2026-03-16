@@ -91,11 +91,12 @@ export class ApiClient {
     const response = await fetch(this.resolveUrl(path), init);
 
     if (!response.ok) {
+      const rawText = await response.text();
       let errorPayload: unknown;
       try {
-        errorPayload = await response.json();
+        errorPayload = JSON.parse(rawText);
       } catch {
-        errorPayload = await response.text();
+        errorPayload = rawText;
       }
       const error = new Error(
         `Request failed with status ${response.status}: ${response.statusText}`,
