@@ -8,3 +8,4 @@ export * from "./index-types";
 export * from "./inputs";
 export * from "./schema";
 export * from "./validation";
+export * from "./aggregation";

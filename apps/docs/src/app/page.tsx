@@ -86,6 +86,12 @@ const FEATURES = [
       "View, create, and edit collection validation rules using JSON Schema. Set validation level and action, validate existing documents, and detect violations — all from a visual editor.",
   },
   {
+    icon: <Layers size={20} />,
+    title: "Aggregation Pipelines",
+    description:
+      "Build MongoDB aggregation pipelines visually with stage templates, drag-and-drop stages, per-stage previews, text mode editing, saved pipelines, and view creation from pipelines.",
+  },
+  {
     icon: <Shield size={20} />,
     title: "Built-In Safety Guards",
     description:
@@ -180,6 +186,13 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   },
   {
     feature: "Validation rules",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "yes",
+  },
+  {
+    feature: "Aggregation pipeline builder",
     compooss: "yes",
     compass: "yes",
     mongoExpress: "no",
@@ -318,7 +331,7 @@ export default function LandingPage() {
       </motion.nav>
 
       {/* Hero */}
-      <section ref={heroRef} className="relative pb-20 pt-20 md:pt-32">
+      <section ref={heroRef} className="relative pb-16 pt-16 md:pt-24">
         <motion.div style={{ y: heroY, opacity: heroOpacity }}>
           <div className="mx-auto max-w-6xl px-6">
             <div className="flex flex-col items-center text-center">
@@ -332,7 +345,7 @@ export default function LandingPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                v1.4.0 — Now with validation rules
+                v1.5.0 — Now with aggregation pipelines
               </motion.div>
 
               <motion.h1
@@ -436,8 +449,99 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
+      {/* Installation */}
+      <section id="installation" className="relative pt-10 pb-20 md:pt-14 md:pb-24">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
+        <div className="relative mx-auto max-w-6xl px-6">
+          <AnimatedSection className="mb-12 text-center">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
+              Installation
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
+              Install in seconds with Docker
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-zinc-400">
+              Add Compooss to your existing docker-compose.yml or run it as a
+              standalone Docker container. No build steps, no dependencies, no
+              configuration files needed.
+            </p>
+          </AnimatedSection>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div>
+              <AnimatedSection>
+                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-100">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-400">
+                    <Code2 size={14} />
+                  </div>
+                  Docker Compose
+                  <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
+                    Recommended
+                  </span>
+                </h3>
+              </AnimatedSection>
+              <CodeBlock
+                code={DOCKER_COMPOSE_CODE}
+                language="yaml"
+                filename="docker-compose.yml"
+              />
+            </div>
+
+            <div>
+              <AnimatedSection>
+                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-100">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-400">
+                    <Terminal size={14} />
+                  </div>
+                  Docker Run
+                </h3>
+              </AnimatedSection>
+              <CodeBlock
+                code={DOCKER_RUN_CODE}
+                language="bash"
+                filename="terminal"
+              />
+
+              <AnimatedSection delay={0.2} className="mt-6">
+                <div className="rounded-2xl border border-zinc-800/60 bg-zinc-900/40 p-5">
+                  <h4 className="mb-3 text-sm font-semibold text-zinc-200">
+                    Environment Variables
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <code className="mt-0.5 shrink-0 rounded-md bg-zinc-800 px-2 py-0.5 font-mono text-xs text-emerald-400">
+                        MONGO_URI
+                      </code>
+                      <p className="text-sm text-zinc-400">
+                        MongoDB connection string. Also supports{" "}
+                        <code className="rounded bg-zinc-800 px-1.5 py-0.5 font-mono text-xs text-zinc-300">
+                          MONGODB_URI
+                        </code>{" "}
+                        as an alias.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <code className="mt-0.5 shrink-0 rounded-md bg-zinc-800 px-2 py-0.5 font-mono text-xs text-emerald-400">
+                        PORT
+                      </code>
+                      <p className="text-sm text-zinc-400">
+                        Port to run the server on. Defaults to{" "}
+                        <code className="rounded bg-zinc-800 px-1.5 py-0.5 font-mono text-xs text-zinc-300">
+                          3000
+                        </code>
+                        .
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </AnimatedSection>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
-      <section id="features" className="relative py-24 md:py-32">
+      <section id="features" className="relative py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6">
           <AnimatedSection className="mb-16 text-center">
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
@@ -464,7 +568,7 @@ export default function LandingPage() {
       </section>
 
       {/* Why Compooss */}
-      <section id="why-compooss" className="relative py-24 md:py-32">
+      <section id="why-compooss" className="relative py-16 md:py-20">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
         <div className="relative mx-auto max-w-6xl px-6">
           <AnimatedSection className="mb-16 text-center">
@@ -619,99 +723,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Installation */}
-      <section id="installation" className="relative pt-12 pb-24 md:pt-16 md:pb-32">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
-        <div className="relative mx-auto max-w-6xl px-6">
-          <AnimatedSection className="mb-16 text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
-              Installation
-            </p>
-            <h2 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
-              Install in seconds with Docker
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-zinc-400">
-              Add Compooss to your existing docker-compose.yml or run it as a
-              standalone Docker container. No build steps, no dependencies, no
-              configuration files needed.
-            </p>
-          </AnimatedSection>
-
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div>
-              <AnimatedSection>
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-100">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-400">
-                    <Code2 size={14} />
-                  </div>
-                  Docker Compose
-                  <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                    Recommended
-                  </span>
-                </h3>
-              </AnimatedSection>
-              <CodeBlock
-                code={DOCKER_COMPOSE_CODE}
-                language="yaml"
-                filename="docker-compose.yml"
-              />
-            </div>
-
-            <div>
-              <AnimatedSection>
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-100">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-400">
-                    <Terminal size={14} />
-                  </div>
-                  Docker Run
-                </h3>
-              </AnimatedSection>
-              <CodeBlock
-                code={DOCKER_RUN_CODE}
-                language="bash"
-                filename="terminal"
-              />
-
-              <AnimatedSection delay={0.2} className="mt-6">
-                <div className="rounded-2xl border border-zinc-800/60 bg-zinc-900/40 p-5">
-                  <h4 className="mb-3 text-sm font-semibold text-zinc-200">
-                    Environment Variables
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <code className="mt-0.5 shrink-0 rounded-md bg-zinc-800 px-2 py-0.5 font-mono text-xs text-emerald-400">
-                        MONGO_URI
-                      </code>
-                      <p className="text-sm text-zinc-400">
-                        MongoDB connection string. Also supports{" "}
-                        <code className="rounded bg-zinc-800 px-1.5 py-0.5 font-mono text-xs text-zinc-300">
-                          MONGODB_URI
-                        </code>{" "}
-                        as an alias.
-                      </p>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <code className="mt-0.5 shrink-0 rounded-md bg-zinc-800 px-2 py-0.5 font-mono text-xs text-emerald-400">
-                        PORT
-                      </code>
-                      <p className="text-sm text-zinc-400">
-                        Port to run the server on. Defaults to{" "}
-                        <code className="rounded bg-zinc-800 px-1.5 py-0.5 font-mono text-xs text-zinc-300">
-                          3000
-                        </code>
-                        .
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </AnimatedSection>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Usage / How it works */}
-      <section id="usage" className="relative py-24 md:py-32">
+      <section id="usage" className="relative py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6">
           <AnimatedSection className="mb-16 text-center">
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
@@ -775,6 +788,12 @@ export default function LandingPage() {
                   "Detect validation violations",
                   "Masked connection strings",
                   "System DB read-only protection",
+                  "Build aggregation pipelines with stage templates",
+                  "Reorder, enable, and disable aggregation stages",
+                  "Preview results for individual aggregation stages",
+                  "Save and reload aggregation pipelines per collection",
+                  "Export aggregation JSON and backend-ready code",
+                  "Create MongoDB views directly from aggregation pipelines",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3">
                     <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
@@ -790,7 +809,7 @@ export default function LandingPage() {
       </section>
 
       {/* Roadmap */}
-      <section id="roadmap" className="relative py-24 md:py-32">
+      <section id="roadmap" className="relative py-16 md:py-20">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
         <div className="relative mx-auto max-w-6xl px-6">
           <AnimatedSection className="mb-16 text-center">
@@ -807,8 +826,7 @@ export default function LandingPage() {
             </p>
           </AnimatedSection>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Shipped */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -817,20 +835,19 @@ export default function LandingPage() {
               className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-                <Grid3X3 size={20} />
+                <Terminal size={20} />
               </div>
               <h3 className="mb-1 text-base font-semibold text-zinc-100">
-                Index Management
+                MongoDB Shell
               </h3>
               <p className="text-sm text-zinc-400">
-                Create, drop, hide, and inspect indexes with usage stats. Supports all index types.
+                Run ad-hoc MongoDB commands and scripts from an embedded shell panel directly in the UI.
               </p>
               <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                Shipped in v1.2.0
+                Coming soon
               </div>
             </motion.div>
 
-            {/* Schema Analysis - Shipped */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -839,20 +856,19 @@ export default function LandingPage() {
               className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-                <LayoutGrid size={20} />
+                <Layers size={20} />
               </div>
               <h3 className="mb-1 text-base font-semibold text-zinc-100">
-                Schema Analysis
+                Multiple Connections
               </h3>
               <p className="text-sm text-zinc-400">
-                Analyze schema from sampled docs: fields, types, frequency, value distributions, nested/array structures.
+                Save and switch between multiple MongoDB connection profiles for different projects and environments.
               </p>
               <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                Shipped in v1.3.0
+                Coming soon
               </div>
             </motion.div>
 
-            {/* Validation Rules - Shipped */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -861,37 +877,15 @@ export default function LandingPage() {
               className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-                <ShieldCheck size={20} />
+                <LayoutGrid size={20} />
               </div>
               <h3 className="mb-1 text-base font-semibold text-zinc-100">
-                Validation Rules
+                Theming Support
               </h3>
               <p className="text-sm text-zinc-400">
-                Define and manage JSON Schema validators. Set validation level and action, validate documents, and detect violations.
+                System-aware theming with dedicated dark and light modes, matching your OS preference.
               </p>
               <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                Shipped in v1.4.0
-              </div>
-            </motion.div>
-
-            {/* Planned */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="relative rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/20 p-6"
-            >
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800/50 text-zinc-500">
-                <Layers size={20} />
-              </div>
-              <h3 className="mb-1 text-base font-semibold text-zinc-300">
-                Aggregations
-              </h3>
-              <p className="text-sm text-zinc-500">
-                Visual pipeline builder and runner for complex aggregation queries.
-              </p>
-              <div className="mt-3 inline-flex rounded-full bg-zinc-800/50 px-2.5 py-0.5 text-xs text-zinc-500">
                 Coming soon
               </div>
             </motion.div>
@@ -900,7 +894,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="relative py-24 md:py-32">
+      <section className="relative py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6">
           <AnimatedSection>
             <div className="relative overflow-hidden rounded-3xl border border-zinc-800/60 bg-gradient-to-br from-zinc-900 via-zinc-900/80 to-zinc-900 p-10 text-center md:p-16">
