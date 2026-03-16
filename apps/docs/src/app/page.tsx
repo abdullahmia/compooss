@@ -81,12 +81,6 @@ const FEATURES = [
       "Analyze collection schema from sampled documents: view detected fields, type distribution, frequency, value distributions, nested and array structures, and missing or inconsistent fields. Refresh on demand.",
   },
   {
-    icon: <ShieldCheck size={20} />,
-    title: "Validation Rules",
-    description:
-      "View, create, and edit collection validation rules using JSON Schema. Set validation level and action, validate existing documents, and detect violations — all from a visual editor.",
-  },
-  {
     icon: <Layers size={20} />,
     title: "Aggregation Pipelines",
     description:
@@ -135,9 +129,9 @@ const CORE_FEATURES = [
   FEATURES[0], // Database Management
   FEATURES[1], // Collection Explorer
   FEATURES[4], // Full Document CRUD
-  FEATURES[9], // MongoDB Shell
-  FEATURES[10], // Multiple Connections
-  FEATURES[13], // Modern Developer UI
+  FEATURES[8], // MongoDB Shell
+  FEATURES[9], // Multiple Connections
+  FEATURES[12], // Modern Developer UI
 ];
 
 type ComparisonValue = "yes" | "no" | "partial" | string;
@@ -202,13 +196,6 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   },
   {
     feature: "Schema analysis",
-    compooss: "yes",
-    compass: "yes",
-    mongoExpress: "no",
-    studio3t: "yes",
-  },
-  {
-    feature: "Validation rules",
     compooss: "yes",
     compass: "yes",
     mongoExpress: "no",
@@ -282,14 +269,11 @@ const DOCKER_COMPOSE_CODE = `services:
     image: abdullahmia/compooss:latest
     ports:
       - "3000:3000"
-    environment:
-      - MONGO_URI=mongodb://mongo:27017
     depends_on:
       - mongo`;
 
-const DOCKER_RUN_CODE = `# Connect to MongoDB running on your host machine
+const DOCKER_RUN_CODE = `# Run Compooss and connect via the /connect page
 docker run -p 3000:3000 \\
-  -e MONGO_URI=mongodb://host.docker.internal:27017 \\
   abdullahmia/compooss:latest`;
 
 const USAGE_STEPS = [
@@ -301,9 +285,9 @@ const USAGE_STEPS = [
   },
   {
     step: "02",
-    title: "Configure your MongoDB connection",
+    title: "Connect from the UI",
     description:
-      "Set the MONGO_URI environment variable to point to your MongoDB instance. Works with any standard MongoDB connection string, including replica sets and authentication.",
+      "Open the /connect page in Compooss, enter your MongoDB connection string, and save a connection profile. You can test the connection before using it.",
   },
   {
     step: "03",
@@ -552,18 +536,6 @@ export default function LandingPage() {
                     Environment Variables
                   </h4>
                   <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <code className="mt-0.5 shrink-0 rounded-md bg-zinc-800 px-2 py-0.5 font-mono text-xs text-emerald-400">
-                        MONGO_URI
-                      </code>
-                      <p className="text-sm text-zinc-400">
-                        MongoDB connection string. Also supports{" "}
-                        <code className="rounded bg-zinc-800 px-1.5 py-0.5 font-mono text-xs text-zinc-300">
-                          MONGODB_URI
-                        </code>{" "}
-                        as an alias.
-                      </p>
-                    </div>
                     <div className="flex items-start gap-3">
                       <code className="mt-0.5 shrink-0 rounded-md bg-zinc-800 px-2 py-0.5 font-mono text-xs text-emerald-400">
                         PORT
@@ -823,10 +795,6 @@ export default function LandingPage() {
                   "Analyze collection schema from samples",
                   "View field types, frequency & value distributions",
                   "Inspect nested fields and array structures",
-                  "Define validation rules with JSON Schema",
-                  "Set validation level and action",
-                  "Validate existing documents",
-                  "Detect validation violations",
                   "Masked connection strings",
                   "System DB read-only protection",
                   "Build aggregation pipelines with stage templates",
