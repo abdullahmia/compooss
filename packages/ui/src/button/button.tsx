@@ -4,18 +4,52 @@ import { Loader2 } from "lucide-react";
 import { type ButtonHTMLAttributes, forwardRef, type ReactNode } from "react";
 
 const buttonVariants = cva(
-  "transition-colors cursor-pointer font-normal disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-1 font-normal cursor-pointer transition-colors disabled:pointer-events-none disabled:opacity-50 rounded-sm",
   {
     variants: {
       variant: {
+        /**
+         * Primary call-to-action button.
+         * Matches solid primary buttons used for submits / confirmations.
+         */
         primary:
-          "bg-primary text-primary-foreground px-6 py-2.5 rounded-sm text-sm hover:bg-primary/90",
-        ghost:
-          "text-xs text-primary hover:text-primary/80 flex items-center gap-0.5",
+          "bg-primary text-primary-foreground hover:bg-primary/90",
+
+        /**
+         * Low-emphasis text-style button.
+         * Matches small textual buttons and links.
+         */
+        ghost: "text-primary hover:text-primary/80",
+
+        /**
+         * Secondary / cancel-style button.
+         * Matches outlined cancel buttons in modals.
+         */
+        outline:
+          "border border-border text-muted-foreground hover:text-foreground hover:bg-secondary",
+
+        /**
+         * Card-style button used for large, full-width navigation tiles
+         * (e.g. feature cards on the welcome view).
+         */
+        card:
+          "w-full justify-start text-left bg-card border border-border hover:border-primary/30 hover:bg-card/80",
+
+        /**
+         * Menu/list item button for dropdowns and command lists.
+         */
+        menu:
+          "w-full justify-start text-left text-xs hover:bg-muted/50",
+      },
+      size: {
+        sm: "px-2.5 py-1.5 text-xs",
+        md: "px-4 py-2 text-xs",
+        lg: "px-6 py-2.5 text-sm",
       },
     },
     defaultVariants: {
       variant: "primary",
+      size: "md",
     },
   },
 );
@@ -34,6 +68,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     {
       className,
       variant,
+      size,
       children,
       loading = false,
       icon,
@@ -55,11 +90,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={isDisabled}
-        className={cn(
-          buttonVariants({ variant }),
-          "flex items-center gap-1",
-          className,
-        )}
+        className={cn(buttonVariants({ variant, size }), className)}
         {...props}
       >
         {iconPosition === "left" && resolvedIcon}

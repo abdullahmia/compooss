@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@compooss/ui";
 import { useShellPanel } from "@/lib/providers/shell-provider";
 import { useGetCollections } from "@/lib/services/v2/collections/collection.service";
 import { useGetDatabases } from "@/lib/services/v2/database/database.service";
@@ -129,11 +130,13 @@ export function WelcomeView() {
           {FEATURES.map((item) => {
             const Icon = item.icon;
             return (
-              <button
+              <Button
                 key={item.id}
                 type="button"
                 onClick={() => handleFeatureClick(item)}
-                className="w-full flex items-start gap-3 p-3 rounded-lg bg-card border border-border hover:border-primary/30 hover:bg-card/80 transition-colors cursor-pointer text-left"
+                variant="card"
+                size="md"
+                className="flex items-start gap-3 cursor-pointer"
               >
                 <Icon className="h-4 w-4 text-primary mt-0.5 shrink-0" />
                 <div className="flex-1 min-w-0">
@@ -145,7 +148,7 @@ export function WelcomeView() {
                   </p>
                 </div>
                 <ArrowRight className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />
-              </button>
+              </Button>
             );
           })}
         </div>
