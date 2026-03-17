@@ -15,7 +15,6 @@ import {
   Eye,
   Code2,
   ChevronRight,
-  Github,
   ArrowRight,
   Check,
   FileJson,
@@ -947,10 +946,10 @@ export default function LandingPage() {
       </section>
 
       {/* Roadmap */}
-      <section id="roadmap" className="relative py-16 md:py-20">
+      <section id="roadmap" className="relative py-16 md:py-24">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
         <div className="relative mx-auto max-w-6xl px-6">
-          <AnimatedSection className="mb-16 text-center">
+          <AnimatedSection className="mb-14 text-center">
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
               Roadmap
             </p>
@@ -958,167 +957,230 @@ export default function LandingPage() {
               What&apos;s coming next
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-zinc-400">
-              Compooss is actively maintained and growing. Upcoming features
-              will make it the most capable self-hosted MongoDB GUI for
-              Docker-based development.
+              Compooss is actively maintained. Here&apos;s what we&apos;re
+              building next.
             </p>
           </AnimatedSection>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
-            >
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-                <Terminal size={20} />
-              </div>
-              <h3 className="mb-1 text-base font-semibold text-zinc-100">
-                MongoDB Shell
-              </h3>
-              <p className="text-sm text-zinc-400">
-                Run ad-hoc MongoDB commands, JavaScript queries, CRUD
-                operations, aggregation pipelines, and admin commands from an
-                embedded shell with autocomplete, syntax highlighting, and
-                session persistence.
-              </p>
-              <div className="mt-3 inline-flex rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
-                Shipped in v1.6.0
-              </div>
-            </motion.div>
+          {/* Timeline roadmap */}
+          <div className="relative mx-auto max-w-3xl">
+            {/* Vertical line */}
+            <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-emerald-500/40 via-emerald-500/20 to-transparent md:left-1/2 md:-translate-x-px" />
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
-            >
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-                <Plug2 size={20} />
-              </div>
-              <h3 className="mb-1 text-base font-semibold text-zinc-100">
-                Multiple Connections
-              </h3>
-              <p className="text-sm text-zinc-400">
-                Save, edit, and switch between MongoDB connection profiles with
-                authentication, TLS/SSL, color-coded labels, favorites, and
-                test-before-connect — all from a dedicated connection page.
-              </p>
-              <div className="mt-3 inline-flex rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
-                Shipped in v1.7.0
-              </div>
-            </motion.div>
+            {[
+              {
+                icon: <LayoutGrid size={18} />,
+                title: "Theming Support",
+                description:
+                  "System-aware theming with dedicated dark and light modes, matching your OS preference automatically.",
+                status: "In Progress",
+                statusColor: "emerald",
+              },
+              {
+                icon: <Code2 size={18} />,
+                title: "Data Export & Import",
+                description:
+                  "Export collections to JSON or CSV and import data from files directly through the UI.",
+                status: "Planned",
+                statusColor: "zinc",
+              },
+              {
+                icon: <Eye size={18} />,
+                title: "Database Monitoring",
+                description:
+                  "Live dashboard with real-time server metrics, operation counters, connection pool status, and slow query tracking.",
+                status: "Planned",
+                statusColor: "zinc",
+              },
+              {
+                icon: <Layers size={18} />,
+                title: "Diagram Generation",
+                description:
+                  "Visualize collection relationships and schema structures as interactive diagrams directly from your database.",
+                status: "Planned",
+                statusColor: "zinc",
+              },
+            ].map((item, i) => (
+              <AnimatedSection key={item.title} delay={i * 0.1}>
+                <div
+                  className={`relative mb-10 flex items-start gap-6 last:mb-0 md:gap-10 ${
+                    i % 2 === 0
+                      ? "md:flex-row-reverse md:text-right"
+                      : "md:flex-row"
+                  }`}
+                >
+                  {/* Dot on the line */}
+                  <div className="absolute left-6 top-3 z-10 md:left-1/2">
+                    <div className="flex h-3 w-3 -translate-x-1/2 items-center justify-center">
+                      <div
+                        className={`h-3 w-3 rounded-full ${
+                          item.statusColor === "emerald"
+                            ? "bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.4)]"
+                            : "border-2 border-zinc-600 bg-zinc-900"
+                        }`}
+                      />
+                    </div>
+                  </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6"
-            >
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-                <LayoutGrid size={20} />
-              </div>
-              <h3 className="mb-1 text-base font-semibold text-zinc-100">
-                Theming Support
-              </h3>
-              <p className="text-sm text-zinc-400">
-                System-aware theming with dedicated dark and light modes,
-                matching your OS preference.
-              </p>
-              <div className="mt-3 inline-flex rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                Coming soon
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+                  {/* Spacer for left side on mobile */}
+                  <div className="w-12 shrink-0 md:hidden" />
 
-      {/* CTA */}
-      <section className="relative py-16 md:py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <AnimatedSection>
-            <div className="relative overflow-hidden rounded-3xl border border-zinc-800/60 bg-gradient-to-br from-zinc-900 via-zinc-900/80 to-zinc-900 p-10 text-center md:p-16">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.06),transparent_70%)]" />
-              <div className="relative">
-                <h2 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
-                  Ready to manage your MongoDB data?
-                </h2>
-                <p className="mx-auto mt-4 max-w-xl text-zinc-400">
-                  Add one service to your docker-compose.yml and get a
-                  full-featured, open-source MongoDB GUI running in seconds.
-                  Free forever, MIT licensed.
-                </p>
-                <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                  <a
-                    href="#installation"
-                    className="group flex items-center gap-2 rounded-xl bg-emerald-500 px-8 py-3.5 text-sm font-semibold text-zinc-950 transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25"
+                  {/* Content card */}
+                  <div
+                    className={`group flex-1 md:w-[calc(50%-2.5rem)] ${
+                      i % 2 === 0 ? "md:pr-10" : "md:pl-10"
+                    }`}
                   >
-                    Get Started Now
-                    <ArrowRight
-                      size={16}
-                      className="transition-transform group-hover:translate-x-0.5"
-                    />
-                  </a>
-                  <a
-                    href="https://hub.docker.com/r/abdullahmia/compooss"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/50 px-8 py-3.5 text-sm font-medium text-zinc-300 transition-all hover:border-zinc-700 hover:text-white"
-                  >
-                    <Container size={16} />
-                    Docker Hub
-                  </a>
+                    <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/50 p-5 transition-all hover:border-emerald-500/20 hover:bg-zinc-900/80">
+                      <div
+                        className={`mb-3 flex items-center gap-3 ${
+                          i % 2 === 0 ? "md:flex-row-reverse" : ""
+                        }`}
+                      >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+                          {item.icon}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-[15px] font-semibold text-zinc-100">
+                            {item.title}
+                          </h3>
+                        </div>
+                      </div>
+                      <p
+                        className={`text-sm leading-relaxed text-zinc-400 ${
+                          i % 2 === 0 ? "" : ""
+                        }`}
+                      >
+                        {item.description}
+                      </p>
+                      <div
+                        className={`mt-3 flex ${
+                          i % 2 === 0 ? "md:justify-end" : ""
+                        }`}
+                      >
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                            item.statusColor === "emerald"
+                              ? "bg-emerald-500/10 text-emerald-400"
+                              : "bg-zinc-800 text-zinc-500"
+                          }`}
+                        >
+                          {item.statusColor === "emerald" && (
+                            <span className="relative flex h-1.5 w-1.5">
+                              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                            </span>
+                          )}
+                          {item.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Empty space for opposite side */}
+                  <div className="hidden flex-1 md:block md:w-[calc(50%-2.5rem)]" />
                 </div>
-              </div>
-            </div>
-          </AnimatedSection>
+              </AnimatedSection>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-800/40 py-10">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/15">
-                <Database size={14} className="text-emerald-400" />
-              </div>
-              <span className="text-sm font-semibold text-zinc-300">
-                Compooss
-              </span>
+      <footer className="relative border-t border-white/[0.06]">
+        <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/[0.02] to-transparent" />
+        <div className="relative mx-auto max-w-6xl px-6 py-14">
+          <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+            {/* Brand column */}
+            <div>
+              <a href="#" className="inline-flex items-center gap-2">
+                <Image
+                  src="/logo.jpg"
+                  alt="Compooss logo"
+                  width={32}
+                  height={32}
+                  className="h-7 w-7 rounded-md object-cover"
+                />
+                <span className="text-[15px] font-bold tracking-tight text-white">
+                  Compooss
+                </span>
+              </a>
+              <p className="mt-3 max-w-xs text-sm leading-relaxed text-zinc-500">
+                A free, open-source MongoDB GUI that runs as a single Docker
+                container. MIT licensed.
+              </p>
             </div>
-            <p className="text-sm text-zinc-600">
-              Free and open-source MongoDB GUI MIT License.
-            </p>
-            <div className="flex items-center gap-4">
-              {/*
-              <a
-                href="https://github.com/abdullahmia/compooss"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-zinc-500 transition-colors hover:text-zinc-300"
-              >
-                GitHub
-              </a>
-              */}
-              <a
-                href="https://hub.docker.com/r/abdullahmia/compooss"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-zinc-500 transition-colors hover:text-zinc-300"
-              >
-                Docker Hub
-              </a>
+
+            {/* Product column */}
+            <div>
+              <h4 className="mb-4 text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                Product
+              </h4>
+              <ul className="space-y-2.5">
+                {[
+                  { label: "Features", href: "#features" },
+                  { label: "Installation", href: "#installation" },
+                  { label: "Roadmap", href: "#roadmap" },
+                ].map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="text-sm text-zinc-500 transition-colors hover:text-zinc-200"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Resources column */}
+            <div>
+              <h4 className="mb-4 text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                Resources
+              </h4>
+              <ul className="space-y-2.5">
+                <li>
+                  <a
+                    href="https://hub.docker.com/r/abdullahmia/compooss"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-200"
+                  >
+                    Docker Hub
+                    <ArrowRight size={11} className="text-zinc-600" />
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Get started column */}
+            <div>
+              <h4 className="mb-4 text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                Quick Start
+              </h4>
+              <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
+                <code className="block font-mono text-xs leading-relaxed text-zinc-400">
+                  <span className="text-emerald-400/70">$</span> docker pull
+                  <br />
+                  <span className="pl-3 text-zinc-300">
+                    abdullahmia/compooss
+                  </span>
+                </code>
+              </div>
             </div>
           </div>
-          <p className="mt-6 text-center text-xs text-zinc-700">
-            Compooss is an open-source MongoDB database management GUI for
-            Docker. Not affiliated with MongoDB, Inc.
-          </p>
+
+          {/* Bottom bar */}
+          <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/[0.06] pt-6 sm:flex-row">
+            <p className="text-xs text-zinc-600">
+              &copy; {new Date().getFullYear()} Compooss. Free and open-source
+              under MIT License.
+            </p>
+            <p className="text-xs text-zinc-700">
+              Not affiliated with MongoDB, Inc.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
