@@ -317,44 +317,87 @@ export default function LandingPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="sticky top-0 z-50 border-b border-zinc-800/40 bg-zinc-950/60 backdrop-blur-xl"
+        className="sticky top-0 z-50"
       >
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <a href="#" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15">
-              <Database size={16} className="text-emerald-400" />
+        <div className="border-b border-white/[0.06] bg-zinc-950/50 backdrop-blur-2xl backdrop-saturate-150">
+          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
+            {/* Logo */}
+            <a href="#" className="group flex items-center gap-2">
+              <Image
+                src="/logo.jpg"
+                alt="Compooss logo"
+                width={32}
+                height={32}
+                className="h-7 w-7 rounded-md object-cover"
+              />
+              <span className="text-[15px] font-bold tracking-tight text-white">
+                Compooss
+              </span>
+            </a>
+
+            {/* Center nav links */}
+            <div className="hidden items-center md:flex">
+              <div className="flex items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-1.5 py-1">
+                {NAV_LINKS.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="relative rounded-full px-3.5 py-1.5 text-[13px] font-medium text-zinc-400 transition-all hover:bg-white/[0.06] hover:text-zinc-100"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
             </div>
-            <span className="text-lg font-bold tracking-tight text-white">
-              Compooss
-            </span>
-          </a>
-          <div className="hidden items-center gap-8 md:flex">
-            {NAV_LINKS.map((link) => (
+
+            {/* Right actions */}
+            <div className="flex items-center gap-3">
               <a
-                key={link.href}
-                href={link.href}
-                className="text-sm text-zinc-400 transition-colors hover:text-zinc-100"
+                href="https://hub.docker.com/r/abdullahmia/compooss"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden items-center gap-1.5 text-[13px] font-medium text-zinc-400 transition-colors hover:text-zinc-100 sm:flex"
               >
-                {link.label}
+                <Container size={15} />
+                Docker Hub
               </a>
-            ))}
+            </div>
           </div>
-          {/*
-          <a
-            href="https://github.com/abdullahmia/compooss"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-2 text-sm text-zinc-300 transition-all hover:border-zinc-700 hover:text-white"
-          >
-            <Github size={16} />
-            <span className="hidden sm:inline">GitHub</span>
-          </a>
-          */}
         </div>
       </motion.nav>
 
       {/* Hero */}
-      <section ref={heroRef} className="relative pb-16 pt-16 md:pt-24">
+      <section ref={heroRef} className="relative overflow-hidden pb-24 pt-20 md:pb-32 md:pt-32">
+        {/* Animated background orbs */}
+        <div className="pointer-events-none absolute inset-0">
+          <motion.div
+            animate={{
+              x: [0, 30, -20, 0],
+              y: [0, -40, 20, 0],
+              scale: [1, 1.1, 0.95, 1],
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -left-32 top-20 h-[500px] w-[500px] rounded-full bg-emerald-500/[0.07] blur-[120px]"
+          />
+          <motion.div
+            animate={{
+              x: [0, -30, 20, 0],
+              y: [0, 30, -30, 0],
+              scale: [1, 0.95, 1.1, 1],
+            }}
+            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -right-32 top-40 h-[400px] w-[400px] rounded-full bg-teal-500/[0.05] blur-[120px]"
+          />
+          <motion.div
+            animate={{
+              x: [0, 20, -10, 0],
+              y: [0, -20, 30, 0],
+            }}
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 rounded-full bg-emerald-400/[0.04] blur-[100px]"
+          />
+        </div>
+
         <motion.div style={{ y: heroY, opacity: heroOpacity }}>
           <div className="mx-auto max-w-6xl px-6">
             <div className="flex flex-col items-center text-center">
@@ -362,7 +405,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-1.5 text-sm text-emerald-400"
+                className="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-1.5 text-sm text-emerald-400"
               >
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -375,7 +418,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="max-w-4xl text-4xl font-extrabold leading-[1.1] tracking-tight text-white md:text-6xl lg:text-7xl"
+                className="max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-tight text-white md:text-6xl lg:text-7xl"
               >
                 Open-Source MongoDB GUI for{" "}
                 <span className="animate-gradient bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 bg-clip-text text-transparent">
@@ -389,10 +432,9 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-400 md:text-xl"
               >
-                Compooss is a free, self-hosted MongoDB admin panel that runs as
-                a single Docker container. Browse databases, query documents,
-                manage collections and indexes, and explore your data no signup,
-                no cloud, no configuration files.
+                A free, self-hosted MongoDB admin panel that runs as a single
+                Docker container. Browse databases, query documents, manage
+                indexes — no signup, no cloud, no config.
               </motion.p>
 
               <motion.div
@@ -403,7 +445,7 @@ export default function LandingPage() {
               >
                 <a
                   href="#installation"
-                  className="group flex items-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-zinc-950 transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25"
+                  className="group flex items-center gap-2 rounded-xl bg-emerald-500 px-7 py-3.5 text-sm font-semibold text-zinc-950 transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25"
                 >
                   Get Started
                   <ArrowRight
@@ -411,17 +453,15 @@ export default function LandingPage() {
                     className="transition-transform group-hover:translate-x-0.5"
                   />
                 </a>
-                {/*
                 <a
-                  href="https://github.com/abdullahmia/compooss"
+                  href="https://hub.docker.com/r/abdullahmia/compooss"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/50 px-6 py-3 text-sm font-medium text-zinc-300 transition-all hover:border-zinc-700 hover:bg-zinc-800/50 hover:text-white"
+                  className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/50 px-7 py-3.5 text-sm font-medium text-zinc-300 transition-all hover:border-zinc-700 hover:bg-zinc-800/50 hover:text-white"
                 >
-                  <Github size={16} />
-                  View on GitHub
+                  <Container size={16} />
+                  Docker Hub
                 </a>
-                */}
               </motion.div>
 
               {/* Quick install */}
@@ -439,37 +479,116 @@ export default function LandingPage() {
               </motion.div>
             </div>
 
-            {/* Hero Preview */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.8,
-                delay: 0.5,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="relative mx-auto mt-16 max-w-5xl"
-            >
-              <div className="animate-glow-pulse absolute -inset-4 rounded-3xl bg-gradient-to-r from-emerald-500/20 via-teal-500/10 to-emerald-500/20 blur-2xl" />
-              <div className="relative overflow-hidden rounded-2xl border border-zinc-800/60 bg-zinc-950 shadow-2xl shadow-black/50">
-                <div className="flex items-center gap-2 border-b border-zinc-800/60 bg-zinc-900/50 px-4 py-3">
-                  <div className="h-3 w-3 rounded-full bg-red-500/60" />
-                  <div className="h-3 w-3 rounded-full bg-yellow-500/60" />
-                  <div className="h-3 w-3 rounded-full bg-green-500/60" />
-                  <span className="ml-3 font-mono text-xs text-zinc-500">
-                    Compooss — mongodb://localhost:27017
-                  </span>
+            {/* Hero Preview with 3D perspective */}
+            <div className="hero-preview-wrapper relative mx-auto mt-20 max-w-5xl [perspective:2000px]">
+              <motion.div
+                initial={{ opacity: 0, y: 60, rotateX: 8 }}
+                animate={{ opacity: 1, y: 0, rotateX: 2 }}
+                transition={{
+                  duration: 1,
+                  delay: 0.5,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="relative [transform-style:preserve-3d]"
+              >
+                {/* Multi-layer glow */}
+                <div className="animate-glow-pulse absolute -inset-8 rounded-3xl bg-gradient-to-r from-emerald-500/20 via-teal-500/10 to-emerald-500/20 blur-3xl" />
+                <div className="animate-glow-pulse absolute -inset-2 rounded-3xl bg-gradient-to-b from-emerald-400/10 via-transparent to-transparent blur-2xl [animation-delay:1.5s]" />
+
+                {/* Browser chrome */}
+                <div className="relative overflow-hidden rounded-2xl border border-zinc-700/50 bg-zinc-950 shadow-[0_20px_70px_-10px_rgba(0,0,0,0.7),0_0_40px_-15px_rgba(16,185,129,0.15)]">
+                  <div className="flex items-center gap-2 border-b border-zinc-800/60 bg-zinc-900/80 px-4 py-3">
+                    <div className="h-3 w-3 rounded-full bg-red-500/70" />
+                    <div className="h-3 w-3 rounded-full bg-yellow-500/70" />
+                    <div className="h-3 w-3 rounded-full bg-green-500/70" />
+                    <div className="ml-3 flex flex-1 items-center gap-2 rounded-md bg-zinc-800/50 px-3 py-1">
+                      <ShieldCheck size={12} className="text-emerald-400/60" />
+                      <span className="font-mono text-xs text-zinc-500">
+                        localhost:3000 — Compooss
+                      </span>
+                    </div>
+                  </div>
+                  <Image
+                    src="/preview.png"
+                    alt="Compooss MongoDB GUI screenshot — database browser, collection explorer, and document viewer running inside Docker"
+                    width={1920}
+                    height={1080}
+                    className="w-full"
+                    priority
+                  />
                 </div>
-                <Image
-                  src="/preview.png"
-                  alt="Compooss MongoDB GUI screenshot — database browser, collection explorer, and document viewer running inside Docker"
-                  width={1920}
-                  height={1080}
-                  className="w-full"
-                  priority
-                />
+
+                {/* Floating feature badges */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 1.0 }}
+                  className="absolute -left-4 top-1/4 z-10 hidden lg:block"
+                >
+                  <div className="animate-float rounded-xl border border-zinc-700/50 bg-zinc-900/90 px-4 py-3 shadow-xl backdrop-blur-sm">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15">
+                        <Database size={14} className="text-emerald-400" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-zinc-200">4 Databases</p>
+                        <p className="text-[10px] text-zinc-500">Connected</p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 1.2 }}
+                  className="absolute -right-4 top-1/3 z-10 hidden lg:block"
+                >
+                  <div className="animate-float rounded-xl border border-zinc-700/50 bg-zinc-900/90 px-4 py-3 shadow-xl backdrop-blur-sm [animation-delay:2s]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15">
+                        <Zap size={14} className="text-emerald-400" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-zinc-200">Zero Config</p>
+                        <p className="text-[10px] text-zinc-500">Just Docker</p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.4 }}
+                  className="absolute -bottom-3 left-1/2 z-10 hidden -translate-x-1/2 lg:block"
+                >
+                  <div className="flex items-center gap-2 rounded-full border border-zinc-700/50 bg-zinc-900/90 px-4 py-2 shadow-xl backdrop-blur-sm">
+                    <span className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                    </span>
+                    <span className="text-xs font-medium text-zinc-300">Open Source & Free Forever</span>
+                  </div>
+                </motion.div>
+              </motion.div>
+
+              {/* Reflection */}
+              <div className="pointer-events-none mt-1 hidden overflow-hidden lg:block" style={{ height: "80px" }}>
+                <div className="relative -scale-y-100 opacity-[0.08] blur-[2px]">
+                  <div className="overflow-hidden rounded-2xl border border-zinc-700/50">
+                    <Image
+                      src="/preview.png"
+                      alt=""
+                      width={1920}
+                      height={1080}
+                      className="w-full"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </motion.div>
       </section>

@@ -71,6 +71,11 @@ body {
   animation: gradient-shift 4s ease infinite;
 }
 
+.hero-preview-wrapper:hover [style*="preserve-3d"] {
+  transform: rotateX(0deg);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .code-block {
   counter-reset: line;
 }
