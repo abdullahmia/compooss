@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@compooss/ui";
+import { Button, IconButton, Input } from "@compooss/ui";
 import {
   createDatabaseSchema,
   type TCreateDatabaseInput,
@@ -51,13 +51,14 @@ export function CreateDatabaseModal({ onClose }: Props) {
               Create Database
             </h2>
           </div>
-          <button
+          <IconButton
             type="button"
             onClick={onClose}
-            className="p-1 text-muted-foreground hover:text-foreground rounded-sm hover:bg-secondary transition-colors"
-          >
-            <X className="h-4 w-4" />
-          </button>
+            icon={<X className="h-4 w-4" />}
+            variant="ghost"
+            size="sm"
+            label="Close"
+          />
         </div>
 
         <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -92,20 +93,23 @@ export function CreateDatabaseModal({ onClose }: Props) {
           </div>
 
           <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-secondary transition-colors"
+              variant="outline"
+              size="md"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={isPending}
-              className="px-4 py-2 text-xs font-medium bg-primary text-primary-foreground rounded-sm hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              variant="primary"
+              size="md"
+              loading={isPending}
             >
               {isPending ? "Creating…" : "Create Database"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

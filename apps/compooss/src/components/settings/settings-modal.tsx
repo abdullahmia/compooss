@@ -2,7 +2,7 @@
 
 import { Palette, Settings, Shield, X } from "lucide-react";
 import { useState } from "react";
-import { Tabs } from "@compooss/ui";
+import { Button, IconButton, Tabs } from "@compooss/ui";
 import { AppearanceSettings } from "./appearance-settings";
 import { GeneralSettings } from "./general-settings";
 import { PrivacySettings } from "./privacy-settings";
@@ -41,9 +41,13 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             <Settings className="h-4 w-4 text-primary" />
             <h2 className="text-sm font-semibold text-foreground">Settings</h2>
           </div>
-          <button onClick={onClose} className="p-1 text-muted-foreground hover:text-foreground rounded-sm hover:bg-secondary transition-colors">
-            <X className="h-4 w-4" />
-          </button>
+          <IconButton
+            onClick={onClose}
+            icon={<X className="h-4 w-4" />}
+            variant="ghost"
+            size="sm"
+            label="Close"
+          />
         </div>
 
         <div className="flex min-h-[320px]">
@@ -70,12 +74,20 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         </div>
 
         <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border">
-          <button onClick={onClose} className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-secondary transition-colors">
+          <Button
+            onClick={onClose}
+            variant="ghost"
+            className="px-4 py-2 text-xs font-medium"
+          >
             Cancel
-          </button>
-          <button onClick={onClose} className="px-4 py-2 text-xs font-medium bg-primary text-primary-foreground rounded-sm hover:bg-primary/90 transition-colors">
+          </Button>
+          <Button
+            onClick={onClose}
+            variant="primary"
+            className="px-4 py-2 text-xs font-medium"
+          >
             Save Changes
-          </button>
+          </Button>
         </div>
       </div>
     </div>

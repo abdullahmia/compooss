@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Button,
   Modal,
   ModalBody,
   ModalContent,
@@ -69,20 +70,23 @@ export function CreateCollectionModal({ open, dbName, onClose }: Props) {
             />
           </ModalBody>
           <ModalFooter>
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-secondary transition-colors"
+              variant="outline"
+              size="md"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={isPending}
-              className="px-4 py-2 text-xs font-medium bg-primary text-primary-foreground rounded-sm hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              variant="primary"
+              size="md"
+              loading={isPending}
             >
               {isPending ? "Creating…" : "Create"}
-            </button>
+            </Button>
           </ModalFooter>
         </form>
       </ModalContent>
