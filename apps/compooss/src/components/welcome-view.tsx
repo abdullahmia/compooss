@@ -1,19 +1,21 @@
 "use client";
 
-import { Button } from "@compooss/ui";
+import { cn } from "@compooss/ui";
 import { useShellPanel } from "@/lib/providers/shell-provider";
 import { useGetCollections } from "@/lib/services/v2/collections/collection.service";
 import { useGetDatabases } from "@/lib/services/v2/database/database.service";
 import { isProtectedDatabase } from "@compooss/types";
 import {
   ArrowRight,
+  Database,
   FileText,
   Grid3X3,
   Leaf,
+  Sparkles,
   TerminalSquare,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 const FEATURES = [
@@ -24,15 +26,10 @@ const FEATURES = [
     icon: FileText,
     action: "navigate" as const,
     tab: "documents" as const,
+    color: "from-blue-500/15 to-blue-500/5",
+    iconColor: "text-blue-400",
+    borderColor: "group-hover:border-blue-500/20",
   },
-  // {
-  //   id: "indexes",
-  //   label: "Manage Indexes",
-  //   desc: "Create, drop, and inspect indexes with usage statistics",
-  //   icon: ListTree,
-  //   action: "navigate" as const,
-  //   tab: "indexes" as const,
-  // },
   {
     id: "schema",
     label: "Analyze Schema",
@@ -40,23 +37,10 @@ const FEATURES = [
     icon: Grid3X3,
     action: "navigate" as const,
     tab: "schema" as const,
+    color: "from-purple-500/15 to-purple-500/5",
+    iconColor: "text-purple-400",
+    borderColor: "group-hover:border-purple-500/20",
   },
-  // {
-  //   id: "validation",
-  //   label: "Validation Rules",
-  //   desc: "Define JSON Schema validators and detect violations",
-  //   icon: ShieldCheck,
-  //   action: "navigate" as const,
-  //   tab: "validation" as const,
-  // },
-  // {
-  //   id: "aggregation",
-  //   label: "Aggregation Pipelines",
-  //   desc: "Build pipelines visually with per-stage previews",
-  //   icon: GitBranch,
-  //   action: "navigate" as const,
-  //   tab: "aggregation" as const,
-  // },
   {
     id: "shell",
     label: "MongoDB Shell",
@@ -64,20 +48,16 @@ const FEATURES = [
     icon: TerminalSquare,
     action: "shell" as const,
     tab: null,
+    color: "from-emerald-500/15 to-emerald-500/5",
+    iconColor: "text-emerald-400",
+    borderColor: "group-hover:border-emerald-500/20",
   },
-  // {
-  //   id: "connections",
-  //   label: "Manage Connections",
-  //   desc: "Save, switch, and configure MongoDB connection profiles",
-  //   icon: Plug2,
-  //   action: "connect" as const,
-  //   tab: null,
-  // },
 ] as const;
 
 export function WelcomeView() {
   const router = useRouter();
   const { data: databases } = useGetDatabases();
+  const [hoveredFeature, setHoveredFeature] = useState<string | null>(null);
 
   const firstDbName = useMemo(() => {
     const list = databases ?? [];
@@ -115,43 +95,107 @@ export function WelcomeView() {
     router.push(url);
   };
 
+  const dbCount = databases?.length ?? 0;
+  const collectionCount = collections?.length ?? 0;
+
   return (
-    <div className="flex-1 flex items-center justify-center bg-background">
-      <div className="text-center max-w-md">
-        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
-          <Leaf className="h-8 w-8 text-primary" />
+    <div className="flex-1 flex items-center justify-center bg-background relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-primary/[0.02] rounded-full blur-[120px]" />
+        <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-blue-500/[0.015] rounded-full blur-[80px]" />
+        <div className="absolute bottom-1/4 left-1/3 w-[250px] h-[250px] bg-purple-500/[0.015] rounded-full blur-[80px]" />
+      </div>
+
+      <div className="relative z-10 max-w-lg w-full px-6">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/10 mb-5 shadow-lg shadow-primary/5">
+            <Leaf className="h-8 w-8 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight mb-2">
+            Welcome to Compooss
+          </h1>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Select a collection from the sidebar, or pick a quick action below
+          </p>
         </div>
-        <h1 className="text-xl font-semibold text-foreground mb-2">Compooss</h1>
-        <p className="text-sm text-muted-foreground mb-8">
-          Select a collection from the sidebar to explore your data, run
-          queries, and manage documents.
-        </p>
-        <div className="space-y-3 text-left">
+
+        {/* Stats bar */}
+        {dbCount > 0 && (
+          <div className="flex items-center justify-center gap-6 mb-8">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="w-5 h-5 rounded-md bg-secondary flex items-center justify-center">
+                <Database className="h-3 w-3 text-muted-foreground" />
+              </div>
+              <span className="font-medium text-foreground">{dbCount}</span>
+              <span>database{dbCount !== 1 ? "s" : ""}</span>
+            </div>
+            {collectionCount > 0 && (
+              <>
+                <div className="w-px h-4 bg-border" />
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="w-5 h-5 rounded-md bg-secondary flex items-center justify-center">
+                    <Sparkles className="h-3 w-3 text-muted-foreground" />
+                  </div>
+                  <span className="font-medium text-foreground">{collectionCount}</span>
+                  <span>collection{collectionCount !== 1 ? "s" : ""}</span>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Feature cards */}
+        <div className="space-y-3">
           {FEATURES.map((item) => {
             const Icon = item.icon;
+            const isHovered = hoveredFeature === item.id;
             return (
-              <Button
+              <button
                 key={item.id}
                 type="button"
                 onClick={() => handleFeatureClick(item)}
-                variant="card"
-                size="md"
-                className="flex items-start gap-3 cursor-pointer"
+                onMouseEnter={() => setHoveredFeature(item.id)}
+                onMouseLeave={() => setHoveredFeature(null)}
+                className={cn(
+                  "group w-full flex items-center gap-4 p-4 rounded-xl border border-border/80 bg-card/50 backdrop-blur-sm",
+                  "hover:bg-card hover:shadow-lg hover:shadow-black/5 transition-all duration-200 text-left",
+                  item.borderColor,
+                )}
               >
-                <Icon className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                <div
+                  className={cn(
+                    "w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center shrink-0 transition-transform duration-200",
+                    item.color,
+                    isHovered && "scale-110",
+                  )}
+                >
+                  <Icon className={cn("h-5 w-5", item.iconColor)} />
+                </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-foreground">
+                  <p className="text-sm font-medium text-foreground mb-0.5">
                     {item.label}
                   </p>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
-                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />
-              </Button>
+                <ArrowRight
+                  className={cn(
+                    "h-4 w-4 text-muted-foreground/50 shrink-0 transition-all duration-200",
+                    isHovered && "text-foreground translate-x-0.5",
+                  )}
+                />
+              </button>
             );
           })}
         </div>
+
+        {/* Hint */}
+        <p className="text-center text-[11px] text-muted-foreground/50 mt-8">
+          Tip: Use the sidebar to browse databases and collections
+        </p>
       </div>
     </div>
   );
