@@ -6,7 +6,7 @@ It is designed for local and team development environments where you already use
 
 **Current release: v1.7.0 – Multiple Connections.**
 
-![Compooss Preview](docs/preview.png)
+![Compooss Preview](docs/preview.jpeg)
 
 ---
 
