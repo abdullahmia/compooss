@@ -11,7 +11,7 @@ import {
 import {
   useAddDocument,
   useUpdateDocument,
-} from "@/lib/services/v2/documents/documents.service";
+} from "@/lib/services/documents/documents.service";
 import { useEffect, useState } from "react";
 
 const NEW_DOCUMENT_TEMPLATE = "{}";

@@ -2,8 +2,8 @@
 
 import { cn } from "@compooss/ui";
 import { useShellPanel } from "@/lib/providers/shell-provider";
-import { useGetCollections } from "@/lib/services/v2/collections/collection.service";
-import { useGetDatabases } from "@/lib/services/v2/database/database.service";
+import { useGetCollections } from "@/lib/services/collections/collection.service";
+import { useGetDatabases } from "@/lib/services/database/database.service";
 import { isProtectedDatabase } from "@compooss/types";
 import {
   ArrowRight,

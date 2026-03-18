@@ -7,7 +7,7 @@ import {
   useDropIndex,
   useHideIndex,
   type IndexWithStats,
-} from "@/lib/services/v2/indexes/indexes.service";
+} from "@/lib/services/indexes/indexes.service";
 import { Eye, EyeOff, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";

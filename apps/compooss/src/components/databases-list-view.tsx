@@ -5,7 +5,7 @@ import {
   DatabasesListSkeleton,
   EmptyState,
 } from "@compooss/ui";
-import { useGetDatabases } from "@/lib/services/v2/database/database.service";
+import { useGetDatabases } from "@/lib/services/database/database.service";
 import type { Database } from "@compooss/types";
 import { isProtectedDatabase } from "@compooss/types";
 import { AlertTriangle, DatabaseBackupIcon, Plus, RefreshCw } from "lucide-react";

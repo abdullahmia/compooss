@@ -3,11 +3,11 @@
 import { ConfirmDestructiveModal } from "@compooss/ui";
 import { CreateCollectionModal } from "@/components/create-collection-modal";
 import { isProtectedDatabase } from "@compooss/types";
-import { useDeleteDatabase } from "@/lib/services/v2/database/database.service";
+import { useDeleteDatabase } from "@/lib/services/database/database.service";
 import {
   useDeleteCollection,
   useGetCollections,
-} from "@/lib/services/v2/collections/collection.service";
+} from "@/lib/services/collections/collection.service";
 import type { Collection, Database } from "@compooss/types";
 import {
   ChevronDown,

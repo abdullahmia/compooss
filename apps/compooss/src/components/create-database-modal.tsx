@@ -5,7 +5,7 @@ import {
   createDatabaseSchema,
   type TCreateDatabaseInput,
 } from "@/lib/schemas/database.schema";
-import { useCreateDatabase } from "@/lib/services/v2/database/database.service";
+import { useCreateDatabase } from "@/lib/services/database/database.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Database, X } from "lucide-react";
 import { useForm } from "react-hook-form";

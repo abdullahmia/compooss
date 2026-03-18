@@ -6,7 +6,7 @@ import {
   useGetValidation,
   useUpdateValidation,
   useCheckValidation,
-} from "@/lib/services/v2/validation/validation.service";
+} from "@/lib/services/validation/validation.service";
 import type {
   ValidationLevel,
   ValidationAction,

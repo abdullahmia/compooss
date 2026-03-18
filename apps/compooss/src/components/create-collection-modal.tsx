@@ -13,7 +13,7 @@ import {
   createCollectionSchema,
   type TCreateCollectionInput,
 } from "@/lib/schemas/collection.schema";
-import { useCreateCollection } from "@/lib/services/v2/collections/collection.service";
+import { useCreateCollection } from "@/lib/services/collections/collection.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";

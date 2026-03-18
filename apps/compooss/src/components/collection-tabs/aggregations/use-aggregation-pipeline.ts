@@ -6,7 +6,7 @@ import type {
   SavedPipeline,
 } from "@compooss/types";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { useRunAggregation, useCreateView } from "@/lib/services/v2/aggregation/aggregation.service";
+import { useRunAggregation, useCreateView } from "@/lib/services/aggregation/aggregation.service";
 import { getTemplateForOperator } from "./stage-templates";
 import { toast } from "sonner";
 

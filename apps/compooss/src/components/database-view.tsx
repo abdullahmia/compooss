@@ -2,7 +2,7 @@
 
 import { Button, CollectionsSkeleton } from "@compooss/ui";
 import { CreateCollectionModal } from "@/components/create-collection-modal";
-import { useGetCollections } from "@/lib/services/v2/collections/collection.service";
+import { useGetCollections } from "@/lib/services/collections/collection.service";
 import type { Collection } from "@compooss/types";
 import { DatabaseBackupIcon, Plus, Table } from "lucide-react";
 import Link from "next/link";

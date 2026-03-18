@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge, Button, EmptyState, IconButton } from "@compooss/ui";
-import { useAnalyzeSchema } from "@/lib/services/v2/schema/schema.service";
+import { useAnalyzeSchema } from "@/lib/services/schema/schema.service";
 import type { SchemaAnalysisResult, SchemaField } from "@compooss/types";
 import {
   BarChart3,

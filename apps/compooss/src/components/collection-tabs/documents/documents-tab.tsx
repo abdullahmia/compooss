@@ -2,7 +2,7 @@
 
 import { EmptyState } from "@compooss/ui";
 import { getDocumentId, JsonDocumentSkeleton } from "@/components/json-document";
-import { useGetDocuments } from "@/lib/services/v2/documents/documents.service";
+import { useGetDocuments } from "@/lib/services/documents/documents.service";
 import {
   ChevronLeft,
   ChevronRight,

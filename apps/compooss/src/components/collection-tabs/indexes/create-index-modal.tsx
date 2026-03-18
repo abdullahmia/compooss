@@ -16,7 +16,7 @@ import {
 import {
   useCreateIndex,
   type CreateIndexPayload,
-} from "@/lib/services/v2/indexes/indexes.service";
+} from "@/lib/services/indexes/indexes.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Grid3X3, Minus, Plus } from "lucide-react";
 import {

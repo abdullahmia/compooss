@@ -1,7 +1,7 @@
 "use client";
 
 import { useConnection } from "@/lib/providers/connection-provider";
-import { useGetDatabases } from "@/lib/services/v2/database/database.service";
+import { useGetDatabases } from "@/lib/services/database/database.service";
 import type { Database } from "@compooss/types";
 import { DatabaseSidebarSkeleton, IconButton } from "@compooss/ui";
 import { AlertTriangle, Plus, RefreshCw, Search } from "lucide-react";

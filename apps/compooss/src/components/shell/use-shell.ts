@@ -1,6 +1,6 @@
 "use client";
 
-import { useExecuteCommand } from "@/lib/services/v2/shell/shell.service";
+import { useExecuteCommand } from "@/lib/services/shell/shell.service";
 import type { ShellEntry, ShellResponse } from "@compooss/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";

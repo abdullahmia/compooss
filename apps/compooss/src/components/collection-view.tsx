@@ -1,9 +1,9 @@
 "use client";
 
-import { getCollectionSummary } from "@/lib/services/database/database.service";
-import { isProtectedDatabase, type CollectionSummary } from "@compooss/types";
+import { useGetCollections } from "@/lib/services/collections/collection.service";
+import { isProtectedDatabase } from "@compooss/types";
 import { BarChart3, FileText, Grid3X3, ShieldCheck } from "lucide-react";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { AggregationsTab } from "./collection-tabs/aggregations/aggregations-tab";
 import { DocumentsTab } from "./collection-tabs/documents/documents-tab";
 import { ExplainTab } from "./collection-tabs/explain-tab";
@@ -11,6 +11,18 @@ import { IndexesTab } from "./collection-tabs/indexex-tab";
 import { SchemaTab } from "./collection-tabs/schema-tab";
 import { ValidationTab } from "./collection-tabs/validation-tab";
 import { Badge, Tabs } from "@compooss/ui";
+
+function formatSize(bytes: number): string {
+  if (bytes <= 0 || Number.isNaN(bytes)) return "0 B";
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  let size = bytes;
+  let unitIndex = 0;
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex += 1;
+  }
+  return `${size.toFixed(1)} ${units[unitIndex]}`;
+}
 
 type ViewTab =
   | "documents"
@@ -46,16 +58,8 @@ export function CollectionView({
     }
     return "documents";
   });
-  const [collectionSummary, setCollectionSummary] =
-    useState<CollectionSummary | null>(null);
-
-  useEffect(() => {
-    const fetchCollectionSummary = async () => {
-      const summary = await getCollectionSummary(dbName, collectionName);
-      setCollectionSummary(summary);
-    };
-    fetchCollectionSummary();
-  }, [dbName, collectionName]);
+  const { data: collections } = useGetCollections(dbName);
+  const collection = collections?.find((c) => c.name === collectionName);
 
   const tabs: { id: ViewTab; label: string; icon: React.ReactNode }[] = [
     {
@@ -118,11 +122,11 @@ export function CollectionView({
             {dbName}.{collectionName}
           </h2>
           <Badge>
-            {collectionSummary?.documentCount.toLocaleString()} docs
+            {collection?.documentCount.toLocaleString()} docs
           </Badge>
           <Badge variant="subtle" size="sm">
-            {collectionSummary?.totalSize} • {collectionSummary?.indexes}{" "}
-            indexes • Avg: {collectionSummary?.avgDocSize}
+            {collection ? formatSize(collection.size) : "-"} • {collection?.indexCount ?? 0}{" "}
+            indexes • Avg: {collection ? formatSize(collection.avgObjSize) : "-"}
           </Badge>
         </div>
       </div>

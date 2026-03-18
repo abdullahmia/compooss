@@ -1,7 +1,7 @@
 "use client";
 
 import type { MongoDocument } from "@/data/mockData";
-import { useDeleteDocument } from "@/lib/services/v2/documents/documents.service";
+import { useDeleteDocument } from "@/lib/services/documents/documents.service";
 import {
   ChevronDown,
   ChevronRight,

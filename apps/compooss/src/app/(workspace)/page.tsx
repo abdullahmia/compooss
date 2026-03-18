@@ -1,21 +1,9 @@
-import { checkConnectionHealth } from "@/lib/services/connection/connection.service";
 import { WelcomeView } from "@/components/welcome-view";
 import { headers } from "next/headers";
 import { Suspense } from "react";
 
 async function HomeContent() {
   await headers();
-
-  try {
-    const health = await checkConnectionHealth();
-    if (health.ok) {
-      // Connected
-    } else {
-      // Not connected
-    }
-  } catch {
-    // Connection check failed
-  }
   return <WelcomeView />;
 }
 
