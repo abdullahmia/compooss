@@ -1,30 +1,32 @@
 "use client";
 
 import { useConnection } from "@/lib/providers/connection-provider";
+import { useShellPanel } from "@/lib/providers/shell-provider";
+import { ConfirmDestructiveModal, IconButton } from "@compooss/ui";
 import {
   Database,
   HelpCircle,
   Leaf,
   LogOut,
-  Settings,
-  TerminalSquare,
+  TerminalSquare
 } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SettingsModal } from "./settings/settings-modal";
-import { IconButton } from "@compooss/ui";
-import { useShellPanel } from "@/lib/providers/shell-provider";
 import { toast } from "sonner";
 
 export function TopBar() {
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  // const [settingsOpen, setSettingsOpen] = useState(false);
+  const [disconnectOpen, setDisconnectOpen] = useState(false);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
   const { isOpen: isShellOpen, toggle: toggleShell } = useShellPanel();
   const { activeConnection, maskedUri, disconnect } = useConnection();
   const router = useRouter();
 
   const handleDisconnect = async () => {
+    setIsDisconnecting(true);
     await disconnect();
+    setIsDisconnecting(false);
+    setDisconnectOpen(false);
     toast.success("Disconnected");
     router.push("/connect");
   };
@@ -60,12 +62,14 @@ export function TopBar() {
           </div>
         </div>
 
-        <IconButton
-          variant="default"
-          icon={<LogOut className="h-4 w-4" />}
-          label="Disconnect"
-          onClick={handleDisconnect}
-        />
+        <button
+          type="button"
+          onClick={() => setDisconnectOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-secondary transition-colors"
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          Disconnect
+        </button>
         <IconButton
           variant="default"
           icon={
@@ -88,6 +92,16 @@ export function TopBar() {
           label="Help"
         />
       </div>
+      <ConfirmDestructiveModal
+        open={disconnectOpen}
+        onClose={() => setDisconnectOpen(false)}
+        title="Disconnect"
+        icon={<LogOut className="h-5 w-5" />}
+        description="Are you sure you want to disconnect from this database? Any unsaved changes will be lost."
+        confirmLabel="Disconnect"
+        isPending={isDisconnecting}
+        onConfirm={handleDisconnect}
+      />
       {/* <SettingsModal
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}

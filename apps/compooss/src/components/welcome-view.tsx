@@ -99,15 +99,8 @@ export function WelcomeView() {
   const collectionCount = collections?.length ?? 0;
 
   return (
-    <div className="flex-1 flex items-center justify-center bg-background relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-primary/[0.02] rounded-full blur-[120px]" />
-        <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-blue-500/[0.015] rounded-full blur-[80px]" />
-        <div className="absolute bottom-1/4 left-1/3 w-[250px] h-[250px] bg-purple-500/[0.015] rounded-full blur-[80px]" />
-      </div>
-
-      <div className="relative z-10 max-w-lg w-full px-6">
+    <div className="flex-1 flex items-center justify-center bg-background">
+      <div className="max-w-lg w-full px-6">
         {/* Header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/10 mb-5 shadow-lg shadow-primary/5">

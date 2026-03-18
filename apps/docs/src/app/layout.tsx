@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/preview.png",
+        url: "/preview.jpeg",
         width: 1920,
         height: 1080,
         alt: "Compooss — MongoDB GUI showing database browser, collection explorer, and document viewer",
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
-    images: ["/preview.png"],
+    images: ["/preview.jpeg"],
   },
   robots: {
     index: true,
@@ -95,7 +95,7 @@ const jsonLd = {
     url: "https://github.com/abdullahmia",
   },
   license: "https://opensource.org/licenses/MIT",
-  screenshot: `${SITE_URL}/preview.png`,
+  screenshot: `${SITE_URL}/preview.jpeg`,
   softwareVersion: "1.1.0",
   downloadUrl: "https://hub.docker.com/r/abdullahmia/compooss",
   codeRepository: "https://github.com/abdullahmia/compooss",

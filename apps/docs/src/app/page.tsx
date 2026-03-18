@@ -1,32 +1,32 @@
 "use client";
 
+import { AnimatedSection } from "@/components/animated-section";
+import { CodeBlock } from "@/components/code-block";
+import { FeatureCard } from "@/components/feature-card";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import Image from "next/image";
 import {
+  ArrowRight,
+  Check,
+  ChevronRight,
+  Code2,
+  Container,
   Database,
+  Eye,
+  FileJson,
+  Grid3X3,
+  Layers,
+  LayoutGrid,
+  Minus,
+  Plug2,
   Search,
   Shield,
   ShieldCheck,
-  Container,
   Terminal,
-  Layers,
-  Zap,
-  Eye,
-  Code2,
-  ChevronRight,
-  ArrowRight,
-  Check,
-  FileJson,
-  LayoutGrid,
-  Grid3X3,
-  Plug2,
   X,
-  Minus,
+  Zap,
 } from "lucide-react";
-import { AnimatedSection } from "@/components/animated-section";
-import { FeatureCard } from "@/components/feature-card";
-import { CodeBlock } from "@/components/code-block";
+import Image from "next/image";
+import { useRef } from "react";
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
@@ -366,7 +366,10 @@ export default function LandingPage() {
       </motion.nav>
 
       {/* Hero */}
-      <section ref={heroRef} className="relative overflow-hidden pb-24 pt-20 md:pb-32 md:pt-32">
+      <section
+        ref={heroRef}
+        className="relative overflow-hidden pb-24 pt-20 md:pb-32 md:pt-32"
+      >
         {/* Animated background orbs */}
         <div className="pointer-events-none absolute inset-0">
           <motion.div
@@ -508,7 +511,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <Image
-                    src="/preview.png"
+                    src="/preview.jpeg"
                     alt="Compooss MongoDB GUI screenshot — database browser, collection explorer, and document viewer running inside Docker"
                     width={1920}
                     height={1080}
@@ -530,7 +533,9 @@ export default function LandingPage() {
                         <Database size={14} className="text-emerald-400" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-zinc-200">4 Databases</p>
+                        <p className="text-xs font-semibold text-zinc-200">
+                          4 Databases
+                        </p>
                         <p className="text-[10px] text-zinc-500">Connected</p>
                       </div>
                     </div>
@@ -549,7 +554,9 @@ export default function LandingPage() {
                         <Zap size={14} className="text-emerald-400" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-zinc-200">Zero Config</p>
+                        <p className="text-xs font-semibold text-zinc-200">
+                          Zero Config
+                        </p>
                         <p className="text-[10px] text-zinc-500">Just Docker</p>
                       </div>
                     </div>
@@ -567,17 +574,22 @@ export default function LandingPage() {
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                       <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                     </span>
-                    <span className="text-xs font-medium text-zinc-300">Open Source & Free Forever</span>
+                    <span className="text-xs font-medium text-zinc-300">
+                      Open Source & Free Forever
+                    </span>
                   </div>
                 </motion.div>
               </motion.div>
 
               {/* Reflection */}
-              <div className="pointer-events-none mt-1 hidden overflow-hidden lg:block" style={{ height: "80px" }}>
+              <div
+                className="pointer-events-none mt-1 hidden overflow-hidden lg:block"
+                style={{ height: "80px" }}
+              >
                 <div className="relative -scale-y-100 opacity-[0.08] blur-[2px]">
                   <div className="overflow-hidden rounded-2xl border border-zinc-700/50">
                     <Image
-                      src="/preview.png"
+                      src="/preview.jpeg"
                       alt=""
                       width={1920}
                       height={1080}
