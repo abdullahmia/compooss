@@ -12,14 +12,13 @@ import {
   Loader2,
   Plug2,
   Star,
+  Unplug,
   XCircle,
+  Zap,
 } from "lucide-react";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { ColorPicker } from "./color-picker";
-// import { AuthConfigForm } from "./auth-config-form";
-// import { TlsConfigForm } from "./tls-config-form";
-// import { AdvancedConfigForm } from "./advanced-config-form";
 
 interface ConnectionFormProps {
   defaultValues?: Partial<TConnectionForm>;
@@ -115,10 +114,14 @@ export function ConnectionForm({
       onSubmit={form.handleSubmit(handleFormSubmit)}
       className="space-y-4"
     >
-      <div className="bg-card border border-border rounded-lg p-5">
-        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">
-          Connection String
-        </label>
+      {/* Connection URI Card */}
+      <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl p-5 shadow-lg shadow-black/5">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
+            <Unplug className="h-3 w-3 text-primary" />
+          </div>
+          <span className="text-xs font-semibold text-foreground">Connection URI</span>
+        </div>
         <Input
           hookForm={
             form as unknown as import("react-hook-form").UseFormReturn<
@@ -131,8 +134,21 @@ export function ConnectionForm({
           inputSize="lg"
           className="w-full font-mono"
         />
+        <p className="text-[11px] text-muted-foreground/70 mt-2">
+          Paste your MongoDB connection string or SRV address
+        </p>
+      </div>
 
-        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 mt-4 block">
+      {/* Connection Details Card */}
+      <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl p-5 shadow-lg shadow-black/5">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
+            <Zap className="h-3 w-3 text-primary" />
+          </div>
+          <span className="text-xs font-semibold text-foreground">Details</span>
+        </div>
+
+        <label className="text-[11px] font-medium text-muted-foreground mb-1.5 block">
           Connection Name
         </label>
         <Input
@@ -148,15 +164,15 @@ export function ConnectionForm({
           className="w-full"
         />
 
-        <div className="mt-4 flex items-center gap-4">
+        <div className="mt-4 grid grid-cols-2 gap-4">
           <div>
             <label className="text-[11px] font-medium text-muted-foreground mb-1.5 block">
-              Label (optional)
+              Label
             </label>
             <input
               {...form.register("label")}
               placeholder="e.g. dev, staging"
-              className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-hidden text-foreground placeholder:text-muted-foreground w-32"
+              className="w-full bg-secondary text-xs px-3 py-2 rounded-lg border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-hidden text-foreground placeholder:text-muted-foreground transition-colors"
             />
           </div>
           <div>
@@ -169,99 +185,78 @@ export function ConnectionForm({
             />
           </div>
         </div>
+      </div>
 
-        {/* Collapsible: Authentication (temporarily disabled on /connect) */}
-        {/*
-        <div className="mt-3 border-t border-border pt-1">
-          {sectionHeader("auth", "Authentication")}
-          {expandedSections.has("auth") && (
-            <AuthConfigForm form={form} />
+      {/* Test result */}
+      {testResult && (
+        <div
+          className={cn(
+            "flex items-center gap-2.5 text-xs px-4 py-3 rounded-xl border transition-all",
+            testResult.ok
+              ? "bg-success/5 text-success border-success/20"
+              : "bg-destructive/5 text-destructive border-destructive/20",
           )}
-        </div>
-        */}
-
-        {/* TODO: TLS/SSL section — uncomment when ready
-        <div className="border-t border-border pt-1">
-          {sectionHeader("tls", "TLS / SSL")}
-          {expandedSections.has("tls") && <TlsConfigForm form={form} />}
-        </div>
-        */}
-
-        {/* TODO: Advanced Options section — uncomment when ready
-        <div className="border-t border-border pt-1">
-          {sectionHeader("advanced", "Advanced Options")}
-          {expandedSections.has("advanced") && (
-            <AdvancedConfigForm form={form} />
+        >
+          {testResult.ok ? (
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+          ) : (
+            <XCircle className="h-4 w-4 shrink-0" />
           )}
+          <span>{testResult.message}</span>
         </div>
-        */}
+      )}
 
-        {/* Test result */}
-        {testResult && (
-          <div
+      {/* Submit / connection error */}
+      {submitError && (
+        <div className="flex items-center gap-2.5 text-xs px-4 py-3 rounded-xl border bg-destructive/5 text-destructive border-destructive/20">
+          <XCircle className="h-4 w-4 shrink-0" />
+          <span>{submitError}</span>
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="flex items-center gap-3 pt-1">
+        <Button
+          type="submit"
+          disabled={isConnecting}
+          loading={isConnecting}
+          icon={<Plug2 className="h-3.5 w-3.5" />}
+        >
+          {editMode ? "Save & Connect" : "Connect"}
+        </Button>
+
+        <Button
+          variant="outline"
+          type="button"
+          onClick={handleTest}
+          disabled={isTesting || !connectionString}
+          loading={isTesting}
+        >
+          Test
+        </Button>
+
+        <div className="flex-1" />
+
+        <button
+          type="button"
+          className={cn(
+            "flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all",
+            isFavorite
+              ? "bg-warning/10 text-warning border border-warning/20"
+              : "text-muted-foreground hover:text-foreground hover:bg-secondary border border-transparent",
+          )}
+          onClick={() =>
+            form.setValue("isFavorite", !form.getValues("isFavorite"))
+          }
+        >
+          <Star
             className={cn(
-              "mt-4 flex items-center gap-2 text-xs px-3 py-2 rounded-sm",
-              testResult.ok
-                ? "bg-success/10 text-success"
-                : "bg-destructive/10 text-destructive",
+              "h-3 w-3 transition-colors",
+              isFavorite && "fill-warning text-warning",
             )}
-          >
-            {testResult.ok ? (
-              <CheckCircle2 className="h-3.5 w-3.5" />
-            ) : (
-              <XCircle className="h-3.5 w-3.5" />
-            )}
-            {testResult.message}
-          </div>
-        )}
-
-        {/* Submit / connection error */}
-        {submitError && (
-          <div className="mt-2 flex items-center gap-2 text-xs px-3 py-2 rounded-sm bg-destructive/10 text-destructive">
-            <XCircle className="h-3.5 w-3.5" />
-            {submitError}
-          </div>
-        )}
-
-        {/* Actions */}
-        <div className="flex items-center gap-3 mt-4">
-          <Button
-            type="submit"
-            disabled={isConnecting}
-            loading={isConnecting}
-            icon={<Plug2 className="h-3.5 w-3.5" />}
-          >
-            {editMode ? "Save & Connect" : "Connect"}
-          </Button>
-
-          <Button
-            variant="ghost"
-            type="button"
-            onClick={handleTest}
-            disabled={isTesting || !connectionString}
-            loading={isTesting}
-          >
-            Test Connection
-          </Button>
-
-          <Button
-            variant="ghost"
-            type="button"
-            icon={
-              <Star
-                className={cn(
-                  "h-3 w-3 transition-colors",
-                  isFavorite && "fill-warning text-warning",
-                )}
-              />
-            }
-            onClick={() =>
-              form.setValue("isFavorite", !form.getValues("isFavorite"))
-            }
-          >
-            {isFavorite ? "Favorited" : "Save as favorite"}
-          </Button>
-        </div>
+          />
+          {isFavorite ? "Favorited" : "Favorite"}
+        </button>
       </div>
     </form>
   );

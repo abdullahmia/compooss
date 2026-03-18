@@ -2,7 +2,7 @@
 
 import { CONNECTION_COLORS } from "@compooss/types";
 import { cn } from "@compooss/ui";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 
 interface ColorPickerProps {
   value?: string;
@@ -11,19 +11,21 @@ interface ColorPickerProps {
 
 export function ColorPicker({ value, onChange }: ColorPickerProps) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-2">
       <button
         type="button"
         onClick={() => onChange(undefined)}
         className={cn(
-          "w-5 h-5 rounded-full border-2 transition-all flex items-center justify-center",
+          "w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center",
           !value
-            ? "border-foreground bg-background"
+            ? "border-foreground/50 bg-background"
             : "border-border bg-background hover:border-muted-foreground",
         )}
         title="No color"
       >
-        {!value && <Check className="h-3 w-3 text-foreground" />}
+        {!value ? (
+          <X className="h-3 w-3 text-muted-foreground" />
+        ) : null}
       </button>
       {CONNECTION_COLORS.map((color) => (
         <button
@@ -31,10 +33,10 @@ export function ColorPicker({ value, onChange }: ColorPickerProps) {
           type="button"
           onClick={() => onChange(color)}
           className={cn(
-            "w-5 h-5 rounded-full border-2 transition-all flex items-center justify-center",
+            "w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center",
             value === color
-              ? "border-foreground scale-110"
-              : "border-transparent hover:scale-110",
+              ? "border-white/40 scale-110 shadow-sm"
+              : "border-transparent hover:scale-110 hover:shadow-sm",
           )}
           style={{ backgroundColor: color }}
           title={color}
