@@ -20,6 +20,7 @@ export function ConnectionPage() {
   const [connectingId, setConnectingId] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
+
   const loadConnections = useCallback(async () => {
     const all = await connectionDB.getAll();
     setConnections(all);
@@ -30,10 +31,8 @@ export function ConnectionPage() {
   }, [loadConnections]);
 
   const handleFormSubmit = async (data: TConnectionForm) => {
-    // Clear previous error shown on the form
     setFormError(null);
 
-    // First, validate the connection string by testing the connection
     try {
       const result = await testConnection(data.connectionString);
       if (!result.ok) {
@@ -89,7 +88,6 @@ export function ConnectionPage() {
   const handleConnect = async (connection: SavedConnection) => {
     setConnectingId(connection.id);
     try {
-      // Validate the saved connection before actually connecting
       const result = await testConnection(connection.uri);
       if (!result.ok) {
         toast.error(result.message || "Connection test failed");
@@ -142,40 +140,58 @@ export function ConnectionPage() {
       }
     : undefined;
 
+  const hasConnections = connections.length > 0;
+
   return (
-    <div className="h-screen flex flex-col bg-background">
-      <div className="h-11 flex items-center gap-2 px-4 bg-topbar border-b border-border shrink-0">
-        <Leaf className="h-5 w-5 text-primary" />
-        <span className="font-semibold text-sm text-foreground tracking-tight">
-          Compooss
-        </span>
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
+      {/* Topbar */}
+      <div className="h-11 flex items-center justify-between px-4 bg-topbar border-b border-border shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-md bg-primary/15 flex items-center justify-center">
+            <Leaf className="h-3.5 w-3.5 text-primary" />
+          </div>
+          <span className="font-semibold text-sm text-foreground tracking-tight">
+            Compooss
+          </span>
+        </div>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Left: Form */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-xl mx-auto">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <Leaf className="h-8 w-8 text-primary" />
+        {/* Main content area */}
+        <div className="flex-1 overflow-y-auto relative flex items-center justify-center">
+          {/* Subtle background glow */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-primary/[0.03] rounded-full blur-[100px]" />
+          </div>
+
+          <div className="relative z-10 max-w-xl w-full mx-auto px-6 py-10">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/10 mb-4">
+                <Leaf className="h-7 w-7 text-primary" />
               </div>
-              <h1 className="text-xl font-bold text-foreground mb-1">
+              <h1 className="text-2xl font-bold text-foreground tracking-tight mb-1.5">
                 {editingConnection
-                  ? `Edit: ${editingConnection.name}`
+                  ? `Edit Connection`
                   : "New Connection"}
               </h1>
-              <p className="text-xs text-muted-foreground">
-                Connect to a MongoDB deployment
+              <p className="text-sm text-muted-foreground">
+                {editingConnection
+                  ? (
+                    <span>
+                      Editing <span className="text-foreground font-medium">{editingConnection.name}</span>
+                      {" · "}
+                      <button
+                        type="button"
+                        onClick={handleCancelEdit}
+                        className="text-primary hover:text-primary/80 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </span>
+                  )
+                  : "Connect to your MongoDB deployment"}
               </p>
-              {editingConnection && (
-                <button
-                  type="button"
-                  onClick={handleCancelEdit}
-                  className="text-xs text-primary hover:text-primary/80 mt-1"
-                >
-                  Cancel editing
-                </button>
-              )}
             </div>
 
             <ConnectionForm
@@ -190,20 +206,29 @@ export function ConnectionPage() {
           </div>
         </div>
 
-        {/* Right: Saved connections list */}
-        {connections.length > 0 && (
-          <div className="w-96 border-l border-border bg-sidebar p-4 overflow-hidden flex flex-col">
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-              Saved Connections ({connections.length})
-            </h2>
-            <ConnectionList
-              connections={connections}
-              onConnect={handleConnect}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onToggleFavorite={handleToggleFavorite}
-              connectingId={connectingId}
-            />
+        {/* Right sidebar: Saved connections */}
+        {hasConnections && (
+          <div className="w-[380px] border-l border-border bg-sidebar flex flex-col shrink-0">
+            <div className="px-4 pt-4 pb-3 border-b border-border">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Saved Connections
+                </h2>
+                <span className="text-[11px] text-muted-foreground/60 tabular-nums">
+                  {connections.length}
+                </span>
+              </div>
+            </div>
+            <div className="flex-1 overflow-hidden p-3">
+              <ConnectionList
+                connections={connections}
+                onConnect={handleConnect}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onToggleFavorite={handleToggleFavorite}
+                connectingId={connectingId}
+              />
+            </div>
           </div>
         )}
       </div>

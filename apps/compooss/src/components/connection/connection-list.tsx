@@ -1,7 +1,8 @@
 "use client";
 
 import type { SavedConnection } from "@compooss/types";
-import { ArrowDownAZ, Clock, Filter, Search, Star } from "lucide-react";
+import { cn } from "@compooss/ui";
+import { ArrowDownAZ, Clock, Search, Star, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ConnectionCard } from "./connection-card";
 
@@ -90,12 +91,13 @@ export function ConnectionList({
   ) => {
     if (items.length === 0) return null;
     return (
-      <div className="mb-4">
-        <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+      <div className="mb-5">
+        <h3 className="text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-wider mb-2 flex items-center gap-1.5 px-1">
           {icon}
           {title}
+          <span className="text-muted-foreground/40 ml-auto tabular-nums">{items.length}</span>
         </h3>
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           {items.map((conn) => (
             <ConnectionCard
               key={conn.id}
@@ -114,31 +116,46 @@ export function ConnectionList({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center gap-2 mb-3">
-        <div className="flex items-center gap-2 bg-secondary rounded-sm px-2.5 py-1.5 flex-1">
+      {/* Search & Filters */}
+      <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 bg-secondary/80 rounded-lg px-3 py-2 flex-1 border border-transparent focus-within:border-primary/20 transition-colors">
           <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
           <input
             type="text"
-            placeholder="Search connections..."
+            placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground outline-hidden w-full"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          )}
         </div>
 
         <button
           type="button"
           onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-          className={`p-1.5 rounded-sm transition-colors ${showFavoritesOnly ? "bg-warning/15 text-warning" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}`}
+          className={cn(
+            "p-2 rounded-lg transition-all border",
+            showFavoritesOnly
+              ? "bg-warning/10 text-warning border-warning/20"
+              : "text-muted-foreground hover:text-foreground hover:bg-secondary border-transparent",
+          )}
           title="Filter favorites"
         >
-          <Filter className="h-3.5 w-3.5" />
+          <Star className={cn("h-3.5 w-3.5", showFavoritesOnly && "fill-warning")} />
         </button>
 
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as SortKey)}
-          className="text-[11px] bg-secondary text-foreground border-none rounded-sm px-2 py-1.5 outline-hidden cursor-pointer"
+          className="text-[11px] bg-secondary/80 text-foreground border border-transparent rounded-lg px-2.5 py-2 outline-hidden cursor-pointer hover:bg-secondary transition-colors"
         >
           <option value="lastUsedAt">Recent</option>
           <option value="name">Name</option>
@@ -146,18 +163,22 @@ export function ConnectionList({
         </select>
       </div>
 
+      {/* Connection list */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {filtered.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <p className="text-sm">No connections found</p>
-            <p className="text-xs mt-1">
+          <div className="text-center py-12 text-muted-foreground">
+            <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-3">
+              <Search className="h-4 w-4 text-muted-foreground/50" />
+            </div>
+            <p className="text-sm font-medium">No connections found</p>
+            <p className="text-xs mt-1 text-muted-foreground/70">
               {search
                 ? "Try a different search term"
                 : "Create a new connection to get started"}
             </p>
           </div>
         ) : showFavoritesOnly ? (
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {filtered.map((conn) => (
               <ConnectionCard
                 key={conn.id}
