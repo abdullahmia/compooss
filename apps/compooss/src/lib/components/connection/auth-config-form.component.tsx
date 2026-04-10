@@ -1,56 +1,16 @@
 "use client";
 
+import { AUTH_METHODS } from "@/lib/constants";
 import type { TConnectionForm } from "@/lib/schemas/connection.schema";
-import type { AuthType } from "@compooss/types";
 import { cn } from "@compooss/ui";
 import { useWatch, type UseFormReturn } from "react-hook-form";
+import { FieldRow } from "./field-row.component";
 
-interface AuthConfigFormProps {
+type Props = {
   form: UseFormReturn<TConnectionForm>;
-}
+};
 
-const AUTH_METHODS: { value: AuthType; label: string; description: string }[] =
-  [
-    {
-      value: "default",
-      label: "Default",
-      description: "No authentication or credentials in URI",
-    },
-    {
-      value: "password",
-      label: "Username / Password",
-      description: "SCRAM-SHA-1 or SCRAM-SHA-256",
-    },
-    {
-      value: "ldap",
-      label: "LDAP",
-      description: "Lightweight Directory Access Protocol",
-    },
-    {
-      value: "kerberos",
-      label: "Kerberos",
-      description: "GSSAPI / Kerberos authentication",
-    },
-  ];
-
-function FieldRow({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="grid grid-cols-[120px_1fr] items-center gap-2">
-      <label className="text-[11px] font-medium text-muted-foreground text-right">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-export function AuthConfigForm({ form }: AuthConfigFormProps) {
+export const AuthConfigForm: React.FC<Props> = ({ form }) => {
   const authType = useWatch({ control: form.control, name: "authType" });
 
   return (
@@ -79,14 +39,14 @@ export function AuthConfigForm({ form }: AuthConfigFormProps) {
 
       {authType === "password" && (
         <div className="space-y-2">
-          <FieldRow label="Username">
+          <FieldRow label="Username" cols="120px">
             <input
               {...form.register("authConfig.username")}
               placeholder="admin"
               className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
-          <FieldRow label="Password">
+          <FieldRow label="Password" cols="120px">
             <input
               {...form.register("authConfig.password")}
               type="password"
@@ -94,14 +54,14 @@ export function AuthConfigForm({ form }: AuthConfigFormProps) {
               className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
-          <FieldRow label="Auth Source">
+          <FieldRow label="Auth Source" cols="120px">
             <input
               {...form.register("authConfig.authSource")}
               placeholder="admin"
               className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
-          <FieldRow label="Mechanism">
+          <FieldRow label="Mechanism" cols="120px">
             <select
               {...form.register("authConfig.authMechanism")}
               className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground w-full cursor-pointer"
@@ -116,14 +76,14 @@ export function AuthConfigForm({ form }: AuthConfigFormProps) {
 
       {authType === "ldap" && (
         <div className="space-y-2">
-          <FieldRow label="Username">
+          <FieldRow label="Username" cols="120px">
             <input
               {...form.register("authConfig.username")}
               placeholder="cn=admin,dc=example,dc=org"
               className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
-          <FieldRow label="Password">
+          <FieldRow label="Password" cols="120px">
             <input
               {...form.register("authConfig.password")}
               type="password"
@@ -136,21 +96,21 @@ export function AuthConfigForm({ form }: AuthConfigFormProps) {
 
       {authType === "kerberos" && (
         <div className="space-y-2">
-          <FieldRow label="Principal">
+          <FieldRow label="Principal" cols="120px">
             <input
               {...form.register("authConfig.username")}
               placeholder="user@REALM.COM"
               className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
-          <FieldRow label="Service Name">
+          <FieldRow label="Service Name" cols="120px">
             <input
               {...form.register("authConfig.gssapiServiceName")}
               placeholder="mongodb"
               className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
-          <FieldRow label="Canonicalize">
+          <FieldRow label="Canonicalize" cols="120px">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -166,4 +126,4 @@ export function AuthConfigForm({ form }: AuthConfigFormProps) {
       )}
     </div>
   );
-}
+};

@@ -49,10 +49,10 @@ export const ConnectionFormSchema = z.object({
   advancedConfig: AdvancedConfigSchema.optional(),
 });
 
-export type TConnectionForm = z.infer<typeof ConnectionFormSchema>;
-export type TAuthConfig = z.infer<typeof AuthConfigSchema>;
-export type TTlsConfig = z.infer<typeof TlsConfigSchema>;
-export type TAdvancedConfig = z.infer<typeof AdvancedConfigSchema>;
+export type TConnectionForm = z.input<typeof ConnectionFormSchema>;
+export type TAuthConfig = z.input<typeof AuthConfigSchema>;
+export type TTlsConfig = z.input<typeof TlsConfigSchema>;
+export type TAdvancedConfig = z.input<typeof AdvancedConfigSchema>;
 
 /** @deprecated Use ConnectionFormSchema */
 export const ConnectionSchema = ConnectionFormSchema;

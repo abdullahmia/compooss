@@ -18,25 +18,25 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { ColorPicker } from "./color-picker";
+import { ColorPicker } from "./color-picker.component";
 
-interface ConnectionFormProps {
+type Props = {
   defaultValues?: Partial<TConnectionForm>;
   onSubmit: (data: TConnectionForm) => Promise<void>;
   onTest: (uri: string) => Promise<{ ok: boolean; message: string }>;
   isConnecting?: boolean;
   editMode?: boolean;
   submitError?: string | null;
-}
+};
 
-export function ConnectionForm({
+export const ConnectionForm: React.FC<Props> = ({
   defaultValues,
   onSubmit,
   onTest,
   isConnecting,
   editMode,
   submitError,
-}: ConnectionFormProps) {
+}) => {
   const [testResult, setTestResult] = useState<{
     ok: boolean;
     message: string;
@@ -260,4 +260,4 @@ export function ConnectionForm({
       </div>
     </form>
   );
-}
+};

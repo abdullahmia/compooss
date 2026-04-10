@@ -4,27 +4,27 @@ import type { SavedConnection } from "@compooss/types";
 import { cn } from "@compooss/ui";
 import { ArrowDownAZ, Clock, Search, Star, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import { ConnectionCard } from "./connection-card";
+import { ConnectionCard } from "./connection-card.component";
 
 type SortKey = "name" | "lastUsedAt" | "createdAt";
 
-interface ConnectionListProps {
+type Props = {
   connections: SavedConnection[];
   onConnect: (connection: SavedConnection) => void;
   onEdit: (connection: SavedConnection) => void;
   onDelete: (id: string) => void;
   onToggleFavorite: (id: string) => void;
   connectingId?: string | null;
-}
+};
 
-export function ConnectionList({
+export const ConnectionList: React.FC<Props> = ({
   connections,
   onConnect,
   onEdit,
   onDelete,
   onToggleFavorite,
   connectingId,
-}: ConnectionListProps) {
+}) => {
   const [search, setSearch] = useState("");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>("lastUsedAt");
@@ -213,4 +213,4 @@ export function ConnectionList({
       </div>
     </div>
   );
-}
+};

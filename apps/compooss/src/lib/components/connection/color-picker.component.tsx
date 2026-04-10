@@ -4,12 +4,12 @@ import { CONNECTION_COLORS } from "@compooss/types";
 import { cn } from "@compooss/ui";
 import { Check, X } from "lucide-react";
 
-interface ColorPickerProps {
+type Props = {
   value?: string;
   onChange: (color: string | undefined) => void;
-}
+};
 
-export function ColorPicker({ value, onChange }: ColorPickerProps) {
+export const ColorPicker: React.FC<Props> = ({ value, onChange }) => {
   return (
     <div className="flex items-center gap-2">
       <button
@@ -48,4 +48,4 @@ export function ColorPicker({ value, onChange }: ColorPickerProps) {
       ))}
     </div>
   );
-}
+};

@@ -13,23 +13,23 @@ import {
   Trash2,
 } from "lucide-react";
 
-interface ConnectionCardProps {
+type Props = {
   connection: SavedConnection;
   onConnect: (connection: SavedConnection) => void;
   onEdit: (connection: SavedConnection) => void;
   onDelete: (id: string) => void;
   onToggleFavorite: (id: string) => void;
   isConnecting?: boolean;
-}
+};
 
-export function ConnectionCard({
+export const ConnectionCard: React.FC<Props> = ({
   connection,
   onConnect,
   onEdit,
   onDelete,
   onToggleFavorite,
   isConnecting,
-}: ConnectionCardProps) {
+}) => {
   const FavIcon = connection.isFavorite ? Star : StarOff;
 
   return (
@@ -141,4 +141,4 @@ export function ConnectionCard({
       </div>
     </div>
   );
-}
+};

@@ -7,11 +7,11 @@ import { Leaf } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ConnectionForm } from "./connection-form";
+import { ConnectionForm } from "./connection-form.component";
 import type { TConnectionForm } from "@/lib/schemas/connection.schema";
-import { ConnectionList } from "./connection-list";
+import { ConnectionList } from "./connection-list.component";
 
-export function ConnectionPage() {
+export const ConnectionPage: React.FC = () => {
   const router = useRouter();
   const { connect, testConnection, isConnecting } = useConnection();
   const [connections, setConnections] = useState<SavedConnection[]>([]);
@@ -19,7 +19,6 @@ export function ConnectionPage() {
     useState<SavedConnection | null>(null);
   const [connectingId, setConnectingId] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-
 
   const loadConnections = useCallback(async () => {
     const all = await connectionDB.getAll();
@@ -234,4 +233,4 @@ export function ConnectionPage() {
       </div>
     </div>
   );
-}
+};

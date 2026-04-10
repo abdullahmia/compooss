@@ -2,32 +2,16 @@
 
 import type { TConnectionForm } from "@/lib/schemas/connection.schema";
 import type { UseFormReturn } from "react-hook-form";
+import { FieldRow } from "./field-row.component";
 
-interface AdvancedConfigFormProps {
+type Props = {
   form: UseFormReturn<TConnectionForm>;
-}
+};
 
-function FieldRow({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="grid grid-cols-[160px_1fr] items-center gap-2">
-      <label className="text-[11px] font-medium text-muted-foreground text-right">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-export function AdvancedConfigForm({ form }: AdvancedConfigFormProps) {
+export const AdvancedConfigForm: React.FC<Props> = ({ form }) => {
   return (
     <div className="space-y-2 pb-3">
-      <FieldRow label="Replica Set">
+      <FieldRow label="Replica Set" cols="160px">
         <input
           {...form.register("advancedConfig.replicaSet")}
           placeholder="rs0"
@@ -35,7 +19,7 @@ export function AdvancedConfigForm({ form }: AdvancedConfigFormProps) {
         />
       </FieldRow>
 
-      <FieldRow label="Read Preference">
+      <FieldRow label="Read Preference" cols="160px">
         <select
           {...form.register("advancedConfig.readPreference")}
           className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground w-full cursor-pointer"
@@ -49,7 +33,7 @@ export function AdvancedConfigForm({ form }: AdvancedConfigFormProps) {
         </select>
       </FieldRow>
 
-      <FieldRow label="Connect Timeout (ms)">
+      <FieldRow label="Connect Timeout (ms)" cols="160px">
         <input
           {...form.register("advancedConfig.connectTimeoutMS", { valueAsNumber: true })}
           type="number"
@@ -58,7 +42,7 @@ export function AdvancedConfigForm({ form }: AdvancedConfigFormProps) {
         />
       </FieldRow>
 
-      <FieldRow label="Server Selection (ms)">
+      <FieldRow label="Server Selection (ms)" cols="160px">
         <input
           {...form.register("advancedConfig.serverSelectionTimeoutMS", { valueAsNumber: true })}
           type="number"
@@ -67,7 +51,7 @@ export function AdvancedConfigForm({ form }: AdvancedConfigFormProps) {
         />
       </FieldRow>
 
-      <FieldRow label="Max Pool Size">
+      <FieldRow label="Max Pool Size" cols="160px">
         <input
           {...form.register("advancedConfig.maxPoolSize", { valueAsNumber: true })}
           type="number"
@@ -77,7 +61,7 @@ export function AdvancedConfigForm({ form }: AdvancedConfigFormProps) {
         />
       </FieldRow>
 
-      <FieldRow label="Direct Connection">
+      <FieldRow label="Direct Connection" cols="160px">
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
@@ -91,4 +75,4 @@ export function AdvancedConfigForm({ form }: AdvancedConfigFormProps) {
       </FieldRow>
     </div>
   );
-}
+};
