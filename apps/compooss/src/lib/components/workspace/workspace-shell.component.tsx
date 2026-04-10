@@ -4,11 +4,11 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { ShellPanel } from "@/components/shell/shell-panel";
 import { TopBar } from "@/components/top-bar";
 
-interface WorkspaceShellProps {
+type Props = {
   children: React.ReactNode;
-}
+};
 
-export function WorkspaceShell({ children }: WorkspaceShellProps) {
+export const WorkspaceShell: React.FC<Props> = ({ children }) => {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <TopBar />
@@ -23,4 +23,4 @@ export function WorkspaceShell({ children }: WorkspaceShellProps) {
       </div>
     </div>
   );
-}
+};

@@ -1,28 +1,11 @@
-import { WelcomeView } from "@/components/welcome-view";
-import { headers } from "next/headers";
-import { Suspense } from "react";
+import { WorkspaceWelcome } from "@/lib/components/workspace/workspace-welcome.component";
+import { Metadata } from "next";
 
-async function HomeContent() {
-  await headers();
-  return <WelcomeView />;
-}
+export const metadata: Metadata = {
+  title: "Workspace - Compooss",
+  description: "Browse your MongoDB databases and collections.",
+};
 
-function HomeFallback() {
-  return (
-    <div className="flex-1 flex items-center justify-center bg-background">
-      <div className="text-center max-w-md animate-pulse">
-        <div className="w-16 h-16 rounded-2xl bg-muted mx-auto mb-6" />
-        <div className="h-6 bg-muted rounded w-32 mx-auto mb-2" />
-        <div className="h-4 bg-muted rounded w-64 mx-auto" />
-      </div>
-    </div>
-  );
-}
-
-export default function Home() {
-  return (
-    <Suspense fallback={<HomeFallback />}>
-      <HomeContent />
-    </Suspense>
-  );
+export default function WorkspacePage() {
+  return <WorkspaceWelcome />;
 }

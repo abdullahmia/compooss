@@ -3,7 +3,7 @@
 import React, { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useConnection } from "@/lib/providers/connection-provider";
-import { WorkspaceShell } from "./workspace-shell";
+import { WorkspaceShell } from "@/lib/components/workspace/workspace-shell.component";
 
 export default function WorkspaceLayout({
   children,
