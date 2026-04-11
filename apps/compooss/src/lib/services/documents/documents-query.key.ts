@@ -1,4 +1,4 @@
 export const DOCUMENTS_QUERY_KEYS = {
   list: (db: string, collection: string, params?: Record<string, unknown>) =>
-    ["documents", db, collection, params] as const,
+    params ? (["documents", db, collection, params] as const) : (["documents", db, collection] as const),
 } as const;

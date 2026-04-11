@@ -60,11 +60,11 @@ export const useAddDocument = (options: TMutationOptions<unknown, AddDocumentVar
       );
       return response.data;
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.invalidateQueries({
         queryKey: DOCUMENTS_QUERY_KEYS.list(variables.db, variables.collection),
       });
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };
@@ -86,11 +86,11 @@ export const useUpdateDocument = (
       );
       return response.data;
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.invalidateQueries({
         queryKey: DOCUMENTS_QUERY_KEYS.list(db, collection),
       });
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };
@@ -109,11 +109,11 @@ export const useDeleteDocument = (
       );
       return response.data;
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.invalidateQueries({
         queryKey: DOCUMENTS_QUERY_KEYS.list(db, collection),
       });
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };
