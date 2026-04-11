@@ -10,4 +10,4 @@ export const createCollectionSchema = z.object({
     }),
 });
 
-export type TCreateCollectionInput = z.infer<typeof createCollectionSchema>;
+export type TCreateCollectionInput = z.input<typeof createCollectionSchema>;

@@ -42,6 +42,6 @@ export const createIndexSchema = z
     { message: "TTL index must have exactly one field.", path: ["expireAfterSeconds"] },
   );
 
-export type TCreateIndexFormValues = z.infer<typeof createIndexSchema>;
+export type TCreateIndexFormValues = z.input<typeof createIndexSchema>;
 
-export type TIndexFieldForm = z.infer<typeof indexFieldSchema>;
+export type TIndexFieldForm = z.input<typeof indexFieldSchema>;

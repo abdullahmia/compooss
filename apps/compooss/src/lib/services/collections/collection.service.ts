@@ -1,77 +1,64 @@
 import { apiClient } from "@/lib/config/api.config";
 import { ENDPOINTS } from "@/lib/constants";
-import { QUERY_KEYS } from "@/lib/constants/query-key.contants";
-import { TQueryOptions } from "@/lib/query.types";
+import { TCreateCollectionInput } from "@/lib/schemas";
+import { TMutationOptions, TQueryOptions } from "@/lib/query.types";
 import type { ApiResponse, Collection } from "@compooss/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-
-function getErrorMessage(error: Error): string {
-  const payload = (error as Error & { payload?: unknown }).payload;
-  if (payload && typeof payload === "object" && "message" in payload && typeof (payload as { message: unknown }).message === "string") {
-    return (payload as { message: string }).message;
-  }
-  return error.message;
-}
+import { COLLECTION_QUERY_KEYS } from "./collection-query.key";
 
 export const useGetCollections = (
   db: string,
   options?: TQueryOptions<Collection[]>,
-) => {
-  return useQuery<Collection[], Error, Collection[], readonly unknown[]>({
-    queryKey: QUERY_KEYS.collections.all(db),
+) =>
+  useQuery({
+    queryKey: COLLECTION_QUERY_KEYS.list(db),
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<Collection[]>>(ENDPOINTS.collections.root(db));
-      return response.data;
+      const response = await apiClient.get<ApiResponse<Collection[]>>(
+        ENDPOINTS.collections.root(db),
+      );
+      return response.data ?? [];
     },
+    enabled: !!db,
     ...options,
   });
-};
 
 export const useCreateCollection = (
   dbName: string,
-  options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+  options: TMutationOptions<ApiResponse<Collection>, string> = {},
 ) => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (collectionName: string) => {
-      const response = await apiClient.post<ApiResponse<Collection>>(
+    ...options,
+    mutationFn: async (collectionName: string) =>
+      apiClient.post<ApiResponse<Collection>>(
         ENDPOINTS.collections.root(dbName),
         { collectionName },
-      );
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.collections.all(dbName) });
-      options?.onSuccess?.();
-      toast.success("Collection created successfully.");
-    },
-    onError: (error: Error) => {
-      options?.onError?.(error);
-      toast.error(getErrorMessage(error));
+      ),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: COLLECTION_QUERY_KEYS.list(dbName),
+      });
+      options.onSuccess?.(data, variables, context);
     },
   });
 };
 
-export const useDeleteCollection = (dbName: string, options?: { onSuccess?: () => void; onError?: (error: Error) => void }) => {
+export const useDeleteCollection = (
+  dbName: string,
+  options: TMutationOptions<ApiResponse<null>, string> = {},
+) => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (collectionName: string) => {
-      const response = await apiClient.delete<ApiResponse<null>>(
+    ...options,
+    mutationFn: async (collectionName: string) =>
+      apiClient.delete<ApiResponse<null>>(
         ENDPOINTS.collections.byName(dbName, collectionName),
-      );
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.collections.all(dbName) });
-      options?.onSuccess?.();
-      toast.success("Collection deleted successfully.");
-    },
-    onError: (error: Error) => {
-      options?.onError?.(error);
-      toast.error(getErrorMessage(error));
+      ),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: COLLECTION_QUERY_KEYS.list(dbName),
+      });
+      options.onSuccess?.(data, variables, context);
     },
   });
 };

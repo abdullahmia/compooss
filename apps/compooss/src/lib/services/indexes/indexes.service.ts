@@ -1,7 +1,7 @@
 import { apiClient } from "@/lib/config/api.config";
 import { ENDPOINTS } from "@/lib/constants";
-import { QUERY_KEYS } from "@/lib/constants/query-key.contants";
-import { TQueryOptions } from "@/lib/query.types";
+import { INDEXES_QUERY_KEYS } from "./indexes-query.key";
+import { TQueryOptions, TMutationOptions } from "@/lib/query.types";
 import type {
   ApiResponse,
   IndexDefinition,
@@ -14,36 +14,22 @@ export type IndexWithStats = IndexDefinition & {
   usage?: { ops: number; since: string };
 };
 
-function getErrorMessage(error: Error): string {
-  const payload = (error as Error & { payload?: unknown }).payload;
-  if (
-    payload &&
-    typeof payload === "object" &&
-    "message" in payload &&
-    typeof (payload as { message: unknown }).message === "string"
-  ) {
-    return (payload as { message: string }).message;
-  }
-  return error.message;
-}
-
 export const useGetIndexes = (
   db: string,
   col: string,
   options?: TQueryOptions<IndexWithStats[]>,
 ) => {
-  return useQuery<IndexWithStats[], Error, IndexWithStats[], readonly unknown[]>(
-    {
-      queryKey: QUERY_KEYS.indexes.all(db, col),
-      queryFn: async () => {
-        const response = await apiClient.get<
-          ApiResponse<IndexWithStats[]>
-        >(ENDPOINTS.indexes.root(db, col));
-        return response.data;
-      },
-      ...options,
+  return useQuery<IndexWithStats[], Error, IndexWithStats[], readonly unknown[]>({
+    queryKey: INDEXES_QUERY_KEYS.all(db, col),
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<IndexWithStats[]>>(
+        ENDPOINTS.indexes.root(db, col),
+      );
+      return response.data ?? [];
     },
-  );
+    enabled: !!db && !!col,
+    ...options,
+  });
 };
 
 export type CreateIndexPayload = {
@@ -59,10 +45,11 @@ export type CreateIndexPayload = {
 export const useCreateIndex = (
   db: string,
   col: string,
-  options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+  options: TMutationOptions<{ name: string }, CreateIndexPayload> = {},
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
+    ...options,
     mutationFn: async (payload: CreateIndexPayload) => {
       const response = await apiClient.post<
         ApiResponse<{ name: string }>,
@@ -70,14 +57,9 @@ export const useCreateIndex = (
       >(ENDPOINTS.indexes.root(db, col), payload);
       return response.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.indexes.all(db, col) });
-      options?.onSuccess?.();
-      toast.success("Index created successfully.");
-    },
-    onError: (error: Error) => {
-      options?.onError?.(error);
-      toast.error(getErrorMessage(error));
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: INDEXES_QUERY_KEYS.all(db, col) });
+      options.onSuccess?.(data, variables, context);
     },
   });
 };
@@ -85,33 +67,25 @@ export const useCreateIndex = (
 export const useDropIndex = (
   db: string,
   col: string,
-  options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+  options: TMutationOptions<{ ok: boolean }, string> = {},
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
+    ...options,
     mutationFn: async (indexName: string) => {
       const response = await apiClient.delete<ApiResponse<{ ok: boolean }>>(
         ENDPOINTS.indexes.byName(db, col, indexName),
       );
       return response.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.indexes.all(db, col) });
-      options?.onSuccess?.();
-      toast.success("Index dropped successfully.");
-    },
-    onError: (error: Error) => {
-      options?.onError?.(error);
-      toast.error(getErrorMessage(error));
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: INDEXES_QUERY_KEYS.all(db, col) });
+      options.onSuccess?.(data, variables, context);
     },
   });
 };
 
-export const useHideIndex = (
-  db: string,
-  col: string,
-  options?: { onSuccess?: () => void; onError?: (error: Error) => void },
-) => {
+export const useHideIndex = (db: string, col: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({
@@ -125,13 +99,11 @@ export const useHideIndex = (
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.indexes.all(db, col) });
-      options?.onSuccess?.();
+      queryClient.invalidateQueries({ queryKey: INDEXES_QUERY_KEYS.all(db, col) });
       toast.success("Index visibility updated.");
     },
     onError: (error: Error) => {
-      options?.onError?.(error);
-      toast.error(getErrorMessage(error));
+      toast.error(error.message);
     },
   });
 };

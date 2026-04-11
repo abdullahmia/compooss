@@ -1,5 +1,6 @@
 import { apiClient } from "@/lib/config/api.config";
 import { ENDPOINTS } from "@/lib/constants";
+import { TMutationOptions } from "@/lib/query.types";
 import type {
   AggregationResult,
   ApiResponse,
@@ -9,28 +10,13 @@ import type {
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-function getErrorMessage(error: Error): string {
-  const payload = (error as Error & { payload?: unknown }).payload;
-  if (
-    payload &&
-    typeof payload === "object" &&
-    "message" in payload &&
-    typeof (payload as { message: unknown }).message === "string"
-  ) {
-    return (payload as { message: string }).message;
-  }
-  return error.message;
-}
-
 export const useRunAggregation = (
   db: string,
   col: string,
-  options?: {
-    onSuccess?: (data: AggregationResult) => void;
-    onError?: (error: Error) => void;
-  },
+  options: TMutationOptions<AggregationResult, RunAggregationInput & { upToIndex?: number }> = {},
 ) => {
   return useMutation({
+    ...options,
     mutationFn: async (
       input: RunAggregationInput & { upToIndex?: number },
     ) => {
@@ -40,24 +26,13 @@ export const useRunAggregation = (
       >(ENDPOINTS.aggregation.root(db, col), input);
       return response.data;
     },
-    onSuccess: (data) => {
-      options?.onSuccess?.(data);
-    },
-    onError: (error: Error) => {
-      options?.onError?.(error);
-      toast.error(getErrorMessage(error));
+    onSuccess: (data, variables, context) => {
+      options.onSuccess?.(data, variables, context);
     },
   });
 };
 
-export const useCreateView = (
-  db: string,
-  col: string,
-  options?: {
-    onSuccess?: (data: { ok: boolean; viewName: string }) => void;
-    onError?: (error: Error) => void;
-  },
-) => {
+export const useCreateView = (db: string, col: string) => {
   return useMutation({
     mutationFn: async (input: CreateViewInput) => {
       const response = await apiClient.post<
@@ -70,12 +45,10 @@ export const useCreateView = (
       return response.data;
     },
     onSuccess: (data) => {
-      options?.onSuccess?.(data);
       toast.success(`View "${data.viewName}" created successfully.`);
     },
     onError: (error: Error) => {
-      options?.onError?.(error);
-      toast.error(getErrorMessage(error));
+      toast.error(error.message);
     },
   });
 };

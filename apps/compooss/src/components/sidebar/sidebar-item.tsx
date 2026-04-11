@@ -1,7 +1,7 @@
 "use client";
 
 import { ConfirmDestructiveModal } from "@compooss/ui";
-import { CreateCollectionModal } from "@/components/create-collection-modal";
+import { CreateCollectionModal } from "@/lib/components/collections/create-collection-modal.component";
 import { isProtectedDatabase } from "@compooss/types";
 import { useDeleteDatabase } from "@/lib/services/database/database.service";
 import {

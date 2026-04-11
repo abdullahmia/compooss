@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, CollectionsSkeleton } from "@compooss/ui";
-import { CreateCollectionModal } from "@/components/create-collection-modal";
+import { CreateCollectionModal } from "@/lib/components/collections/create-collection-modal.component";
 import { useGetCollections } from "@/lib/services/collections/collection.service";
 import type { Collection } from "@compooss/types";
 import { DatabaseBackupIcon, Plus, Table } from "lucide-react";

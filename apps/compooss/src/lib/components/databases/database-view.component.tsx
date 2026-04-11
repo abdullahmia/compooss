@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, CollectionsSkeleton } from "@compooss/ui";
-import { CreateCollectionModal } from "@/components/create-collection-modal";
+import { CreateCollectionModal } from "@/lib/components/collections/create-collection-modal.component";
 import { useGetCollections } from "@/lib/services/collections/collection.service";
 import { formatBytes } from "@/lib/utils";
 import type { Collection } from "@compooss/types";
