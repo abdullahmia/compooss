@@ -2,7 +2,7 @@
 
 import { apiClient } from "@/lib/config/api.config";
 import { ENDPOINTS } from "@/lib/constants";
-import { connectionDB } from "@/lib/db/connection-db";
+import { connectionDB } from "@/lib/storage/connection-db";
 import type {
   ApiResponse,
   ConnectionStatus,

@@ -1,12 +1,6 @@
 import { Admin, Db, MongoClient, MongoClientOptions } from "mongodb";
 import type { Database } from "@compooss/types";
 
-export interface IMongoDriverOptions {
-  maxPoolSize?: number;
-  serverSelectionTimeoutMS?: number;
-  connectTimeoutMS?: number;
-}
-
 export class MongoDriver {
   private clientPromise: Promise<MongoClient> | null = null;
   private readonly uri: string;
@@ -109,7 +103,3 @@ export class MongoDriver {
   }
 }
 
-/** Format byte count for display (e.g. 1024 -> "1.0 KB"). */
-export function formatSize(bytes: number): string {
-  return MongoDriver.formatSize(bytes);
-}

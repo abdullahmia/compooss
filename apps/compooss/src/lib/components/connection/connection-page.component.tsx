@@ -1,6 +1,6 @@
 "use client";
 
-import { connectionDB } from "@/lib/db/connection-db";
+import { connectionDB } from "@/lib/storage/connection-db";
 import { useConnection } from "@/lib/providers/connection-provider";
 import type { SavedConnection } from "@compooss/types";
 import { Leaf } from "lucide-react";
