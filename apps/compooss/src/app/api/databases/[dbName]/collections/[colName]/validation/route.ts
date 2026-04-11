@@ -1,19 +1,10 @@
 import { validationRepository } from "@/lib/core-modules/validation/validation.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
+import { extractErrorMessage } from "@/lib/utils/api-route.util";
 import { isProtectedDatabase } from "@compooss/types";
 import { NextResponse } from "next/server";
 
 type ValidationParams = { params: Promise<{ dbName: string; colName: string }> };
-
-function extractErrorMessage(error: unknown): string {
-  if (error instanceof Error) {
-    const msg = error.message;
-    const causedBy = msg.match(/caused by :: (.+)/);
-    if (causedBy) return causedBy[1].trim();
-    return msg;
-  }
-  return String(error);
-}
 
 export async function GET(_req: Request, { params }: ValidationParams) {
   try {
