@@ -304,6 +304,7 @@ export default function LandingPage() {
     typeof window !== "undefined" ? /Windows/i.test(navigator.userAgent) : false
   );
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [activeInstallTab, setActiveInstallTab] = useState<"compose" | "run">("compose");
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -640,13 +641,11 @@ export default function LandingPage() {
       </section>
 
       {/* Installation */}
-      <section
-        id="installation"
-        className="relative pt-10 pb-20 md:pt-14 md:pb-24"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
-        <div className="relative mx-auto max-w-6xl px-6">
-          <AnimatedSection className="mb-12 text-center">
+      <section id="installation" className="relative py-20 md:py-28">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.03] to-transparent" />
+
+        <div className="relative mx-auto max-w-4xl px-6">
+          <AnimatedSection className="mb-14 text-center">
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
               Installation
             </p>
@@ -660,64 +659,108 @@ export default function LandingPage() {
             </p>
           </AnimatedSection>
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div>
-              <AnimatedSection>
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-100">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-400">
-                    <Code2 size={14} />
-                  </div>
-                  Docker Compose
-                  <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                    Recommended
-                  </span>
-                </h3>
-              </AnimatedSection>
-              <CodeBlock
-                code={DOCKER_COMPOSE_CODE}
-                language="yaml"
-                filename="docker-compose.yml"
-              />
-            </div>
+          <AnimatedSection delay={0.1}>
+            {/* Main card */}
+            <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-900/50 shadow-2xl shadow-black/40 backdrop-blur-sm">
 
-            <div>
-              <AnimatedSection>
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-100">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-400">
-                    <Terminal size={14} />
-                  </div>
-                  Docker Run
-                </h3>
-              </AnimatedSection>
-              <CodeBlock
-                code={DOCKER_RUN_CODE}
-                language="bash"
-                filename="terminal"
-              />
+              {/* Tab bar */}
+              <div className="flex items-center justify-between border-b border-white/[0.06] bg-zinc-950/60 px-4 py-3">
+                <div className="flex items-center gap-1 rounded-lg bg-zinc-800/50 p-1">
+                  <button
+                    onClick={() => setActiveInstallTab("compose")}
+                    className={`flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-all ${
+                      activeInstallTab === "compose"
+                        ? "bg-zinc-700 text-white shadow-sm"
+                        : "text-zinc-500 hover:text-zinc-300"
+                    }`}
+                  >
+                    <Code2 size={12} />
+                    Docker Compose
+                    {activeInstallTab === "compose" && (
+                      <span className="ml-0.5 rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-400">
+                        Recommended
+                      </span>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setActiveInstallTab("run")}
+                    className={`flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-all ${
+                      activeInstallTab === "run"
+                        ? "bg-zinc-700 text-white shadow-sm"
+                        : "text-zinc-500 hover:text-zinc-300"
+                    }`}
+                  >
+                    <Terminal size={12} />
+                    Docker Run
+                  </button>
+                </div>
+                <div className="hidden items-center gap-2 sm:flex">
+                  <span className="text-xs text-zinc-600">Image:</span>
+                  <code className="rounded-md border border-zinc-700/50 bg-zinc-800/60 px-2.5 py-1 font-mono text-xs text-zinc-300">
+                    abdullahmia/compooss:latest
+                  </code>
+                </div>
+              </div>
 
-              <AnimatedSection delay={0.2} className="mt-6">
-                <div className="rounded-2xl border border-zinc-800/60 bg-zinc-900/40 p-5">
-                  <h4 className="mb-3 text-sm font-semibold text-zinc-200">
-                    Environment Variables
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <code className="mt-0.5 shrink-0 rounded-md bg-zinc-800 px-2 py-0.5 font-mono text-xs text-emerald-400">
-                        PORT
+              {/* Code area */}
+              <div className="p-5">
+                {activeInstallTab === "compose" ? (
+                  <CodeBlock
+                    code={DOCKER_COMPOSE_CODE}
+                    language="yaml"
+                    filename="docker-compose.yml"
+                  />
+                ) : (
+                  <CodeBlock
+                    code={DOCKER_RUN_CODE}
+                    language="bash"
+                    filename="terminal"
+                  />
+                )}
+              </div>
+
+              {/* Env vars footer */}
+              <div className="border-t border-white/[0.06] bg-zinc-950/40 px-5 py-4">
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-zinc-600">
+                  Environment Variables
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <div className="flex items-center gap-2.5 rounded-lg border border-zinc-800/60 bg-zinc-900/60 px-3.5 py-2.5">
+                    <code className="font-mono text-xs font-semibold text-emerald-400">
+                      PORT
+                    </code>
+                    <span className="text-zinc-700">—</span>
+                    <span className="text-xs text-zinc-400">
+                      Server port.{" "}
+                      <code className="font-mono text-zinc-300">
+                        Default: 3000
                       </code>
-                      <p className="text-sm text-zinc-400">
-                        Port to run the server on. Defaults to{" "}
-                        <code className="rounded bg-zinc-800 px-1.5 py-0.5 font-mono text-xs text-zinc-300">
-                          3000
-                        </code>
-                        .
-                      </p>
-                    </div>
+                    </span>
                   </div>
                 </div>
-              </AnimatedSection>
+              </div>
             </div>
-          </div>
+          </AnimatedSection>
+
+          {/* Trust signals */}
+          <AnimatedSection delay={0.2} className="mt-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                { icon: <Zap size={14} />, label: "Zero config" },
+                { icon: <ShieldCheck size={14} />, label: "MIT Licensed" },
+                { icon: <Container size={14} />, label: "Single container" },
+                { icon: <Code2 size={14} />, label: "No signup required" },
+              ].map(({ icon, label }) => (
+                <div
+                  key={label}
+                  className="flex items-center justify-center gap-2 rounded-xl border border-white/[0.05] bg-zinc-900/30 px-4 py-3 text-sm text-zinc-400"
+                >
+                  <span className="text-emerald-400">{icon}</span>
+                  {label}
+                </div>
+              ))}
+            </div>
+          </AnimatedSection>
         </div>
       </section>
 
@@ -749,10 +792,11 @@ export default function LandingPage() {
       </section>
 
       {/* Why Compooss */}
-      <section id="why-compooss" className="relative py-16 md:py-20">
+      <section id="why-compooss" className="relative py-20 md:py-28">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
         <div className="relative mx-auto max-w-6xl px-6">
-          <AnimatedSection className="mb-16 text-center">
+
+          <AnimatedSection className="mb-14 text-center">
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-emerald-400">
               Why Compooss
             </p>
@@ -769,39 +813,81 @@ export default function LandingPage() {
             </p>
           </AnimatedSection>
 
-          {/* Comparison table */}
+          {/* Differentiator cards */}
+          <AnimatedSection className="mb-10">
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[
+                {
+                  icon: <Container size={18} />,
+                  title: "Docker-native",
+                  description:
+                    "Runs as a single container in your Compose stack. No separate install, no desktop app, no config files.",
+                },
+                {
+                  icon: <ShieldCheck size={18} />,
+                  title: "Free & open source",
+                  description:
+                    "MIT licensed with no paywalls, no usage limits, and no account required. Self-host it forever.",
+                },
+                {
+                  icon: <Zap size={18} />,
+                  title: "Zero friction",
+                  description:
+                    "One service definition and you're done. No connection wizards, no license keys, no cloud sync.",
+                },
+              ].map(({ icon, title, description }) => (
+                <div
+                  key={title}
+                  className="group rounded-2xl border border-white/[0.06] bg-zinc-900/40 p-5 transition-all hover:border-emerald-500/20 hover:bg-zinc-900/60"
+                >
+                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 transition-colors group-hover:bg-emerald-500/15">
+                    {icon}
+                  </div>
+                  <h3 className="mb-1.5 text-sm font-semibold text-zinc-100">
+                    {title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-zinc-500">
+                    {description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </AnimatedSection>
+
+          {/* Compact comparison table */}
           <AnimatedSection>
-            <div className="overflow-hidden rounded-2xl border border-zinc-800/60">
+            <div className="overflow-hidden rounded-2xl border border-white/[0.07] shadow-2xl shadow-black/30">
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px] text-left text-sm">
+                <table className="w-full min-w-[580px] text-left">
                   <thead>
-                    <tr className="border-b border-zinc-800/60 bg-zinc-900/60">
-                      <th className="px-6 py-4 text-sm font-semibold text-zinc-300">
+                    <tr className="border-b border-white/[0.06] bg-zinc-950/80">
+                      <th className="w-[36%] px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
                         Feature
                       </th>
                       {COMPARISON_TOOLS.map((tool) => (
                         <th
                           key={tool.name}
-                          className={`px-6 py-4 text-center text-sm font-semibold ${
+                          className={`relative w-[16%] px-3 py-3 text-center text-[11px] font-semibold ${
                             tool.highlight
-                              ? "bg-emerald-500/5 text-emerald-400"
-                              : "text-zinc-400"
+                              ? "bg-emerald-500/[0.06] text-emerald-400"
+                              : "text-zinc-500"
                           }`}
                         >
+                          {tool.highlight && (
+                            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent" />
+                          )}
                           {tool.name}
                         </th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody>
-                    {COMPARISON_ROWS.map((row, i) => (
+                  <tbody className="divide-y divide-white/[0.04] bg-zinc-900/30">
+                    {COMPARISON_ROWS.map((row) => (
                       <tr
                         key={row.feature}
-                        className={`border-b border-zinc-800/40 transition-colors hover:bg-zinc-900/40 ${
-                          i === COMPARISON_ROWS.length - 1 ? "border-b-0" : ""
-                        }`}
+                        className="transition-colors hover:bg-white/[0.02]"
                       >
-                        <td className="px-6 py-3.5 text-sm text-zinc-300">
+                        <td className="px-5 py-2.5 text-xs text-zinc-400">
                           {row.feature}
                         </td>
                         {(
@@ -814,27 +900,24 @@ export default function LandingPage() {
                         ).map((value, colIdx) => (
                           <td
                             key={colIdx}
-                            className={`px-6 py-3.5 text-center ${
+                            className={`px-3 py-2.5 text-center ${
                               colIdx === 0 ? "bg-emerald-500/[0.03]" : ""
                             }`}
                           >
                             {value === "yes" ? (
-                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10">
-                                <Check size={14} className="text-emerald-400" />
+                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 ring-1 ring-emerald-500/20">
+                                <Check size={11} className="text-emerald-400" />
                               </span>
                             ) : value === "no" ? (
-                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800/50">
-                                <X size={14} className="text-zinc-600" />
+                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800/60 ring-1 ring-white/[0.04]">
+                                <X size={11} className="text-zinc-600" />
                               </span>
                             ) : value === "partial" ? (
-                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500/10">
-                                <Minus
-                                  size={14}
-                                  className="text-yellow-500/60"
-                                />
+                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/10 ring-1 ring-amber-500/20">
+                                <Minus size={11} className="text-amber-400/70" />
                               </span>
                             ) : (
-                              <span className="text-sm text-zinc-400">
+                              <span className="text-xs text-zinc-400">
                                 {value}
                               </span>
                             )}
@@ -845,40 +928,49 @@ export default function LandingPage() {
                   </tbody>
                 </table>
               </div>
-              <div className="flex items-center gap-6 border-t border-zinc-800/40 bg-zinc-900/30 px-6 py-3">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/10">
-                    <Check size={10} className="text-emerald-400" />
-                  </span>
-                  <span className="text-xs text-zinc-500">Full support</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-yellow-500/10">
-                    <Minus size={10} className="text-yellow-500/60" />
-                  </span>
-                  <span className="text-xs text-zinc-500">
-                    Partial / limited
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-zinc-800/50">
-                    <X size={10} className="text-zinc-600" />
-                  </span>
-                  <span className="text-xs text-zinc-500">Not supported</span>
-                </div>
+
+              {/* Legend */}
+              <div className="flex flex-wrap items-center gap-4 border-t border-white/[0.05] bg-zinc-950/60 px-5 py-3">
+                {[
+                  {
+                    icon: <Check size={9} className="text-emerald-400" />,
+                    bg: "bg-emerald-500/10 ring-emerald-500/20",
+                    label: "Full support",
+                  },
+                  {
+                    icon: <Minus size={9} className="text-amber-400/70" />,
+                    bg: "bg-amber-500/10 ring-amber-500/20",
+                    label: "Partial / limited",
+                  },
+                  {
+                    icon: <X size={9} className="text-zinc-600" />,
+                    bg: "bg-zinc-800/60 ring-white/[0.04]",
+                    label: "Not supported",
+                  },
+                ].map(({ icon, bg, label }) => (
+                  <div key={label} className="flex items-center gap-1.5">
+                    <span
+                      className={`inline-flex h-3.5 w-3.5 items-center justify-center rounded-full ring-1 ${bg}`}
+                    >
+                      {icon}
+                    </span>
+                    <span className="text-xs text-zinc-500">{label}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </AnimatedSection>
 
-          {/* Bottom callout */}
-          <AnimatedSection delay={0.2} className="mt-10">
-            <div className="rounded-2xl border border-emerald-500/15 bg-emerald-500/[0.03] p-6 md:p-8">
-              <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+          {/* Bottom CTA */}
+          <AnimatedSection delay={0.2} className="mt-8">
+            <div className="relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.07] via-zinc-900/60 to-zinc-900/40 p-8 md:p-10">
+              <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl" />
+              <div className="relative flex flex-col items-start gap-5 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-zinc-100">
+                  <h3 className="text-xl font-bold text-zinc-100">
                     Designed for developers, not database admins
                   </h3>
-                  <p className="mt-1 max-w-xl text-sm text-zinc-400">
+                  <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-400">
                     Compooss gives you exactly the features you need during
                     development — browse data, debug queries, inspect schemas —
                     without the complexity of enterprise-grade tools you&apos;ll
