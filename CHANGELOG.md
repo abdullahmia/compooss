@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.9.0](https://github.com/abdullahmia/compooss/compare/v1.8.1...v1.9.0) (2026-04-11)
+
+
+### Features
+
+* **docs:** add GitHub link and author credit to landing page ([1d33655](https://github.com/abdullahmia/compooss/commit/1d3365505f67752820a5b8de320d5840941ba103))
+
+
+### Bug Fixes
+
+* remove inputSize default to prevent padding leak on search variant ([8ec040a](https://github.com/abdullahmia/compooss/commit/8ec040a427f51f212a562f34daa68363601ac083))
+* vertically center actions in connection card ([956c7b0](https://github.com/abdullahmia/compooss/commit/956c7b0278feaabafdca86403ac42c4403bf4de0))
+
+
+### Refactors
+
+* replace raw buttons with UI Button/IconButton across app ([aa3f850](https://github.com/abdullahmia/compooss/commit/aa3f850d82f4f8f8e5d82f8fbf12f81a716fd0b8))
+* replace raw inputs and checkboxes with UI Input/Checkbox across app ([e71cbc1](https://github.com/abdullahmia/compooss/commit/e71cbc1e5c186473caa142aa50cd9750bf8d8eea))
+
 ## [1.8.1](https://github.com/abdullahmia/compooss/compare/v1.8.0...v1.8.1) (2026-04-11)
 
 
