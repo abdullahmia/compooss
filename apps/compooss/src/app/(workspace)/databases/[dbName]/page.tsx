@@ -1,6 +1,6 @@
 import { DatabasePageSkeleton } from "@compooss/ui";
 import { databaseRepository } from "@/lib/core-modules/database/database.repository";
-import { DatabaseView } from "@/components/database-view";
+import { DatabaseView } from "@/lib/components/databases/database-view.component";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 

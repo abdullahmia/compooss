@@ -17,5 +17,5 @@ export const createDatabaseSchema = z.object({
     }),
 });
 
-export type TCreateDatabaseInput = z.infer<typeof createDatabaseSchema>;
+export type TCreateDatabaseFormData = z.input<typeof createDatabaseSchema>;
 

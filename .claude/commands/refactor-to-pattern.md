@@ -1,6 +1,6 @@
 # /refactor-to-pattern
 
-Refactor a specific file or feature to match the project's standard patterns defined in `claude-code/CLAUDE.md`.
+Refactor a specific file or feature to match the project's standard patterns defined in `CLAUDE.md`.
 
 ## Usage
 
@@ -19,59 +19,84 @@ Refactor a specific file or feature to match the project's standard patterns def
 
 ## Process
 
-1. **Read** the target file(s). If a feature name is given, find all related files first.
-2. **Read** `claude-code/CLAUDE.md` for the applicable pattern rules.
-3. **Identify** every deviation — list them before making any changes.
-4. **Confirm** the list of changes with the user before editing.
-5. **Apply** changes one file at a time, following the exact patterns from `CLAUDE.md`.
-6. **Update** barrel `index.ts` files if exports changed.
-7. **Do not** change unrelated files or add unrequested improvements.
+1. **Read** the target file(s). If a feature name is given, find all related files first — types, schemas, services, components, and pages.
+2. **Read** `CLAUDE.md` for the applicable pattern rules.
+3. **Identify every deviation** across all layers — list them grouped by layer before making any changes.
+4. **Confirm** the full list of changes with the user before editing.
+5. **Apply** changes **layer by layer in this order**:
+   1. Schema (`lib/schemas/`)
+   2. Service (`lib/services/[feature]/`)
+   3. Components (`lib/components/[feature]/`)
+   4. Pages (`app/[route]/page.tsx` + `loading.tsx`)
+6. **Update** all barrel `index.ts` files when exports change.
+7. **Update** any downstream files that import from the old paths.
+8. **Do not** change unrelated files or add unrequested improvements.
 
 ---
 
-## Common refactors
+## Layer-by-layer refactor order
 
-### Service file
+### 1. Schema (`lib/schemas/[feature].schema.ts`)
 
-- Extract inline query keys into a `[feature]-query.key.ts` file
-- Rename hooks to `useGet[Feature]`, `useCreate[Feature]`, etc.
-- Add `options: MutationOptions<T> = {}` parameter to all mutations
-- Spread `...options` at the top of `useMutation({...})`
-- Add `options.onSuccess?.(data, variables, context, mutation)` after invalidation
+- Change `z.infer` to `z.input` for form types
+- Rename form types to `T[Feature]FormData` pattern
+- Derive update schema from create schema with `.partial()`
+- Add barrel export to `lib/schemas/index.ts`
+
+### 2. Service (`lib/services/[feature]/`)
+
+**Query key file** (`[feature]-query.key.ts`):
+- Extract inline or global query keys into a dedicated `[feature]-query.key.ts` file
+- Keys are tuple functions returning `as const`; shape goes broad → specific
+
+**Service hooks** (`[feature].service.ts`):
+- Add `TMutationOptions<TData, TVariables>` parameter to all mutations (import from `@/lib/query.types`)
+- Spread `...options` at the top of every `useMutation({...})`
+- Replace `refetch()` calls with `queryClient.invalidateQueries({ queryKey: ... })`
+- Call `options.onSuccess?.(data, variables, context)` after invalidation
+- Remove `toast` calls from the service layer — move them to the caller
+- Remove ad-hoc `{ onSuccess?, onError? }` option shapes
 - Replace inline `fetch` calls with `apiClient.[method]`
-- Replace hardcoded strings with `ENDPOINTS.[FEATURE].[ACTION]`
-- Add `enabled: !!param` guards
+- Replace hardcoded endpoint strings with `ENDPOINTS.[FEATURE].[ACTION]`
+- Add `enabled: !!param` guards on every `useQuery` with dynamic params
 - Add `?? []` fallback on list queries
+- Import schema types from `@/lib/schemas` barrel (not individual schema files)
+
+### 3. Components (`lib/components/[feature]/`)
+
+- Move files from `src/components/` to `lib/components/[feature]/`
+- Rename files to `kebab-case.component.tsx`
+- Change `export function Foo(...)` to `export const Foo: React.FC<Props> = (...) => {}`
+- Change `interface XxxProps` to `type Props = { ... }`
+- Fix all imports to use `@/` alias — never relative paths like `../../`
+- Update any downstream files that imported from the old path
+- Extract any helper component used in more than one file into its own `[name].component.tsx`
+- Move inline static arrays / option lists to `lib/constants/[feature].constants.ts` and import from `@/lib/constants`
+- Move any inline utility/helper functions (e.g. `formatBytes`, `getLabel`) to `lib/utils/[name].util.ts`, add a barrel export to `lib/utils/index.ts`, and import from `@/lib/utils`
+- Add `"use client"` if the component uses hooks or browser APIs
+
+### 4. Route files (`app/[route]/page.tsx`)
+
+- Extract all logic and JSX into a component in `lib/components/[feature]/`
+- Add `export const metadata: Metadata = { ... }` (static)
+- Use `generateMetadata` only when title/description depend on fetched data
+- Remove `<Suspense>` wrappers from the page — replace with a `loading.tsx` sibling
+- Reduce page to: `metadata` export + single component render
+
+---
+
+## Common refactors reference
 
 ### Type file
 
 - Convert `interface` to `type` for entity types
 - Change `Date` fields to `string`
-- Add `T` prefix to response types
-- Add `Response` suffix to response types
-- Add barrel export
+- Add `T` prefix to response types, `Response` suffix
+- Add barrel export to `lib/types/index.ts`
 
-### Schema file
+### Zustand store
 
-- Change `z.infer` to `z.input` for form types
-- Derive update schema from create schema with `.partial()`
-- Add `T` prefix to form types
-- Add barrel export
-
-### Component file
-
-- Add `"use client"` if hooks are used
-- Rename file to `kebab-case.component.tsx`
-- Change default export to named export (unless it's the main page component)
-- Fix imports to use `@/` alias
-- Add skeleton and empty state handling
-- Change `interface XxxProps { ... }` to `type Props = { ... }`
-- Change `export const Foo = (...) => {}` to `export const Foo: React.FC<Props> = (...) => {}` (omit `<Props>` when there are no props)
-- Extract any helper component used in more than one file into its own `[name].component.tsx`
-- Move inline static arrays / option lists to `lib/constants/[feature].constants.ts` and import from `@/lib/constants`
-
-### Route file (`page.tsx`)
-
-- Extract all logic and JSX into a component in `lib/components/`
-- Reduce page to metadata + single component render
-- Convert `generateMetadata` to static `metadata` if no dynamic data needed
+- Add `"use client"` at top
+- Use `interface` for the store shape (state + actions together)
+- Add `getInitialState()` helper function; use it in `create(...)` and `reset()`
+- Use `set((s) => ({...}))` when new state derives from old state

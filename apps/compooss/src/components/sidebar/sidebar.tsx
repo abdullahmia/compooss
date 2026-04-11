@@ -7,7 +7,7 @@ import { DatabaseSidebarSkeleton, IconButton } from "@compooss/ui";
 import { AlertTriangle, Plus, RefreshCw, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import { CreateDatabaseModal } from "../create-database-modal";
+import { CreateDatabaseModal } from "@/lib/components/databases/create-database-modal.component";
 import { SidebarItem } from "./sidebar-item";
 
 /** Parses pathname to get the active database name (e.g. /databases/foo/... -> foo). */
