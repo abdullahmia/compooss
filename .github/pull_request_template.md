@@ -17,13 +17,6 @@
 -
 -
 
-## How to Test
-
-<!-- Steps for a reviewer to verify this works -->
-
-1.
-2.
-
 ## Checklist
 
 - [ ] My commit messages follow [Conventional Commits](https://www.conventionalcommits.org)
