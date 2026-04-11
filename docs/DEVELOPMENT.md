@@ -107,7 +107,7 @@ compooss/
 
 - **No env vars needed for development.** The MongoDB URI is entered by the user in the UI and stored in IndexedDB — nothing is hardcoded or read from the environment.
 - **API routes are Next.js routes.** The `ApiClient` uses relative `/api` paths, so the frontend and API always run on the same origin.
-- **`lib/driver/`** manages live MongoDB connections (Node.js `MongoClient`). `lib/storage/`** manages saved connection configs (browser IndexedDB). These are intentionally separate.
+- **`lib/driver/`** manages live MongoDB connections (Node.js `MongoClient`). **`lib/storage/`** manages saved connection configs (browser IndexedDB). These are intentionally separate.
 - **Turborepo** ensures `@compooss/types` and `@compooss/ui` are always built before the apps that depend on them.
 
 ---
@@ -163,3 +163,46 @@ Example: `feat: add collection rename dialog`
 5. Maintainers will review and merge
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guidelines.
+
+---
+
+## Troubleshooting
+
+**`bun dev` fails with a port conflict**
+
+Port 3000 is already in use. Stop the other process or change the port:
+
+```bash
+PORT=3001 bun dev
+```
+
+**MongoDB connection refused on startup**
+
+Make sure the dev MongoDB container is running:
+
+```bash
+docker compose -f docker/docker-compose.dev.yml up -d
+# verify
+docker ps
+```
+
+Then connect to `mongodb://root:example@localhost:27017/?authSource=admin`.
+
+**`bun install` fails or packages are missing after pulling**
+
+Delete the lockfile-generated node_modules and reinstall:
+
+```bash
+rm -rf node_modules apps/*/node_modules packages/*/node_modules
+bun install
+```
+
+**TypeScript errors after changing a shared package**
+
+The shared packages (`@compooss/types`, `@compooss/ui`) must be built before the app can see the types:
+
+```bash
+bun build
+```
+
+Then restart the dev server.

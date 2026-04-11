@@ -5,8 +5,24 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.7.0-green.svg)](docs/CHANGELOG.md)
 [![Docker Hub](https://img.shields.io/docker/pulls/abdullahmia/compooss)](https://hub.docker.com/r/abdullahmia/compooss)
+[![GitHub Issues](https://img.shields.io/github/issues/abdullahmia/compooss)](https://github.com/abdullahmia/compooss/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/abdullahmia/compooss)](https://github.com/abdullahmia/compooss/stargazers)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](docs/CONTRIBUTING.md)
 
 ![Compooss Preview](docs/preview.jpeg)
+
+---
+
+## Table of Contents
+
+- [What is Compooss?](#what-is-compooss)
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [Development Setup](#development-setup)
+- [Monorepo Structure](#monorepo-structure)
+- [Contributing](#contributing)
+- [Roadmap](#roadmap)
+- [License](#license)
 
 ---
 
@@ -137,12 +153,16 @@ compooss/
 
 ## Contributing
 
-Contributions are welcome. Please read [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) before opening a PR.
+Contributions of all sizes are welcome — bug reports, feature ideas, docs improvements, and code fixes.
 
-Quick checklist:
+**New to the project?** Look for issues tagged [`good first issue`](https://github.com/abdullahmia/compooss/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) — these are small, well-scoped tasks with clear instructions.
+
+Quick checklist before opening a PR:
 - Branch from `development`, not `main`
 - Follow [Conventional Commits](https://www.conventionalcommits.org) — enforced by Commitlint
 - Run `bun lint` and `bun type-check` before submitting
+
+Read [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) for the full guide and [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) for local setup.
 
 ---
 
