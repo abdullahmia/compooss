@@ -14,6 +14,7 @@ import {
   Database,
   Eye,
   FileJson,
+  Github,
   Grid3X3,
   Layers,
   LayoutGrid,
@@ -376,6 +377,15 @@ export default function LandingPage() {
 
             {/* Right actions */}
             <div className="flex items-center gap-3">
+              <a
+                href="https://github.com/abdullahmia/compooss"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden items-center gap-1.5 text-[13px] font-medium text-zinc-400 transition-colors hover:text-zinc-100 sm:flex"
+              >
+                <Github size={15} />
+                GitHub
+              </a>
               <a
                 href="https://hub.docker.com/r/abdullahmia/compooss"
                 target="_blank"
@@ -1179,6 +1189,17 @@ export default function LandingPage() {
               <ul className="space-y-2.5">
                 <li>
                   <a
+                    href="https://github.com/abdullahmia/compooss"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-200"
+                  >
+                    GitHub
+                    <ArrowRight size={11} className="text-zinc-600" />
+                  </a>
+                </li>
+                <li>
+                  <a
                     href="https://hub.docker.com/r/abdullahmia/compooss"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -1213,6 +1234,17 @@ export default function LandingPage() {
             <p className="text-xs text-zinc-600">
               &copy; {new Date().getFullYear()} Compooss. Free and open-source
               under MIT License.
+            </p>
+            <p className="text-xs text-zinc-600">
+              Built by{" "}
+              <a
+                href="https://abdullah.iam.bd/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-400 transition-colors hover:text-zinc-200"
+              >
+                Abdullah Mia
+              </a>
             </p>
             <p className="text-xs text-zinc-700">
               Not affiliated with MongoDB, Inc.
