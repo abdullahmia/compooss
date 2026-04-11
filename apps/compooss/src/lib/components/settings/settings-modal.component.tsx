@@ -3,22 +3,19 @@
 import { Palette, Settings, Shield, X } from "lucide-react";
 import { useState } from "react";
 import { Button, IconButton, Tabs } from "@compooss/ui";
-import { AppearanceSettings } from "./appearance-settings";
-import { GeneralSettings } from "./general-settings";
-import { PrivacySettings } from "./privacy-settings";
+import { AppearanceSettings } from "@/lib/components/settings/appearance-settings.component";
+import { GeneralSettings } from "@/lib/components/settings/general-settings.component";
+import { PrivacySettings } from "@/lib/components/settings/privacy-settings.component";
 
-interface SettingsModalProps {
+type Props = {
   open: boolean;
   onClose: () => void;
-}
+};
 
 type SettingsTab = "general" | "privacy" | "theme";
 
-export function SettingsModal({ open, onClose }: SettingsModalProps) {
+export const SettingsModal: React.FC<Props> = ({ open, onClose }) => {
   const [activeTab, setActiveTab] = useState<SettingsTab>("general");
-  
- 
-  
 
   if (!open) return null;
 
@@ -34,7 +31,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-background/10 backdrop-blur-xs" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-background/10 backdrop-blur-xs"
+        onClick={onClose}
+      />
       <div className="relative bg-card border border-border rounded-lg shadow-xl w-full max-w-lg mx-4">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex items-center gap-2">
@@ -59,17 +59,9 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
           />
 
           <div className="flex-1 p-5 space-y-5 overflow-y-auto">
-            {activeTab === "general" && (
-              <GeneralSettings />
-            )}
-
-            {activeTab === "privacy" && (
-              <PrivacySettings />
-            )}
-
-            {activeTab === "theme" && (
-              <AppearanceSettings />
-            )}
+            {activeTab === "general" && <GeneralSettings />}
+            {activeTab === "privacy" && <PrivacySettings />}
+            {activeTab === "theme" && <AppearanceSettings />}
           </div>
         </div>
 
@@ -92,4 +84,4 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       </div>
     </div>
   );
-}
+};

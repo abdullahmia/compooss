@@ -1,6 +1,6 @@
 "use client";
 
-import { JsonEditor } from "@/components/json-editor";
+import { JsonEditor } from "@/lib/components/collections/json-editor.component";
 import {
   Modal,
   ModalBody,

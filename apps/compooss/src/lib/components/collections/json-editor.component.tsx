@@ -9,7 +9,7 @@ type Props = {
   height?: string;
 };
 
-export function JsonEditor({ value, onChange, height = "260px" }: Props) {
+export const JsonEditor: React.FC<Props> = ({ value, onChange, height = "260px" }) => {
   const handleChange = (nextValue?: string) => {
     onChange(nextValue ?? "");
   };
@@ -39,5 +39,4 @@ export function JsonEditor({ value, onChange, height = "260px" }: Props) {
       />
     </div>
   );
-}
-
+};

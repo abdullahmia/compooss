@@ -1,7 +1,8 @@
 "use client";
 
 import { EmptyState } from "@compooss/ui";
-import { getDocumentId, JsonDocumentSkeleton, JsonDocument } from "@/components/json-document";
+import { JsonDocumentSkeleton, JsonDocument } from "@/lib/components/collections/json-document.component";
+import { getDocumentId } from "@/lib/utils";
 import { useGetDocuments } from "@/lib/services/documents/documents.service";
 import {
   ChevronLeft,
@@ -12,7 +13,8 @@ import {
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import { defaultState, QueryBar, type QueryBarState } from "@/components/query-bar";
+import { QueryBar, type QueryBarState } from "@/lib/components/collections/query-bar.component";
+import { QUERY_BAR_DEFAULT_STATE } from "@/lib/constants";
 import { IconButton } from "@compooss/ui";
 import { AddDocument } from "@/lib/components/collections/add-document.component";
 import { DocumentFormModal } from "@/lib/components/collections/document-form-modal.component";
@@ -41,7 +43,7 @@ function getFieldsFromDocs(docs: Record<string, unknown>[]): string[] {
 
 export const DocumentsTab: React.FC<Props> = ({ readOnly = false }) => {
   const [viewMode, setViewMode] = useState<"list" | "json" | "table">("list");
-  const [queryParams, setQueryParams] = useState<QueryBarState>(defaultState);
+  const [queryParams, setQueryParams] = useState<QueryBarState>(QUERY_BAR_DEFAULT_STATE);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editingDocument, setEditingDocument] = useState<{
     id: string;

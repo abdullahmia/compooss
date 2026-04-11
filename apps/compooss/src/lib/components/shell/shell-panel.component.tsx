@@ -1,6 +1,9 @@
 "use client";
 
 import { useShellPanel } from "@/lib/providers/shell-provider";
+import { useShell } from "@/lib/hooks/use-shell.hook";
+import { ShellInput } from "@/lib/components/shell/shell-input.component";
+import { ShellOutput } from "@/lib/components/shell/shell-output.component";
 import {
   ChevronDown,
   ClipboardCopy,
@@ -11,15 +14,12 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ShellInput } from "./shell-input";
-import { ShellOutput } from "./shell-output";
-import { useShell } from "./use-shell";
 
 const MIN_HEIGHT = 160;
 const DEFAULT_HEIGHT = 300;
 const MAX_HEIGHT_RATIO = 0.75;
 
-export function ShellPanel() {
+export const ShellPanel: React.FC = () => {
   const { isOpen, close } = useShellPanel();
   const {
     entries,
@@ -176,4 +176,4 @@ export function ShellPanel() {
       />
     </div>
   );
-}
+};

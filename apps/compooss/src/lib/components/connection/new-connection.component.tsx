@@ -11,7 +11,7 @@ import { Clock, Leaf, Star, StarOff, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 
-export function NewConnection() {
+export const NewConnection: React.FC = () => {
   const form = useForm<TConnectionSchema>({
     resolver: zodResolver(ConnectionSchema),
     defaultValues: {
@@ -207,4 +207,4 @@ export function NewConnection() {
       </div>
     </div>
   );
-}
+};

@@ -1,6 +1,6 @@
-import { Palette } from "lucide-react"
+import { Palette } from "lucide-react";
 
-export const AppearanceSettings = () => {
+export const AppearanceSettings: React.FC = () => {
   return (
     <div>
       <h3 className="text-xs font-semibold text-foreground mb-3 flex items-center gap-1.5">
@@ -11,10 +11,11 @@ export const AppearanceSettings = () => {
         {["Dark", "Light", "System"].map((theme) => (
           <button
             key={theme}
-            className={`p-3 rounded-sm border text-xs font-medium transition-colors ${theme === "Dark"
+            className={`p-3 rounded-sm border text-xs font-medium transition-colors ${
+              theme === "Dark"
                 ? "border-primary bg-primary/15 text-primary"
                 : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
-              }`}
+            }`}
           >
             {theme}
           </button>
@@ -24,5 +25,5 @@ export const AppearanceSettings = () => {
         Choose your preferred theme. Currently using the dark theme.
       </p>
     </div>
-  )
-}
+  );
+};

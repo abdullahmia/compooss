@@ -1,7 +1,8 @@
 "use client";
 
-import type { MongoDocument } from "@/data/mockData";
+import type { MongoDocument } from "@/lib/types/document.type";
 import { useDeleteDocument } from "@/lib/services/documents/documents.service";
+import { getDocumentId } from "@/lib/utils";
 import {
   ChevronDown,
   ChevronRight,
@@ -14,8 +15,7 @@ import { useState } from "react";
 import { IconButton } from "@compooss/ui";
 import { toast } from "sonner";
 
-/** Skeleton loader matching JsonDocument layout: card with header and key-value rows */
-export function JsonDocumentSkeleton() {
+export const JsonDocumentSkeleton: React.FC = () => {
   return (
     <div className="border border-border rounded-lg bg-card mb-3 shadow-xs animate-pulse">
       {/* Header - matches document card header */}
@@ -42,20 +42,9 @@ export function JsonDocumentSkeleton() {
       </div>
     </div>
   );
-}
+};
 
-/** Normalize document _id to string (handles { $oid: "..." } or plain string). */
-export function getDocumentId(doc: { _id?: unknown }): string {
-  const id = doc._id;
-  if (id === undefined || id === null) return "";
-  if (typeof id === "object" && "$oid" in (id as object)) {
-    const oid = (id as { $oid: string }).$oid;
-    return typeof oid === "string" ? oid : "";
-  }
-  return String(id);
-}
-
-interface JsonDocumentProps {
+type Props = {
   document: MongoDocument;
   index: number;
   onEdit?: (document: MongoDocument) => void;
@@ -65,9 +54,9 @@ interface JsonDocumentProps {
   collectionName?: string;
   /** When true, edit and delete actions are hidden (e.g. for system databases). */
   readOnly?: boolean;
-}
+};
 
-function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
+function JsonValue({ value, depth = 0 }: { value: unknown; depth?: number }) {
   const [expanded, setExpanded] = useState(depth < 0);
 
   if (value === null)
@@ -124,8 +113,9 @@ function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
     );
   }
 
-  if (typeof value === "object") {
-    const keys = Object.keys(value);
+  if (typeof value === "object" && value !== null) {
+    const obj = value as Record<string, unknown>;
+    const keys = Object.keys(obj);
     if (keys.length === 0)
       return (
         <span className="text-muted-foreground font-mono text-xs">{"{ }"}</span>
@@ -134,14 +124,14 @@ function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
     if (keys.length === 1 && keys[0] === "$oid") {
       return (
         <span className="text-json-string font-mono text-xs">
-          ObjectId(&quot;{value.$oid}&quot;)
+          ObjectId(&quot;{obj.$oid as string}&quot;)
         </span>
       );
     }
     if (keys.length === 1 && keys[0] === "$date") {
       return (
         <span className="text-json-string font-mono text-xs">
-          ISODate(&quot;{value.$date}&quot;)
+          ISODate(&quot;{obj.$date as string}&quot;)
         </span>
       );
     }
@@ -167,7 +157,7 @@ function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
               <div key={key} className="py-0.5">
                 <span className="text-json-key font-mono text-xs">{key}</span>
                 <span className="text-muted-foreground mx-1">:</span>
-                <JsonValue value={value[key]} depth={depth + 1} />
+                <JsonValue value={obj[key]} depth={depth + 1} />
               </div>
             ))}
           </div>
@@ -181,14 +171,14 @@ function JsonValue({ value, depth = 0 }: { value: any; depth?: number }) {
   );
 }
 
-export function JsonDocument({
+export const JsonDocument: React.FC<Props> = ({
   document,
   onEdit,
   onDeleted,
   dbName,
   collectionName,
   readOnly = false,
-}: JsonDocumentProps) {
+}) => {
   const [expanded, setExpanded] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const docId = getDocumentId(document);
@@ -307,4 +297,4 @@ export function JsonDocument({
       )}
     </div>
   );
-}
+};

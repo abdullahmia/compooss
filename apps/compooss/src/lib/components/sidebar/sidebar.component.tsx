@@ -8,7 +8,7 @@ import { AlertTriangle, Plus, RefreshCw, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { CreateDatabaseModal } from "@/lib/components/databases/create-database-modal.component";
-import { SidebarItem } from "./sidebar-item";
+import { SidebarItem } from "@/lib/components/sidebar/sidebar-item.component";
 
 /** Parses pathname to get the active database name (e.g. /databases/foo/... -> foo). */
 function getActiveDbNameFromPath(pathname: string): string | null {
@@ -16,7 +16,7 @@ function getActiveDbNameFromPath(pathname: string): string | null {
   return match ? match[1] : null;
 }
 
-export function Sidebar() {
+export const Sidebar: React.FC = () => {
   const pathname = usePathname();
   const activeDbName = getActiveDbNameFromPath(pathname ?? "");
   const { activeConnection } = useConnection();
@@ -136,14 +136,14 @@ export function Sidebar() {
               </>
             ) : (filtered?.length ?? 0) > 0 ? (
               <>
-                  {activeConnection?.color ? (
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ backgroundColor: activeConnection.color }}
-                    />
-                  ) : (
-                    <span className="text-primary font-medium">●</span>
-                  )}
+                {activeConnection?.color ? (
+                  <span
+                    className="w-2 h-2 rounded-full shrink-0"
+                    style={{ backgroundColor: activeConnection.color }}
+                  />
+                ) : (
+                  <span className="text-primary font-medium">●</span>
+                )}
                 {`Connected — ${filtered?.length ?? 0} databases`}
               </>
             ) : (
@@ -159,4 +159,4 @@ export function Sidebar() {
       {open && <CreateDatabaseModal onClose={() => setOpen(false)} />}
     </>
   );
-}
+};

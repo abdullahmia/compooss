@@ -1,8 +1,8 @@
 "use client";
 
-import { Sidebar } from "@/components/sidebar/sidebar";
-import { ShellPanel } from "@/components/shell/shell-panel";
-import { TopBar } from "@/components/top-bar";
+import { Sidebar } from "@/lib/components/sidebar/sidebar.component";
+import { ShellPanel } from "@/lib/components/shell/shell-panel.component";
+import { TopBar } from "@/lib/components/workspace/top-bar.component";
 
 type Props = {
   children: React.ReactNode;

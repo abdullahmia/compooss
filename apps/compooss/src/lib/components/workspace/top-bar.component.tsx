@@ -8,14 +8,13 @@ import {
   HelpCircle,
   Leaf,
   LogOut,
-  TerminalSquare
+  TerminalSquare,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export function TopBar() {
-  // const [settingsOpen, setSettingsOpen] = useState(false);
+export const TopBar: React.FC = () => {
   const [disconnectOpen, setDisconnectOpen] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
   const { isOpen: isShellOpen, toggle: toggleShell } = useShellPanel();
@@ -80,12 +79,6 @@ export function TopBar() {
           label="MongoDB Shell"
           onClick={toggleShell}
         />
-        {/* <IconButton
-          variant="default"
-          icon={<Settings className="h-4 w-4" />}
-          label="Settings"
-          onClick={() => setSettingsOpen(true)}
-        /> */}
         <IconButton
           variant="default"
           icon={<HelpCircle className="h-4 w-4" />}
@@ -102,10 +95,6 @@ export function TopBar() {
         isPending={isDisconnecting}
         onConfirm={handleDisconnect}
       />
-      {/* <SettingsModal
-        open={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-      /> */}
     </>
   );
-}
+};

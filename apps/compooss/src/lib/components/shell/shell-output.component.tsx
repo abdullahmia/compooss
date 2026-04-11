@@ -3,9 +3,9 @@
 import type { ShellEntry } from "@compooss/types";
 import { useEffect, useRef } from "react";
 
-interface ShellOutputProps {
+type Props = {
   entries: ShellEntry[];
-}
+};
 
 function formatResult(result: unknown): string {
   if (result === null || result === undefined) return "null";
@@ -57,7 +57,7 @@ function ResultBlock({ entry }: { entry: ShellEntry }) {
   );
 }
 
-export function ShellOutput({ entries }: ShellOutputProps) {
+export const ShellOutput: React.FC<Props> = ({ entries }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -82,4 +82,4 @@ export function ShellOutput({ entries }: ShellOutputProps) {
       ))}
     </div>
   );
-}
+};

@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge, Button, EmptyState, IconButton } from "@compooss/ui";
-import { JsonEditor } from "@/components/json-editor";
+import { JsonEditor } from "@/lib/components/collections/json-editor.component";
 import {
   useGetValidation,
   useUpdateValidation,

@@ -3,23 +3,23 @@
 import Editor, { type OnMount } from "@monaco-editor/react";
 import type { editor as MonacoEditor } from "monaco-editor";
 import { useCallback, useRef } from "react";
-import { registerShellCompletions } from "./shell-completions";
+import { registerShellCompletions } from "@/lib/components/shell/shell-completions";
 
-interface ShellInputProps {
+type Props = {
   database: string;
   isExecuting: boolean;
   collectionNames: string[];
   onExecute: (command: string) => void;
   onNavigateHistory: (direction: "up" | "down") => string | null;
-}
+};
 
-export function ShellInput({
+export const ShellInput: React.FC<Props> = ({
   database,
   isExecuting,
   collectionNames,
   onExecute,
   onNavigateHistory,
-}: ShellInputProps) {
+}) => {
   const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor | null>(null);
   const completionsRegistered = useRef(false);
 
@@ -149,4 +149,4 @@ export function ShellInput({
       )}
     </div>
   );
-}
+};

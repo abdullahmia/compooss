@@ -9,11 +9,11 @@ const STORAGE_KEY = "compooss:shell:session";
 const MAX_HISTORY = 200;
 const MAX_COMMAND_HISTORY = 100;
 
-interface ShellSession {
+type ShellSession = {
   database: string;
   commandHistory: string[];
   entries: ShellEntry[];
-}
+};
 
 function getDbFromPath(): string | null {
   if (typeof window === "undefined") return null;

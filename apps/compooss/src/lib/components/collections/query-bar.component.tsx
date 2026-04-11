@@ -1,14 +1,14 @@
 "use client";
 
+import {
+  DEFAULT_FILTER,
+  DEFAULT_LIMIT,
+  DEFAULT_SKIP,
+  QUERY_BAR_DEFAULT_STATE,
+} from "@/lib/constants";
 import { Braces, Play, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { IconButton } from "@compooss/ui";
-
-export const DEFAULT_FILTER = "{ }";
-export const DEFAULT_PROJECT = "{ }";
-export const DEFAULT_SORT = "{ }";
-export const DEFAULT_LIMIT = 20;
-export const DEFAULT_SKIP = 0;
 
 export type QueryBarState = {
   filter: string;
@@ -18,26 +18,18 @@ export type QueryBarState = {
   skip: number;
 };
 
-export const defaultState: QueryBarState = {
-  filter: DEFAULT_FILTER,
-  project: DEFAULT_PROJECT,
-  sort: DEFAULT_SORT,
-  limit: DEFAULT_LIMIT,
-  skip: DEFAULT_SKIP,
-};
-
-interface QueryBarProps {
+type Props = {
   onRunQuery: (state: QueryBarState) => void;
   fieldSuggestions?: string[];
   /** Optional initial state (e.g. after reset from parent) */
   initialState?: Partial<QueryBarState>;
-}
+};
 
 function getSuggestions(
   text: string,
   cursorPos: number,
   fieldSuggestions: string[],
-  valueSuffix: string = ": "
+  valueSuffix: string = ": ",
 ): string[] {
   if (!fieldSuggestions.length) return [];
   const beforeCursor = text.slice(0, cursorPos);
@@ -49,16 +41,16 @@ function getSuggestions(
     .slice(0, 8);
 }
 
-export function QueryBar({
+export const QueryBar: React.FC<Props> = ({
   onRunQuery,
   fieldSuggestions = [],
   initialState,
-}: QueryBarProps) {
-  const [filter, setFilter] = useState(initialState?.filter ?? defaultState.filter);
-  const [project, setProject] = useState(initialState?.project ?? defaultState.project);
-  const [sort, setSort] = useState(initialState?.sort ?? defaultState.sort);
-  const [limit, setLimit] = useState(initialState?.limit ?? defaultState.limit);
-  const [skip, setSkip] = useState(initialState?.skip ?? defaultState.skip);
+}) => {
+  const [filter, setFilter] = useState(initialState?.filter ?? QUERY_BAR_DEFAULT_STATE.filter);
+  const [project, setProject] = useState(initialState?.project ?? QUERY_BAR_DEFAULT_STATE.project);
+  const [sort, setSort] = useState(initialState?.sort ?? QUERY_BAR_DEFAULT_STATE.sort);
+  const [limit, setLimit] = useState(initialState?.limit ?? QUERY_BAR_DEFAULT_STATE.limit);
+  const [skip, setSkip] = useState(initialState?.skip ?? QUERY_BAR_DEFAULT_STATE.skip);
   const [showOptions, setShowOptions] = useState(false);
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -75,7 +67,7 @@ export function QueryBar({
       value: string,
       cursorPos: number,
       context: "filter" | "project" | "sort",
-      inputRef: React.RefObject<HTMLInputElement | null>
+      inputRef: React.RefObject<HTMLInputElement | null>,
     ) => {
       const suffix = context === "filter" ? ": " : context === "sort" ? ": -1" : ": 1";
       const next = getSuggestions(value, cursorPos, fieldSuggestions, suffix);
@@ -84,7 +76,7 @@ export function QueryBar({
       setSelectedSuggestion(0);
       setSuggestionContext(next.length > 0 ? context : null);
     },
-    [fieldSuggestions]
+    [fieldSuggestions],
   );
 
   const handleFilterChange = useCallback(
@@ -93,7 +85,7 @@ export function QueryBar({
       const cursorPos = filterRef.current?.selectionStart ?? value.length;
       updateSuggestions(value, cursorPos, "filter", filterRef);
     },
-    [updateSuggestions]
+    [updateSuggestions],
   );
 
   const handleProjectChange = useCallback(
@@ -102,7 +94,7 @@ export function QueryBar({
       const cursorPos = projectRef.current?.selectionStart ?? value.length;
       updateSuggestions(value, cursorPos, "project", projectRef);
     },
-    [updateSuggestions]
+    [updateSuggestions],
   );
 
   const handleSortChange = useCallback(
@@ -111,7 +103,7 @@ export function QueryBar({
       const cursorPos = sortRef.current?.selectionStart ?? value.length;
       updateSuggestions(value, cursorPos, "sort", sortRef);
     },
-    [updateSuggestions]
+    [updateSuggestions],
   );
 
   const applySuggestion = useCallback(
@@ -147,7 +139,7 @@ export function QueryBar({
       setShowSuggestions(false);
       setSuggestionContext(null);
     },
-    [filter, project, sort]
+    [filter, project, sort],
   );
 
   const runQuery = useCallback(() => {
@@ -193,17 +185,17 @@ export function QueryBar({
         runQuery();
       }
     },
-    [showSuggestions, suggestionContext, suggestions, selectedSuggestion, applySuggestion, runQuery]
+    [showSuggestions, suggestionContext, suggestions, selectedSuggestion, applySuggestion, runQuery],
   );
 
   const handleReset = useCallback(() => {
-    setFilter(defaultState.filter);
-    setProject(defaultState.project);
-    setSort(defaultState.sort);
-    setLimit(defaultState.limit);
-    setSkip(defaultState.skip);
+    setFilter(QUERY_BAR_DEFAULT_STATE.filter);
+    setProject(QUERY_BAR_DEFAULT_STATE.project);
+    setSort(QUERY_BAR_DEFAULT_STATE.sort);
+    setLimit(QUERY_BAR_DEFAULT_STATE.limit);
+    setSkip(QUERY_BAR_DEFAULT_STATE.skip);
     setShowSuggestions(false);
-    onRunQuery(defaultState);
+    onRunQuery(QUERY_BAR_DEFAULT_STATE);
   }, [onRunQuery]);
 
   const inputClass =
@@ -289,7 +281,11 @@ export function QueryBar({
                   const pos = projectRef.current?.selectionStart ?? project.length;
                   updateSuggestions(project, pos, "project", projectRef);
                 }}
-                onBlur={() => setTimeout(() => { if (suggestionContext === "project") setShowSuggestions(false); }, 150)}
+                onBlur={() =>
+                  setTimeout(() => {
+                    if (suggestionContext === "project") setShowSuggestions(false);
+                  }, 150)
+                }
                 className={`${inputClass} w-40`}
                 placeholder="{ }"
               />
@@ -299,7 +295,10 @@ export function QueryBar({
                     <button
                       key={field}
                       type="button"
-                      onMouseDown={(e) => { e.preventDefault(); applySuggestion(field, "project"); }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        applySuggestion(field, "project");
+                      }}
                       className={`w-full text-left px-2 py-1 text-xs font-mono ${i === selectedSuggestion ? "bg-primary/15 text-primary" : "hover:bg-secondary"}`}
                     >
                       {field}: 1
@@ -322,7 +321,11 @@ export function QueryBar({
                   const pos = sortRef.current?.selectionStart ?? sort.length;
                   updateSuggestions(sort, pos, "sort", sortRef);
                 }}
-                onBlur={() => setTimeout(() => { if (suggestionContext === "sort") setShowSuggestions(false); }, 150)}
+                onBlur={() =>
+                  setTimeout(() => {
+                    if (suggestionContext === "sort") setShowSuggestions(false);
+                  }, 150)
+                }
                 className={`${inputClass} w-40`}
                 placeholder="{ }"
               />
@@ -332,7 +335,10 @@ export function QueryBar({
                     <button
                       key={field}
                       type="button"
-                      onMouseDown={(e) => { e.preventDefault(); applySuggestion(field, "sort"); }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        applySuggestion(field, "sort");
+                      }}
                       className={`w-full text-left px-2 py-1 text-xs font-mono ${i === selectedSuggestion ? "bg-primary/15 text-primary" : "hover:bg-secondary"}`}
                     >
                       {field}: -1
@@ -376,4 +382,4 @@ export function QueryBar({
       )}
     </div>
   );
-}
+};
