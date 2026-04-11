@@ -57,9 +57,9 @@ export const useCreateIndex = (
       >(ENDPOINTS.indexes.root(db, col), payload);
       return response.data;
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.invalidateQueries({ queryKey: INDEXES_QUERY_KEYS.all(db, col) });
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };
@@ -78,9 +78,9 @@ export const useDropIndex = (
       );
       return response.data;
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.invalidateQueries({ queryKey: INDEXES_QUERY_KEYS.all(db, col) });
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };

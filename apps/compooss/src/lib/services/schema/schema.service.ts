@@ -22,9 +22,9 @@ export const useAnalyzeSchema = (
       >(ENDPOINTS.schema.root(db, col), payload);
       return response.data;
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.setQueryData(SCHEMA_QUERY_KEYS.all(db, col), data);
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };

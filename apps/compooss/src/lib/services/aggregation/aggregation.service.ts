@@ -26,8 +26,8 @@ export const useRunAggregation = (
       >(ENDPOINTS.aggregation.root(db, col), input);
       return response.data;
     },
-    onSuccess: (data, variables, context) => {
-      options.onSuccess?.(data, variables, context);
+    onSuccess: (data, variables, context, mutation) => {
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };

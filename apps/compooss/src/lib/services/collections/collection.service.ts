@@ -34,11 +34,11 @@ export const useCreateCollection = (
         ENDPOINTS.collections.root(dbName),
         { collectionName },
       ),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.invalidateQueries({
         queryKey: COLLECTION_QUERY_KEYS.list(dbName),
       });
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };
@@ -54,11 +54,11 @@ export const useDeleteCollection = (
       apiClient.delete<ApiResponse<null>>(
         ENDPOINTS.collections.byName(dbName, collectionName),
       ),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.invalidateQueries({
         queryKey: COLLECTION_QUERY_KEYS.list(dbName),
       });
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };

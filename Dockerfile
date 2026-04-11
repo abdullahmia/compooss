@@ -21,7 +21,7 @@ RUN bun install --frozen-lockfile
 COPY . .
 
 # Build the compooss app (turbo builds @compooss/types, @compooss/ui first)
-RUN bun run build --filter=@compooss/app
+RUN bunx turbo run build --filter=@compooss/app
 
 # Production stage - minimal image with standalone Next.js output
 FROM oven/bun:1-alpine AS runner

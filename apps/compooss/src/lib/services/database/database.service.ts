@@ -27,9 +27,9 @@ export const useCreateDatabase = (
     ...options,
     mutationFn: async (payload: TCreateDatabaseFormData) =>
       apiClient.post<ApiResponse<Database>>(ENDPOINTS.databases.root, payload),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.invalidateQueries({ queryKey: DATABASE_QUERY_KEYS.all() });
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };
@@ -42,9 +42,9 @@ export const useDeleteDatabase = (
     ...options,
     mutationFn: async (dbName: string) =>
       apiClient.delete<ApiResponse<null>>(ENDPOINTS.databases.byName(dbName)),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.invalidateQueries({ queryKey: DATABASE_QUERY_KEYS.all() });
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };

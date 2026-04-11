@@ -50,11 +50,11 @@ export const useUpdateValidation = (
       >(ENDPOINTS.validation.root(db, col), { body: payload });
       return response.data;
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       queryClient.invalidateQueries({
         queryKey: VALIDATION_QUERY_KEYS.all(db, col),
       });
-      options.onSuccess?.(data, variables, context);
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };
@@ -77,8 +77,8 @@ export const useCheckValidation = (
       >(ENDPOINTS.validation.root(db, col), payload);
       return response.data;
     },
-    onSuccess: (data, variables, context) => {
-      options.onSuccess?.(data, variables, context);
+    onSuccess: (data, variables, context, mutation) => {
+      options.onSuccess?.(data, variables, context, mutation);
     },
   });
 };
