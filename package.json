@@ -2,6 +2,10 @@
   "name": "compooss-monorepo",
   "private": true,
   "version": "1.7.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --ui tui",
@@ -20,6 +24,5 @@
     "husky": "^9.1.7",
     "turbo": "^2.3.3",
     "typescript": "^5.8.3"
-  },
-  "packageManager": "pnpm@9.14.2"
+  }
 }

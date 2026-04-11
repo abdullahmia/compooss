@@ -28,6 +28,6 @@
 
 - [ ] My commit messages follow [Conventional Commits](https://www.conventionalcommits.org)
 - [ ] I have tested my changes locally
-- [ ] No new TypeScript errors (`pnpm type-check`)
-- [ ] No new lint errors (`pnpm lint`)
+- [ ] No new TypeScript errors (`bun type-check`)
+- [ ] No new lint errors (`bun lint`)
 - [ ] I have updated relevant documentation if needed

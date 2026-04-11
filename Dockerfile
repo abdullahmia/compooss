@@ -1,33 +1,30 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM oven/bun:1-alpine AS builder
 
 ARG VERSION=1.1.0
-
-# Enable pnpm via corepack
-RUN corepack enable && corepack prepare pnpm@9.14.2 --activate
 
 WORKDIR /app
 
 # Copy workspace and lockfile
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json bun.lockb ./
 
-# Copy package manifests for all workspaces (needed for pnpm install)
+# Copy package manifests for all workspaces (needed for bun install)
 COPY apps/compooss/package.json ./apps/compooss/
 COPY apps/docs/package.json ./apps/docs/
 COPY packages/types/package.json ./packages/types/
 COPY packages/ui/package.json ./packages/ui/
 
-# Install dependencies (frozen lockfile for reproducible builds)
-RUN pnpm install --frozen-lockfile
+# Install dependencies
+RUN bun install --frozen-lockfile
 
 # Copy full source
 COPY . .
 
 # Build the compooss app (turbo builds @compooss/types, @compooss/ui first)
-RUN pnpm run build --filter=@compooss/app
+RUN bun run build --filter=@compooss/app
 
 # Production stage - minimal image with standalone Next.js output
-FROM node:20-alpine AS runner
+FROM oven/bun:1-alpine AS runner
 
 ARG VERSION=1.1.0
 LABEL org.opencontainers.image.version="${VERSION}"

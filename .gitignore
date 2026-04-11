@@ -3,6 +3,7 @@ node_modules
 .pnp
 .pnp.js
 .pnp.cjs
+.pnpm-store
 
 # Build outputs
 .next
