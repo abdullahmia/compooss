@@ -5,6 +5,7 @@ import { CodeBlock } from "@/components/code-block";
 import { FeatureCard } from "@/components/feature-card";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
+  AlertTriangle,
   ArrowRight,
   Check,
   ChevronRight,
@@ -26,7 +27,7 @@ import {
   Zap,
 } from "lucide-react";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
@@ -298,6 +299,11 @@ const USAGE_STEPS = [
 
 export default function LandingPage() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const [isWindows] = useState(() =>
+    typeof window !== "undefined" ? /Windows/i.test(navigator.userAgent) : false
+  );
+  const [bannerDismissed, setBannerDismissed] = useState(false);
+
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
@@ -307,6 +313,25 @@ export default function LandingPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
+      {/* Windows alert banner */}
+      {isWindows && !bannerDismissed && (
+        <div className="relative z-50 flex items-center gap-3 bg-amber-500/10 border-b border-amber-500/20 px-4 py-3 text-sm text-amber-300">
+          <AlertTriangle size={15} className="shrink-0 text-amber-400" />
+          <p className="flex-1">
+            <span className="font-semibold text-amber-200">Windows users:</span>{" "}
+            We&apos;re aware of issues on Windows and are actively investigating.
+            Thank you for your patience.
+          </p>
+          <button
+            onClick={() => setBannerDismissed(true)}
+            aria-label="Dismiss"
+            className="shrink-0 rounded p-0.5 text-amber-400/60 transition-colors hover:bg-amber-500/10 hover:text-amber-300"
+          >
+            <X size={15} />
+          </button>
+        </div>
+      )}
+
       {/* Background grid */}
       <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(39,39,42,0.3)_1px,transparent_1px),linear-gradient(90deg,rgba(39,39,42,0.3)_1px,transparent_1px)] bg-[size:64px_64px]" />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.08),transparent_60%)]" />
