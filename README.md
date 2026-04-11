@@ -158,4 +158,4 @@ See [`docs/FEATURES.md`](docs/FEATURES.md) and [`docs/CHANGELOG.md`](docs/CHANGE
 
 ## License
 
-[MIT](LICENSE) © [Abdullah Mia](https://github.com/abdullahmia)
+[MIT](LICENSE) © [Abdullah Mia](https://abdullah.iam.bd/)
