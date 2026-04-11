@@ -4,6 +4,7 @@ import { useShellPanel } from "@/lib/providers/shell-provider";
 import { useShell } from "@/lib/hooks/use-shell.hook";
 import { ShellInput } from "@/lib/components/shell/shell-input.component";
 import { ShellOutput } from "@/lib/components/shell/shell-output.component";
+import { IconButton } from "@compooss/ui";
 import {
   ChevronDown,
   ClipboardCopy,
@@ -125,42 +126,44 @@ export const ShellPanel: React.FC = () => {
 
         <div className="flex-1" />
 
-        <button
-          type="button"
+        <IconButton
+          variant="ghost"
+          size="sm"
+          icon={<ClipboardCopy className="h-3.5 w-3.5" />}
+          label="Copy last result"
+          className="hover:bg-white/5 rounded-sm"
           onClick={copyLastResult}
-          className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-          title="Copy last result"
-        >
-          <ClipboardCopy className="h-3.5 w-3.5" />
-        </button>
-        <button
-          type="button"
+        />
+        <IconButton
+          variant="ghost"
+          size="sm"
+          icon={<Eraser className="h-3.5 w-3.5" />}
+          label="Clear output"
+          className="hover:bg-white/5 rounded-sm"
           onClick={clearOutput}
-          className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-          title="Clear output"
-        >
-          <Eraser className="h-3.5 w-3.5" />
-        </button>
-        <button
-          type="button"
+        />
+        <IconButton
+          variant="ghost"
+          size="sm"
+          icon={
+            isMaximized ? (
+              <Minimize2 className="h-3.5 w-3.5" />
+            ) : (
+              <Maximize2 className="h-3.5 w-3.5" />
+            )
+          }
+          label={isMaximized ? "Restore" : "Maximize"}
+          className="hover:bg-white/5 rounded-sm"
           onClick={toggleMaximize}
-          className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-          title={isMaximized ? "Restore" : "Maximize"}
-        >
-          {isMaximized ? (
-            <Minimize2 className="h-3.5 w-3.5" />
-          ) : (
-            <Maximize2 className="h-3.5 w-3.5" />
-          )}
-        </button>
-        <button
-          type="button"
+        />
+        <IconButton
+          variant="ghost"
+          size="sm"
+          icon={<X className="h-3.5 w-3.5" />}
+          label="Close shell"
+          className="hover:bg-white/5 rounded-sm"
           onClick={close}
-          className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-          title="Close shell"
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
+        />
       </div>
 
       {/* Output */}

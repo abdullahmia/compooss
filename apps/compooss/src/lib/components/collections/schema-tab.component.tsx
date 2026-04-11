@@ -165,15 +165,18 @@ function FieldCard({
         <div className="flex items-start gap-4 mb-3">
           <div className="flex items-center gap-1.5 shrink-0">
             {hasExpandableChildren && (
-              <button
-                type="button"
+              <IconButton
+                variant="default"
+                size="sm"
+                icon={
+                  <ChevronRight
+                    className={`h-4 w-4 transition-transform ${isExpanded ? "rotate-90" : ""}`}
+                  />
+                }
+                label={isExpanded ? "Collapse" : "Expand"}
+                className="shrink-0"
                 onClick={() => onToggle(field.path)}
-                className="p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground shrink-0"
-              >
-                <ChevronRight
-                  className={`h-4 w-4 transition-transform ${isExpanded ? "rotate-90" : ""}`}
-                />
-              </button>
+              />
             )}
             <h3 className="font-semibold text-base text-foreground whitespace-nowrap">
               {field.name}

@@ -29,6 +29,27 @@ const buttonVariants = cva(
           "border border-border text-muted-foreground hover:text-foreground hover:bg-secondary",
 
         /**
+         * Destructive call-to-action button.
+         * Matches solid red buttons used for delete confirmations.
+         */
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+
+        /**
+         * Soft/subtle primary button.
+         * Matches tinted primary buttons used for inline actions (e.g. "Connect" inside cards).
+         */
+        soft:
+          "bg-primary/10 text-primary hover:bg-primary/20",
+
+        /**
+         * Danger ghost button — reveals destructive intent on hover.
+         * Matches icon+text delete buttons that start muted and turn red on hover.
+         */
+        danger:
+          "text-muted-foreground hover:text-destructive hover:bg-destructive/10",
+
+        /**
          * Card-style button used for large, full-width navigation tiles
          * (e.g. feature cards on the welcome view).
          */

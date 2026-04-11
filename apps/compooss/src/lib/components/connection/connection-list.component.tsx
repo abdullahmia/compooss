@@ -1,7 +1,7 @@
 "use client";
 
 import type { SavedConnection } from "@compooss/types";
-import { cn } from "@compooss/ui";
+import { IconButton, cn } from "@compooss/ui";
 import { ArrowDownAZ, Clock, Search, Star, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ConnectionCard } from "./connection-card.component";
@@ -128,13 +128,13 @@ export const ConnectionList: React.FC<Props> = ({
             className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground outline-hidden w-full"
           />
           {search && (
-            <button
-              type="button"
+            <IconButton
+              variant="ghost"
+              size="sm"
+              icon={<X className="h-3 w-3" />}
+              label="Clear search"
               onClick={() => setSearch("")}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <X className="h-3 w-3" />
-            </button>
+            />
           )}
         </div>
 

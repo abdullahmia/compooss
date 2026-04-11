@@ -3,7 +3,7 @@
 import { useConnection } from "@/lib/providers/connection-provider";
 import { useGetDatabases } from "@/lib/services/database/database.service";
 import type { Database } from "@compooss/types";
-import { DatabaseSidebarSkeleton, IconButton } from "@compooss/ui";
+import { Button, DatabaseSidebarSkeleton, IconButton } from "@compooss/ui";
 import { AlertTriangle, Plus, RefreshCw, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
@@ -97,17 +97,15 @@ export const Sidebar: React.FC = () => {
                 Could not reach the database server. Check your connection
                 string.
               </p>
-              <button
-                type="button"
+              <Button
+                variant="primary"
+                size="sm"
+                icon={<RefreshCw className="h-3 w-3" />}
+                loading={isRefetching}
                 onClick={() => refetch()}
-                disabled={isRefetching}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium text-primary-foreground bg-primary rounded-sm hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
-                <RefreshCw
-                  className={`h-3 w-3 ${isRefetching ? "animate-spin" : ""}`}
-                />
                 {isRefetching ? "Retrying…" : "Retry"}
-              </button>
+              </Button>
             </div>
           ) : filtered?.length === 0 ? (
             <div className="px-3 py-2 text-xs text-muted-foreground">

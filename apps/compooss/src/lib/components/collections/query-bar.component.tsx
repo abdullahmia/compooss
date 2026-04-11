@@ -8,7 +8,7 @@ import {
 } from "@/lib/constants";
 import { Braces, Play, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
-import { IconButton } from "@compooss/ui";
+import { Button, IconButton } from "@compooss/ui";
 
 export type QueryBarState = {
   filter: string;
@@ -256,14 +256,14 @@ export const QueryBar: React.FC<Props> = ({
           onClick={handleReset}
         />
 
-        <button
-          type="button"
+        <Button
+          variant="primary"
+          size="sm"
+          icon={<Play className="h-3 w-3" />}
           onClick={runQuery}
-          className="flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 rounded-sm text-xs font-medium hover:bg-primary/90 transition-colors"
         >
-          <Play className="h-3 w-3" />
           Find
-        </button>
+        </Button>
       </div>
 
       {showOptions && (

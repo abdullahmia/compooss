@@ -368,13 +368,15 @@ function MatchConfigurator({
           />
         </div>
       ))}
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        size="sm"
+        icon={<Plus className="h-3 w-3" />}
         onClick={addRow}
-        className="flex items-center gap-1 text-xs text-primary hover:underline"
+        className="px-0 hover:underline"
       >
-        <Plus className="h-3 w-3" /> Add condition
-      </button>
+        Add condition
+      </Button>
     </div>
   );
 }
@@ -452,13 +454,15 @@ function GroupConfigurator({
             />
           </div>
         ))}
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={<Plus className="h-3 w-3" />}
           onClick={addAcc}
-          className="flex items-center gap-1 text-xs text-primary hover:underline"
+          className="px-0 hover:underline"
         >
-          <Plus className="h-3 w-3" /> Add accumulator
-        </button>
+          Add accumulator
+        </Button>
       </div>
     </div>
   );
@@ -505,13 +509,15 @@ function ProjectConfigurator({
           />
         </div>
       ))}
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        size="sm"
+        icon={<Plus className="h-3 w-3" />}
         onClick={addField}
-        className="flex items-center gap-1 text-xs text-primary hover:underline"
+        className="px-0 hover:underline"
       >
-        <Plus className="h-3 w-3" /> Add field
-      </button>
+        Add field
+      </Button>
     </div>
   );
 }
@@ -557,13 +563,15 @@ function SortConfigurator({
           />
         </div>
       ))}
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        size="sm"
+        icon={<Plus className="h-3 w-3" />}
         onClick={addField}
-        className="flex items-center gap-1 text-xs text-primary hover:underline"
+        className="px-0 hover:underline"
       >
-        <Plus className="h-3 w-3" /> Add field
-      </button>
+        Add field
+      </Button>
     </div>
   );
 }

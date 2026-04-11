@@ -301,20 +301,12 @@ export const CreateIndexModal: React.FC<Props> = ({
             </div>
           </ModalBody>
           <ModalFooter>
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-secondary transition-colors"
-            >
+            <Button variant="outline" type="button" onClick={onClose}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="px-4 py-2 text-xs font-medium bg-primary text-primary-foreground rounded-sm hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-            >
+            </Button>
+            <Button variant="primary" type="submit" loading={isPending}>
               {isPending ? "Creating…" : "Create index"}
-            </button>
+            </Button>
           </ModalFooter>
         </form>
       </ModalContent>

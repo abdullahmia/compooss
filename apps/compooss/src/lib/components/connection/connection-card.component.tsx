@@ -1,11 +1,10 @@
 "use client";
 
 import type { SavedConnection } from "@compooss/types";
-import { cn } from "@compooss/ui";
+import { Button, IconButton, cn } from "@compooss/ui";
 import { formatDistanceToNow } from "date-fns";
 import {
   Clock,
-  Loader2,
   Pencil,
   Plug2,
   Star,
@@ -76,67 +75,57 @@ export const ConnectionCard: React.FC<Props> = ({
 
         {/* Actions */}
         <div className="flex items-center gap-1 shrink-0">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFavorite(connection.id);
-            }}
+          <IconButton
+            icon={
+              <FavIcon
+                className={cn("h-3.5 w-3.5", connection.isFavorite && "fill-warning")}
+              />
+            }
+            label={connection.isFavorite ? "Remove from favorites" : "Add to favorites"}
             className={cn(
-              "p-1.5 rounded-lg transition-all",
+              "rounded-lg transition-all",
               connection.isFavorite
                 ? "text-warning hover:text-warning/70"
                 : "text-muted-foreground/50 hover:text-warning opacity-0 group-hover:opacity-100",
             )}
-            title={connection.isFavorite ? "Remove from favorites" : "Add to favorites"}
-          >
-            <FavIcon
-              className={cn(
-                "h-3.5 w-3.5",
-                connection.isFavorite && "fill-warning",
-              )}
-            />
-          </button>
-          <button
-            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(connection.id);
+            }}
+          />
+          <IconButton
+            variant="default"
+            icon={<Pencil className="h-3.5 w-3.5" />}
+            label="Edit"
+            className="opacity-0 group-hover:opacity-100 rounded-lg"
             onClick={(e) => {
               e.stopPropagation();
               onEdit(connection);
             }}
-            className="p-1.5 text-muted-foreground/50 hover:text-foreground rounded-lg transition-all opacity-0 group-hover:opacity-100"
-            title="Edit"
-          >
-            <Pencil className="h-3.5 w-3.5" />
-          </button>
-          <button
-            type="button"
+          />
+          <IconButton
+            variant="danger"
+            icon={<Trash2 className="h-3.5 w-3.5" />}
+            label="Delete"
+            className="opacity-0 group-hover:opacity-100 rounded-lg"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(connection.id);
             }}
-            className="p-1.5 text-muted-foreground/50 hover:text-destructive rounded-lg transition-all opacity-0 group-hover:opacity-100"
-            title="Delete"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
-          <button
-            type="button"
+          />
+          <Button
+            variant="soft"
+            size="sm"
+            icon={<Plug2 className="h-3 w-3" />}
+            loading={isConnecting}
+            className="ml-1 rounded-lg"
             onClick={(e) => {
               e.stopPropagation();
               onConnect(connection);
             }}
-            disabled={isConnecting}
-            className="ml-1 bg-primary/10 text-primary px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-primary/20 transition-all disabled:opacity-50 flex items-center gap-1.5"
           >
-            {isConnecting ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
-            ) : (
-              <>
-                <Plug2 className="h-3 w-3" />
-                Connect
-              </>
-            )}
-          </button>
+            Connect
+          </Button>
         </div>
       </div>
     </div>

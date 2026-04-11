@@ -12,7 +12,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
-import { IconButton } from "@compooss/ui";
+import { Button, IconButton } from "@compooss/ui";
 import { toast } from "sonner";
 
 export const JsonDocumentSkeleton: React.FC = () => {
@@ -211,16 +211,20 @@ export const JsonDocument: React.FC<Props> = ({
       {/* Document header */}
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-muted/30 rounded-t-lg relative overflow-hidden">
         <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary" />
-        <button
+        <IconButton
+          variant="ghost"
+          size="sm"
+          icon={
+            expanded ? (
+              <ChevronDown className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronRight className="h-3.5 w-3.5" />
+            )
+          }
+          label={expanded ? "Collapse" : "Expand"}
+          className="ml-1"
           onClick={() => setExpanded(!expanded)}
-          className="text-muted-foreground hover:text-foreground ml-1"
-        >
-          {expanded ? (
-            <ChevronDown className="h-3.5 w-3.5" />
-          ) : (
-            <ChevronRight className="h-3.5 w-3.5" />
-          )}
-        </button>
+        />
         <FileText className="h-3.5 w-3.5 text-primary" />
         <span className="text-xs font-mono text-json-string truncate">
           ObjectId(&quot;{getDocumentId(document)}&quot;)
@@ -276,22 +280,22 @@ export const JsonDocument: React.FC<Props> = ({
             Delete this document? This action cannot be undone.
           </p>
           <div className="flex items-center gap-2 shrink-0">
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => setShowDeleteConfirm(false)}
               disabled={isDeleting}
-              className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-muted transition-colors disabled:opacity-50"
             >
               Cancel
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              loading={isDeleting}
               onClick={handleConfirmDelete}
-              disabled={isDeleting}
-              className="px-3 py-1.5 text-xs font-medium bg-destructive text-destructive-foreground rounded-sm hover:bg-destructive/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isDeleting ? "Deleting…" : "Delete"}
-            </button>
+            </Button>
           </div>
         </div>
       )}

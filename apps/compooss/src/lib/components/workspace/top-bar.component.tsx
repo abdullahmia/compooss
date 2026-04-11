@@ -2,7 +2,7 @@
 
 import { useConnection } from "@/lib/providers/connection-provider";
 import { useShellPanel } from "@/lib/providers/shell-provider";
-import { ConfirmDestructiveModal, IconButton } from "@compooss/ui";
+import { Button, ConfirmDestructiveModal, IconButton } from "@compooss/ui";
 import {
   Database,
   HelpCircle,
@@ -61,14 +61,14 @@ export const TopBar: React.FC = () => {
           </div>
         </div>
 
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="sm"
+          icon={<LogOut className="h-3.5 w-3.5" />}
           onClick={() => setDisconnectOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-sm border border-border hover:bg-secondary transition-colors"
         >
-          <LogOut className="h-3.5 w-3.5" />
           Disconnect
-        </button>
+        </Button>
         <IconButton
           variant="default"
           icon={
