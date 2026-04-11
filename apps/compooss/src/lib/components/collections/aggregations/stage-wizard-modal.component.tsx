@@ -7,7 +7,9 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Checkbox,
   IconButton,
+  Input,
 } from "@compooss/ui";
 import { Plus, Trash2, Wand2 } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -58,8 +60,6 @@ const GROUP_ACCUMULATORS = [
   { value: "$count", label: "$count" },
 ];
 
-const monoInputCls =
-  "bg-secondary text-xs font-mono px-2 py-1.5 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 text-foreground outline-hidden w-full";
 
 export const StageWizardModal: React.FC<Props> = ({
   open,
@@ -335,11 +335,12 @@ function MatchConfigurator({
       <label className="text-xs text-muted-foreground">Conditions</label>
       {rows.map((row, i) => (
         <div key={i} className="flex items-center gap-2">
-          <input
+          <Input
+            variant="mono"
+            className="flex-1 w-auto"
             placeholder="field"
             value={row.field}
             onChange={(e) => updateRow(i, { field: e.target.value })}
-            className={`${monoInputCls} flex-1`}
           />
           <select
             value={row.op}
@@ -352,11 +353,12 @@ function MatchConfigurator({
               </option>
             ))}
           </select>
-          <input
+          <Input
+            variant="mono"
+            className="flex-1 w-auto"
             placeholder="value"
             value={row.value}
             onChange={(e) => updateRow(i, { value: e.target.value })}
-            className={`${monoInputCls} flex-1`}
           />
           <IconButton
             variant="danger"
@@ -368,13 +370,15 @@ function MatchConfigurator({
           />
         </div>
       ))}
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        size="sm"
+        icon={<Plus className="h-3 w-3" />}
         onClick={addRow}
-        className="flex items-center gap-1 text-xs text-primary hover:underline"
+        className="px-0 hover:underline"
       >
-        <Plus className="h-3 w-3" /> Add condition
-      </button>
+        Add condition
+      </Button>
     </div>
   );
 }
@@ -408,22 +412,23 @@ function GroupConfigurator({
         <label className="text-xs text-muted-foreground mb-1.5 block">
           Group By (_id)
         </label>
-        <input
+        <Input
+          variant="mono"
           value={groupId}
           onChange={(e) => onGroupIdChange(e.target.value)}
           placeholder="$field or null"
-          className={monoInputCls}
         />
       </div>
       <div className="space-y-3">
         <label className="text-xs text-muted-foreground">Accumulators</label>
         {accumulators.map((acc, i) => (
           <div key={i} className="flex items-center gap-2">
-            <input
+            <Input
+              variant="mono"
+              className="flex-1 w-auto"
               placeholder="output field"
               value={acc.field}
               onChange={(e) => updateAcc(i, { field: e.target.value })}
-              className={`${monoInputCls} flex-1`}
             />
             <select
               value={acc.accumulator}
@@ -436,11 +441,12 @@ function GroupConfigurator({
                 </option>
               ))}
             </select>
-            <input
+            <Input
+              variant="mono"
+              className="flex-1 w-auto"
               placeholder="expression"
               value={acc.expression}
               onChange={(e) => updateAcc(i, { expression: e.target.value })}
-              className={`${monoInputCls} flex-1`}
             />
             <IconButton
               variant="danger"
@@ -452,13 +458,15 @@ function GroupConfigurator({
             />
           </div>
         ))}
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={<Plus className="h-3 w-3" />}
           onClick={addAcc}
-          className="flex items-center gap-1 text-xs text-primary hover:underline"
+          className="px-0 hover:underline"
         >
-          <Plus className="h-3 w-3" /> Add accumulator
-        </button>
+          Add accumulator
+        </Button>
       </div>
     </div>
   );
@@ -481,11 +489,12 @@ function ProjectConfigurator({
       <label className="text-xs text-muted-foreground">Fields</label>
       {fields.map((f, i) => (
         <div key={i} className="flex items-center gap-2">
-          <input
+          <Input
+            variant="mono"
+            className="flex-1 w-auto"
             placeholder="field name"
             value={f.field}
             onChange={(e) => updateField(i, { field: e.target.value })}
-            className={`${monoInputCls} flex-1`}
           />
           <select
             value={f.include ? "include" : "exclude"}
@@ -505,13 +514,15 @@ function ProjectConfigurator({
           />
         </div>
       ))}
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        size="sm"
+        icon={<Plus className="h-3 w-3" />}
         onClick={addField}
-        className="flex items-center gap-1 text-xs text-primary hover:underline"
+        className="px-0 hover:underline"
       >
-        <Plus className="h-3 w-3" /> Add field
-      </button>
+        Add field
+      </Button>
     </div>
   );
 }
@@ -533,11 +544,12 @@ function SortConfigurator({
       <label className="text-xs text-muted-foreground">Sort Fields</label>
       {fields.map((f, i) => (
         <div key={i} className="flex items-center gap-2">
-          <input
+          <Input
+            variant="mono"
+            className="flex-1 w-auto"
             placeholder="field"
             value={f.field}
             onChange={(e) => updateField(i, { field: e.target.value })}
-            className={`${monoInputCls} flex-1`}
           />
           <select
             value={f.direction}
@@ -557,13 +569,15 @@ function SortConfigurator({
           />
         </div>
       ))}
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        size="sm"
+        icon={<Plus className="h-3 w-3" />}
         onClick={addField}
-        className="flex items-center gap-1 text-xs text-primary hover:underline"
+        className="px-0 hover:underline"
       >
-        <Plus className="h-3 w-3" /> Add field
-      </button>
+        Add field
+      </Button>
     </div>
   );
 }
@@ -593,44 +607,44 @@ function LookupConfigurator({
         <label className="text-xs text-muted-foreground mb-1.5 block">
           From (collection)
         </label>
-        <input
+        <Input
+          variant="mono"
           value={from}
           onChange={(e) => onFromChange(e.target.value)}
           placeholder="collection name"
-          className={monoInputCls}
         />
       </div>
       <div>
         <label className="text-xs text-muted-foreground mb-1.5 block">
           Local Field
         </label>
-        <input
+        <Input
+          variant="mono"
           value={localField}
           onChange={(e) => onLocalFieldChange(e.target.value)}
           placeholder="localField"
-          className={monoInputCls}
         />
       </div>
       <div>
         <label className="text-xs text-muted-foreground mb-1.5 block">
           Foreign Field
         </label>
-        <input
+        <Input
+          variant="mono"
           value={foreignField}
           onChange={(e) => onForeignFieldChange(e.target.value)}
           placeholder="_id"
-          className={monoInputCls}
         />
       </div>
       <div>
         <label className="text-xs text-muted-foreground mb-1.5 block">
           As (output field)
         </label>
-        <input
+        <Input
+          variant="mono"
           value={asField}
           onChange={(e) => onAsChange(e.target.value)}
           placeholder="joined"
-          className={monoInputCls}
         />
       </div>
     </div>
@@ -654,19 +668,17 @@ function UnwindConfigurator({
         <label className="text-xs text-muted-foreground mb-1.5 block">
           Array Path
         </label>
-        <input
+        <Input
+          variant="mono"
           value={path}
           onChange={(e) => onPathChange(e.target.value)}
           placeholder="$arrayField"
-          className={monoInputCls}
         />
       </div>
       <label className="flex items-center gap-2">
-        <input
-          type="checkbox"
+        <Checkbox
           checked={preserve}
           onChange={(e) => onPreserveChange(e.target.checked)}
-          className="rounded border-border"
         />
         <span className="text-xs text-muted-foreground">
           Preserve null and empty arrays

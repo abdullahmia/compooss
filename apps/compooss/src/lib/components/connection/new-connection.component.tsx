@@ -4,7 +4,7 @@ import {
   ConnectionSchema,
   TConnectionSchema,
 } from "@/lib/schemas/connection.schema";
-import { Button, cn, Input } from "@compooss/ui";
+import { Button, IconButton, cn, Input } from "@compooss/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, Leaf, Star, StarOff, Trash2 } from "lucide-react";
@@ -149,13 +149,12 @@ export const NewConnection: React.FC = () => {
                     className="bg-card border border-border rounded-lg p-4 hover:border-primary/30 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
-                      <button
-                        type="button"
-                        className="text-muted-foreground hover:text-warning transition-colors"
+                      <IconButton
+                        icon={<StarOff className="h-4 w-4" />}
+                        label="Add to favorites"
+                        className="text-muted-foreground hover:text-warning"
                         onClick={(e) => e.stopPropagation()}
-                      >
-                        <StarOff className="h-4 w-4" />
-                      </button>
+                      />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-foreground">
@@ -177,25 +176,25 @@ export const NewConnection: React.FC = () => {
                             addSuffix: true,
                           })}
                         </span>
-                        <button
-                          type="button"
+                        <IconButton
+                          variant="danger"
+                          icon={<Trash2 className="h-3.5 w-3.5" />}
+                          label="Delete"
+                          size="sm"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDelete(conn.id);
                           }}
-                          className="p-1 text-muted-foreground hover:text-destructive rounded-sm transition-all"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          type="button"
+                        />
+                        <Button
+                          variant="soft"
+                          size="sm"
                           onClick={(e) => {
                             e.stopPropagation();
                           }}
-                          className="bg-primary/15 text-primary px-3 py-1 rounded-sm text-xs font-medium hover:bg-primary/25 transition-colors"
                         >
                           Connect
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>

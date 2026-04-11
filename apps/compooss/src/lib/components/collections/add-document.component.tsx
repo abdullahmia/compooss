@@ -1,6 +1,7 @@
 "use client";
 
 import { DocumentFormModal } from "@/lib/components/collections/document-form-modal.component";
+import { Button } from "@compooss/ui";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -24,15 +25,15 @@ export const AddDocument: React.FC<Props> = ({
 
   return (
     <>
-      <button
-        className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        type="button"
+      <Button
+        variant="ghost"
+        size="sm"
+        icon={<Plus className="h-3.5 w-3.5" />}
         onClick={() => setOpen(true)}
         disabled={!canAdd}
       >
-        <Plus className="h-3.5 w-3.5" />
         Add Data
-      </button>
+      </Button>
       <DocumentFormModal
         open={open}
         onClose={() => setOpen(false)}

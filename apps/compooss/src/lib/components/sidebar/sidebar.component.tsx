@@ -3,7 +3,7 @@
 import { useConnection } from "@/lib/providers/connection-provider";
 import { useGetDatabases } from "@/lib/services/database/database.service";
 import type { Database } from "@compooss/types";
-import { DatabaseSidebarSkeleton, IconButton } from "@compooss/ui";
+import { Button, DatabaseSidebarSkeleton, IconButton, Input } from "@compooss/ui";
 import { AlertTriangle, Plus, RefreshCw, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
@@ -72,16 +72,14 @@ export const Sidebar: React.FC = () => {
         </div>
 
         <div className="p-2">
-          <div className="flex items-center gap-2 bg-secondary rounded-sm px-2 py-1.5">
-            <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-            <input
-              type="text"
-              placeholder="Filter databases..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground outline-hidden w-full"
-            />
-          </div>
+          <Input
+            variant="search"
+            icon={<Search className="h-3.5 w-3.5" />}
+            type="text"
+            placeholder="Filter databases..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
 
         <div className="flex-1 overflow-y-auto scrollbar-thin py-1">
@@ -97,17 +95,15 @@ export const Sidebar: React.FC = () => {
                 Could not reach the database server. Check your connection
                 string.
               </p>
-              <button
-                type="button"
+              <Button
+                variant="primary"
+                size="sm"
+                icon={<RefreshCw className="h-3 w-3" />}
+                loading={isRefetching}
                 onClick={() => refetch()}
-                disabled={isRefetching}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium text-primary-foreground bg-primary rounded-sm hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
-                <RefreshCw
-                  className={`h-3 w-3 ${isRefetching ? "animate-spin" : ""}`}
-                />
                 {isRefetching ? "Retrying…" : "Retry"}
-              </button>
+              </Button>
             </div>
           ) : filtered?.length === 0 ? (
             <div className="px-3 py-2 text-xs text-muted-foreground">

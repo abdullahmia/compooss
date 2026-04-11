@@ -66,15 +66,15 @@ export const Databases: React.FC = () => {
                   {error.message}
                 </p>
               )}
-              <button
-                type="button"
+              <Button
+                variant="primary"
+                icon={<RefreshCw className="h-3.5 w-3.5" />}
+                loading={isRefetching}
                 onClick={() => refetch()}
-                disabled={isRefetching}
-                className="mt-6 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50"
+                className="mt-6"
               >
-                <RefreshCw className={`h-3.5 w-3.5 ${isRefetching ? "animate-spin" : ""}`} />
                 {isRefetching ? "Retrying…" : "Retry connection"}
-              </button>
+              </Button>
             </div>
           ) : !databases.length ? (
             <EmptyState

@@ -187,30 +187,27 @@ export const PipelineToolbar: React.FC<Props> = ({
                 onClick={() => setShowExportMenu(false)}
               />
               <div className="absolute right-0 top-full mt-1 z-50 w-[220px] rounded-lg border border-border bg-card shadow-xl overflow-hidden">
-                <button
-                  type="button"
+                <Button
+                  variant="menu"
+                  icon={<ClipboardCopy className="h-3.5 w-3.5 text-muted-foreground" />}
                   onClick={handleExportJson}
-                  className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs hover:bg-muted/50 transition-colors"
                 >
-                  <ClipboardCopy className="h-3.5 w-3.5 text-muted-foreground" />
                   Copy Pipeline JSON
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
+                  variant="menu"
+                  icon={<Code2 className="h-3.5 w-3.5 text-muted-foreground" />}
                   onClick={handleCopyBackend}
-                  className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs hover:bg-muted/50 transition-colors"
                 >
-                  <Code2 className="h-3.5 w-3.5 text-muted-foreground" />
                   Copy for Backend Code
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
+                  variant="menu"
+                  icon={<Download className="h-3.5 w-3.5 text-muted-foreground" />}
                   onClick={handleDownloadJson}
-                  className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs hover:bg-muted/50 transition-colors"
                 >
-                  <Download className="h-3.5 w-3.5 text-muted-foreground" />
                   Download JSON File
-                </button>
+                </Button>
               </div>
             </>
           )}

@@ -2,7 +2,7 @@
 
 import { Database, Monitor } from "lucide-react";
 import { useState } from "react";
-import { Toggle } from "@compooss/ui";
+import { Input, Toggle } from "@compooss/ui";
 
 export const GeneralSettings: React.FC = () => {
   const [maxTimeMS, setMaxTimeMS] = useState("60000");
@@ -22,22 +22,22 @@ export const GeneralSettings: React.FC = () => {
             <label className="text-[11px] text-muted-foreground mb-1 block">
               Max Time MS
             </label>
-            <input
+            <Input
+              variant="default"
               type="text"
               value={maxTimeMS}
               onChange={(e) => setMaxTimeMS(e.target.value)}
-              className="w-full bg-secondary text-xs font-mono text-foreground px-3 py-2 rounded-sm border border-border focus:border-primary outline-hidden transition-colors"
             />
           </div>
           <div>
             <label className="text-[11px] text-muted-foreground mb-1 block">
               Default Documents Per Page
             </label>
-            <input
+            <Input
+              variant="default"
               type="text"
               value={maxDocuments}
               onChange={(e) => setMaxDocuments(e.target.value)}
-              className="w-full bg-secondary text-xs font-mono text-foreground px-3 py-2 rounded-sm border border-border focus:border-primary outline-hidden transition-colors"
             />
           </div>
         </div>

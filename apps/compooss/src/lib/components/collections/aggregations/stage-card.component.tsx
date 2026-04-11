@@ -158,17 +158,19 @@ export const StageCard: React.FC<Props> = ({
             label="Remove"
             onClick={() => onRemove(stage.id)}
           />
-          <button
-            type="button"
+          <IconButton
+            variant="default"
+            size="sm"
+            icon={
+              stage.collapsed ? (
+                <ChevronRight className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5" />
+              )
+            }
+            label={stage.collapsed ? "Expand" : "Collapse"}
             onClick={handleToggleCollapse}
-            className="p-1 rounded hover:bg-muted/50 text-muted-foreground"
-          >
-            {stage.collapsed ? (
-              <ChevronRight className="h-3.5 w-3.5" />
-            ) : (
-              <ChevronDown className="h-3.5 w-3.5" />
-            )}
-          </button>
+          />
         </div>
       </div>
 

@@ -169,10 +169,11 @@ export const ConnectionForm: React.FC<Props> = ({
             <label className="text-[11px] font-medium text-muted-foreground mb-1.5 block">
               Label
             </label>
-            <input
+            <Input
+              variant="compact"
+              className="rounded-lg px-3 py-2"
               {...form.register("label")}
               placeholder="e.g. dev, staging"
-              className="w-full bg-secondary text-xs px-3 py-2 rounded-lg border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-hidden text-foreground placeholder:text-muted-foreground transition-colors"
             />
           </div>
           <div>

@@ -2,7 +2,7 @@
 
 import { AUTH_METHODS } from "@/lib/constants";
 import type { TConnectionForm } from "@/lib/schemas/connection.schema";
-import { cn } from "@compooss/ui";
+import { Checkbox, cn, Input } from "@compooss/ui";
 import { useWatch, type UseFormReturn } from "react-hook-form";
 import { FieldRow } from "./field-row.component";
 
@@ -40,25 +40,25 @@ export const AuthConfigForm: React.FC<Props> = ({ form }) => {
       {authType === "password" && (
         <div className="space-y-2">
           <FieldRow label="Username" cols="120px">
-            <input
+            <Input
+              variant="compact"
               {...form.register("authConfig.username")}
               placeholder="admin"
-              className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
           <FieldRow label="Password" cols="120px">
-            <input
+            <Input
+              variant="compact"
               {...form.register("authConfig.password")}
               type="password"
               placeholder="••••••••"
-              className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
           <FieldRow label="Auth Source" cols="120px">
-            <input
+            <Input
+              variant="compact"
               {...form.register("authConfig.authSource")}
               placeholder="admin"
-              className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
           <FieldRow label="Mechanism" cols="120px">
@@ -77,18 +77,18 @@ export const AuthConfigForm: React.FC<Props> = ({ form }) => {
       {authType === "ldap" && (
         <div className="space-y-2">
           <FieldRow label="Username" cols="120px">
-            <input
+            <Input
+              variant="compact"
               {...form.register("authConfig.username")}
               placeholder="cn=admin,dc=example,dc=org"
-              className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
           <FieldRow label="Password" cols="120px">
-            <input
+            <Input
+              variant="compact"
               {...form.register("authConfig.password")}
               type="password"
               placeholder="••••••••"
-              className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
         </div>
@@ -97,25 +97,23 @@ export const AuthConfigForm: React.FC<Props> = ({ form }) => {
       {authType === "kerberos" && (
         <div className="space-y-2">
           <FieldRow label="Principal" cols="120px">
-            <input
+            <Input
+              variant="compact"
               {...form.register("authConfig.username")}
               placeholder="user@REALM.COM"
-              className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
           <FieldRow label="Service Name" cols="120px">
-            <input
+            <Input
+              variant="compact"
               {...form.register("authConfig.gssapiServiceName")}
               placeholder="mongodb"
-              className="bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary outline-hidden text-foreground placeholder:text-muted-foreground w-full"
             />
           </FieldRow>
           <FieldRow label="Canonicalize" cols="120px">
             <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
+              <Checkbox
                 {...form.register("authConfig.canonicalizeHostName")}
-                className="rounded border-border"
               />
               <span className="text-[11px] text-muted-foreground">
                 Canonicalize hostname

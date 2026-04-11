@@ -2,6 +2,7 @@
 
 import { JsonEditor } from "@/lib/components/collections/json-editor.component";
 import {
+  Button,
   Modal,
   ModalBody,
   ModalContent,
@@ -179,26 +180,26 @@ export const DocumentFormModal: React.FC<Props> = ({
           {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
         </ModalBody>
         <ModalFooter>
-          <button
-            type="button"
-            className="text-xs px-3 py-1.5 rounded-sm border border-border text-muted-foreground hover:bg-muted transition-colors"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={onClose}
             disabled={isPending}
           >
             Cancel
-          </button>
-          <button
-            type="button"
-            className="text-xs px-3 py-1.5 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
             onClick={handleSubmit}
-            disabled={isPending}
+            loading={isPending}
           >
             {isPending
               ? mode === "add"
                 ? "Inserting…"
                 : "Saving…"
               : submitLabel}
-          </button>
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

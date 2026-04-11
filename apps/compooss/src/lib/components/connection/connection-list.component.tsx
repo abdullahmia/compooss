@@ -1,7 +1,7 @@
 "use client";
 
 import type { SavedConnection } from "@compooss/types";
-import { cn } from "@compooss/ui";
+import { IconButton, Input, cn } from "@compooss/ui";
 import { ArrowDownAZ, Clock, Search, Star, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ConnectionCard } from "./connection-card.component";
@@ -120,21 +120,21 @@ export const ConnectionList: React.FC<Props> = ({
       <div className="flex items-center gap-2 mb-4">
         <div className="flex items-center gap-2 bg-secondary/80 rounded-lg px-3 py-2 flex-1 border border-transparent focus-within:border-primary/20 transition-colors">
           <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          <input
+          <Input
+            variant="search"
             type="text"
             placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground outline-hidden w-full"
           />
           {search && (
-            <button
-              type="button"
+            <IconButton
+              variant="ghost"
+              size="sm"
+              icon={<X className="h-3 w-3" />}
+              label="Clear search"
               onClick={() => setSearch("")}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <X className="h-3 w-3" />
-            </button>
+            />
           )}
         </div>
 
