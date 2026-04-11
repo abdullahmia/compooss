@@ -2,92 +2,164 @@
 
 This document covers how to set up and work on Compooss locally.
 
+---
+
 ## Prerequisites
 
-- **Node.js** 18+ (recommend [nvm](https://github.com/nvm-sh/nvm))
-- **npm** 9+
-- **MongoDB** (local or Docker) for testing the client
+- [Bun](https://bun.sh) 1.x
+- [Docker](https://www.docker.com) — for running a local MongoDB instance
+- [Node.js](https://nodejs.org) 20+ — only required inside Docker builds (not for local dev)
+
+---
 
 ## Local Setup
 
-```sh
-# Clone the repository
-git clone <REPO_URL>
+```bash
+# Clone the repo
+git clone https://github.com/abdullahmia/compooss.git
 cd compooss
 
-# Install dependencies (use --legacy-peer-deps if you hit peer dependency conflicts)
-npm install --legacy-peer-deps
+# Install all workspace dependencies
+bun install
 
-# Start the development server
-npm run dev
+# Start a local MongoDB (detached)
+docker compose -f docker/docker-compose.dev.yml up -d
+
+# Start all apps in dev mode
+bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser, then connect to:
 
-## Scripts
+```
+mongodb://root:example@localhost:27017/?authSource=admin
+```
 
-| Command        | Description                    |
-| -------------- | ------------------------------ |
-| `npm run dev`  | Start Next.js dev server       |
-| `npm run build`| Production build               |
-| `npm run start`| Run production server          |
-| `npm run lint` | Run ESLint                     |
-| `npm run test` | Run Vitest tests               |
-| `npm run prepare` | Husky setup (runs on install) |
+---
 
-## Tech Stack
-
-- **Framework**: Next.js 16 (App Router)
-- **UI**: React 19, Tailwind CSS, shadcn/ui components
-- **Language**: TypeScript
-- **Testing**: Vitest, Testing Library
-- **Linting**: ESLint (Next.js config)
-- **Commits**: Husky + Commitlint (Conventional Commits)
-
-## Project Structure
+## Monorepo Structure
 
 ```
 compooss/
-├── src/
-│   ├── app/           # Next.js app router (pages, layout)
-│   ├── components/    # React components
-│   └── lib/           # Utilities, MongoDB client, etc.
-├── public/            # Static assets
-├── docs/              # Project documentation
-├── .husky/            # Git hooks
-└── commitlint.config.mjs
+├── apps/
+│   ├── compooss/                  # Main MongoDB GUI — Next.js 15 App Router
+│   │   └── src/
+│   │       ├── app/               # Next.js routes (thin shell pages only)
+│   │       └── lib/
+│   │           ├── components/    # UI components, grouped by feature
+│   │           ├── config/        # ApiClient singleton
+│   │           ├── constants/     # ENDPOINTS, ROUTE_PATHS
+│   │           ├── core-modules/  # Base repository + shell evaluator
+│   │           ├── driver/        # MongoDriver + ConnectionManager
+│   │           ├── hooks/         # Zustand ↔ URL/session bridge hooks
+│   │           ├── providers/     # React context providers
+│   │           ├── schemas/       # Zod schemas + inferred form types
+│   │           ├── services/      # TanStack Query hooks
+│   │           ├── storage/       # IndexedDB (browser-side connection store)
+│   │           ├── stores/        # Zustand stores
+│   │           └── types/         # TypeScript entity + response types
+│   └── docs/                      # Landing page / documentation site
+├── packages/
+│   ├── types/                     # Shared types — @compooss/types
+│   └── ui/                        # Shared UI components — @compooss/ui
+├── docker/
+│   ├── docker-compose.dev.yml     # Local dev: MongoDB only
+│   └── docker-compose.yml         # Production: MongoDB + app
+├── docs/                          # Project documentation
+├── Dockerfile                     # Multi-stage production build
+└── turbo.json                     # Turborepo pipeline config
 ```
 
-## MongoDB for Local Testing
+---
 
-Run MongoDB via Docker:
+## Scripts
 
-```sh
-docker run -d -p 27017:27017 --name mongo-dev mongo:latest
+| Command | Description |
+|---|---|
+| `bun dev` | Start all apps in dev mode (Turbo TUI) |
+| `bun build` | Build all packages and apps in dependency order |
+| `bun lint` | Run ESLint across the entire monorepo |
+| `bun type-check` | Run TypeScript type checking |
+| `bun storybook` | Start Storybook for the UI package |
+| `bun build-storybook` | Build Storybook static site |
+
+---
+
+## Tech Stack
+
+| Layer | Tool |
+|---|---|
+| Framework | Next.js 15 App Router |
+| Language | TypeScript (strict) |
+| Server state | TanStack Query v5 |
+| Client state | Zustand |
+| Validation | Zod |
+| UI components | shadcn/ui |
+| HTTP client | Custom `ApiClient` wrapping native `fetch` |
+| MongoDB driver | `mongodb` (Node.js driver) |
+| Browser storage | `idb` (IndexedDB wrapper) |
+| Monorepo | Turborepo + Bun workspaces |
+| Commits | Husky + Commitlint (Conventional Commits) |
+
+---
+
+## Architecture Notes
+
+- **No env vars needed for development.** The MongoDB URI is entered by the user in the UI and stored in IndexedDB — nothing is hardcoded or read from the environment.
+- **API routes are Next.js routes.** The `ApiClient` uses relative `/api` paths, so the frontend and API always run on the same origin.
+- **`lib/driver/`** manages live MongoDB connections (Node.js `MongoClient`). `lib/storage/`** manages saved connection configs (browser IndexedDB). These are intentionally separate.
+- **Turborepo** ensures `@compooss/types` and `@compooss/ui` are always built before the apps that depend on them.
+
+---
+
+## Docker
+
+### Dev (MongoDB only)
+
+```bash
+docker compose -f docker/docker-compose.dev.yml up -d
+docker compose -f docker/docker-compose.dev.yml down
 ```
 
-Connection string: `mongodb://localhost:27017`
+### Production (full stack)
+
+```bash
+MONGO_ROOT_USERNAME=admin MONGO_ROOT_PASSWORD=secret \
+  docker compose -f docker/docker-compose.yml up -d
+```
+
+### Build the Docker image manually
+
+```bash
+bun run docker:build
+```
+
+---
 
 ## Commit Conventions
 
-We use [Conventional Commits](https://www.conventionalcommits.org/):
+This project enforces [Conventional Commits](https://www.conventionalcommits.org) via Commitlint on every commit.
 
-- `feat:` – New feature
-- `fix:` – Bug fix
-- `docs:` – Documentation only
-- `style:` – Formatting, no code change
-- `refactor:` – Code change, no feature/fix
-- `test:` – Adding or updating tests
-- `chore:` – Maintenance tasks
+| Prefix | When to use |
+|---|---|
+| `feat:` | New feature |
+| `fix:` | Bug fix |
+| `refactor:` | Code change with no feature or bug fix |
+| `docs:` | Documentation only |
+| `style:` | Formatting, no logic change |
+| `chore:` | Maintenance, tooling, deps |
+| `test:` | Adding or updating tests |
 
-Example: `feat: add collection document list view`
+Example: `feat: add collection rename dialog`
+
+---
 
 ## Pull Request Process
 
-1. Create a branch from `main`
-2. Make changes and ensure `npm run lint` and `npm run test` pass
-3. Open a PR with a clear description
-4. Address review feedback
-5. Maintainers will merge when ready
+1. Branch from `development` — not `main`
+2. Keep PRs focused — one feature or fix per PR
+3. Run `bun lint` and `bun type-check` before submitting
+4. Fill out the PR template
+5. Maintainers will review and merge
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for full contribution guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guidelines.

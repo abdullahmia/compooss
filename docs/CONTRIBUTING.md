@@ -1,80 +1,125 @@
 # Contributing to Compooss
 
-Thank you for your interest in contributing to Compooss! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing! Here is everything you need to know.
+
+---
 
 ## Code of Conduct
 
-By participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
+By participating in this project you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
 
-## How to Contribute
+---
 
-### Reporting Bugs
+## Before You Start
 
-- Use the GitHub issue tracker to report bugs.
-- Search existing issues first to avoid duplicates.
-- Include:
-  - A clear, descriptive title
-  - Steps to reproduce
-  - Expected vs actual behavior
-  - Your environment (OS, Node version, Docker version if relevant)
-  - Relevant logs or screenshots
+- Search [existing issues](https://github.com/abdullahmia/compooss/issues) before opening a new one.
+- For large changes, open an issue first to discuss the approach — this avoids wasted effort.
+- Branch from `development`, not `main`.
 
-### Suggesting Features
+---
 
-- Open an issue with the `enhancement` label.
-- Describe the use case and why it would benefit the project.
-- Be open to discussion and feedback.
+## Reporting Bugs
 
-### Pull Requests
+Open an issue using the **Bug Report** template. Include:
 
-1. **Fork** the repository and create a branch from `main`:
-   ```sh
-   git checkout -b feat/your-feature-name
-   # or: fix/your-bug-fix
-   ```
+- A clear, descriptive title
+- Steps to reproduce
+- Expected vs actual behaviour
+- Your environment (OS, Bun version, Docker version, MongoDB version)
+- Relevant logs or screenshots
 
-2. **Follow our commit conventions** – we use [Conventional Commits](https://www.conventionalcommits.org/):
-   ```
-   feat: add new feature
-   fix: resolve bug in connection handling
-   docs: update README
-   ```
+---
 
-3. **Make your changes** – keep PRs focused and reasonably sized.
+## Suggesting Features
 
-4. **Run checks** before submitting:
-   ```sh
-   npm run lint
-   npm run test
-   ```
+Open an issue using the **Feature Request** template. Describe:
 
-5. **Push** and open a Pull Request:
-   - Reference any related issues
-   - Describe what changed and why
-   - Ensure CI passes (if configured)
+- The problem or limitation it addresses
+- Your proposed solution
+- Any alternatives you considered
 
-6. **Address review feedback** – maintainers may request changes.
+---
 
-## Development Setup
+## Pull Requests
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for local setup, architecture, and development workflow.
+### 1. Fork & branch
+
+```bash
+git clone https://github.com/abdullahmia/compooss.git
+cd compooss
+git checkout development
+git checkout -b feat/your-feature-name
+# or: fix/your-bug-fix
+```
+
+### 2. Install dependencies
+
+```bash
+bun install
+```
+
+### 3. Make your changes
+
+Follow the coding standards below. Keep PRs focused — one feature or fix per PR.
+
+### 4. Check before submitting
+
+```bash
+bun lint
+bun type-check
+```
+
+### 5. Commit
+
+Follow [Conventional Commits](https://www.conventionalcommits.org) — Commitlint will reject non-conforming messages:
+
+```
+feat: add collection rename dialog
+fix: correct index drop confirmation behaviour
+docs: update development guide
+```
+
+### 6. Push and open a PR
+
+- Fill out the pull request template
+- Reference any related issues (`Closes #123`)
+- Describe what changed and why
+
+---
 
 ## Project Structure
 
-- `src/` – Application source code
-- `src/app/` – Next.js app router pages and layout
-- `src/components/` – React components
-- `src/lib/` – Utilities and shared logic
-- `public/` – Static assets
+```
+apps/compooss/src/lib/
+├── components/   # UI components, grouped by feature
+├── config/       # ApiClient singleton
+├── constants/    # ENDPOINTS and ROUTE_PATHS
+├── core-modules/ # Base repository + shell evaluator
+├── driver/       # MongoDriver + ConnectionManager
+├── hooks/        # Zustand ↔ URL/session bridge hooks
+├── providers/    # React context providers
+├── schemas/      # Zod schemas + form types
+├── services/     # TanStack Query hooks
+├── storage/      # IndexedDB browser-side connection store
+├── stores/       # Zustand stores
+└── types/        # TypeScript entity + response types
+```
+
+See [`docs/DEVELOPMENT.md`](DEVELOPMENT.md) for the full architecture guide.
+
+---
 
 ## Coding Standards
 
-- Use TypeScript for all new code.
-- Follow the existing ESLint configuration.
-- Prefer functional components and hooks.
-- Keep components small and focused.
-- Add tests for new features when practical.
+- **TypeScript** for all new code — no `any` without a comment explaining why.
+- Follow the existing **ESLint** configuration (`bun lint` must pass).
+- Use **functional components** and hooks — no class components.
+- Keep components small and focused; one responsibility per file.
+- Name files `kebab-case.component.tsx` and use named exports.
+- Import from `@/` aliases — never relative paths like `../../`.
+
+---
 
 ## Questions?
 
-Open a [Discussion](https://github.com/YOUR_ORG/compooss/discussions) or an issue if you have questions.
+Open a [Discussion](https://github.com/abdullahmia/compooss/discussions) or an issue.

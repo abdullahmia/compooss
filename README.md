@@ -1,67 +1,40 @@
 # Compooss
 
-Compooss is a lightweight, self‑hosted MongoDB GUI that runs **inside your Docker stack**.
+> A lightweight, self-hosted MongoDB GUI that drops into any Docker stack — no desktop app, no cloud signup, no fuss.
 
-It is designed for local and team development environments where you already use `docker-compose` and want a fast, visual way to explore and manage MongoDB — **without installing a desktop app or signing up for any cloud service**.
-
-**Current release: v1.7.0 – Multiple Connections.**
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.7.0-green.svg)](docs/CHANGELOG.md)
+[![Docker Hub](https://img.shields.io/docker/pulls/abdullahmia/compooss)](https://hub.docker.com/r/abdullahmia/compooss)
 
 ![Compooss Preview](docs/preview.jpeg)
 
 ---
 
-## Core Features
+## What is Compooss?
 
-- **Docker‑native deployment**
-  - Ships as a single Docker image you can drop into any `docker-compose.yml`.
-  - No Node.js, MongoDB tools, or extra services required on your host.
+Compooss is a MongoDB GUI built for **local and team development**. It runs as a Docker container and sits next to your MongoDB service in a `docker-compose` stack. Open your browser, connect to any MongoDB instance, and explore — no installation, no account required.
 
-- **Database & collection explorer**
-  - Browse all databases and collections from a sidebar.
-  - View document counts, storage stats, index counts, and more at a glance.
+---
 
-- **Document browsing & CRUD**
-  - Query with native MongoDB filter syntax.
-  - Sort, paginate, and inspect documents in **list, JSON, or table** views.
-  - Create, edit, and delete documents using a Monaco‑powered JSON editor with validation and syntax highlighting.
+## Features
 
-- **Index management**
-  - Create, drop, hide/unhide, and inspect indexes.
-  - Supports unique, compound, text, geospatial, TTL, partial, and hashed indexes.
-  - View index usage statistics directly in the UI.
+| | |
+|---|---|
+| **Database & Collection Explorer** | Browse databases and collections from a sidebar with live stats |
+| **Document CRUD** | Query, filter, sort, paginate, and edit documents with a Monaco JSON editor |
+| **Index Management** | Create, drop, hide/unhide indexes — all major index types supported |
+| **Schema Analysis** | Sample documents to infer schema, field types, frequency, and distributions |
+| **Aggregation Pipelines** | Visual pipeline builder with stage templates, previews, and saved pipelines |
+| **Embedded Shell** | Browser-based MongoDB shell with autocomplete, history, and syntax highlighting |
+| **Multiple Connections** | Save, color-code, and switch between connection profiles stored in IndexedDB |
 
-- **Schema analysis**
-  - Sample documents to infer schema per collection.
-  - Inspect detected fields, types, frequency, distributions, nested structures, and missing / inconsistent fields.
-  - Refresh analysis on demand.
-
-- **Aggregation pipelines**
-  - Visual aggregation builder with stage templates.
-  - Drag‑and‑drop stages, enable/disable, and preview results per stage.
-  - Text mode editing, saved pipelines, and “create view from pipeline”.
-
-- **Embedded MongoDB shell**
-  - Browser‑based shell panel that talks directly to your MongoDB deployment.
-  - Run CRUD, aggregation, admin commands, and JavaScript queries.
-  - Autocomplete, syntax highlighting, history, and session persistence.
-
-- **Multiple connections (v1.7.0)**
-  - Dedicated `/connect` page to create and manage connection profiles.
-  - Save, edit, favorite, and color‑code connections.
-  - Test a connection before connecting; invalid URIs stay on `/connect` with inline errors.
-  - Supports advanced options and future authentication/TLS profiles.
-
-- **Safety for development**
-  - System databases (`admin`, `local`, `config`) are treated as read‑only in the UI.
-  - Guard rails around destructive operations to reduce “oops” moments in dev.
-
-For a detailed feature breakdown and screenshots, see [`docs/FEATURES.md`](docs/FEATURES.md) and the docs app under `apps/docs`.
+See [`docs/FEATURES.md`](docs/FEATURES.md) for the complete feature breakdown by version.
 
 ---
 
 ## Quick Start
 
-### 1. Docker Compose (recommended)
+### Docker Compose (recommended)
 
 Add Compooss next to your MongoDB service:
 
@@ -75,95 +48,114 @@ services:
   compooss:
     image: abdullahmia/compooss:latest
     ports:
-      - "3000:3000"
+      - "8080:3000"
     depends_on:
       - mongo
 ```
 
-Then open:
+Then open **http://localhost:8080** and connect to `mongodb://mongo:27017`.
 
-- `http://localhost:3000` → Compooss UI
-
-### 2. Docker Run
-
-Connect Compooss to a MongoDB instance on your host:
+### Docker Run
 
 ```bash
-docker run -p 3000:3000 abdullahmia/compooss:latest
+docker run -p 8080:3000 abdullahmia/compooss:latest
 ```
 
-Then open `http://localhost:3000` in your browser.
+Open **http://localhost:8080** and connect to your MongoDB instance.
 
----
+### Production (self-hosted)
 
-## Configuration
+Use the production compose file included in this repo:
 
-Supported environment variables:
-
-- `PORT`
-  - Port the HTTP server listens on inside the container.
-  - Default: `3000`.
+```bash
+MONGO_ROOT_USERNAME=admin MONGO_ROOT_PASSWORD=secret \
+  docker compose -f docker/docker-compose.yml up -d
+```
 
 ---
 
 ## Development Setup
 
-This repository is a monorepo (Next.js app + docs + shared packages). Basic local flow:
+This repository is a **Turborepo monorepo** managed with [Bun](https://bun.sh).
+
+### Prerequisites
+
+- [Bun](https://bun.sh) 1.x
+- [Docker](https://www.docker.com) (for running a local MongoDB)
+- [Node.js](https://nodejs.org) 20+ (only needed for the standalone server in Docker)
+
+### Setup
 
 ```bash
+# 1. Clone the repo
 git clone https://github.com/abdullahmia/compooss.git
 cd compooss
-npm install
 
-# Start the main app (MongoDB GUI)
-npm run dev:app
+# 2. Install dependencies
+bun install
 
-# Optionally: start the docs site
-npm run dev:docs
+# 3. Start a local MongoDB
+docker compose -f docker/docker-compose.dev.yml up -d
+
+# 4. Start the app
+bun dev
 ```
 
-Then open:
+Open **http://localhost:3000**, then connect to `mongodb://root:example@localhost:27017/?authSource=admin`.
 
-- `http://localhost:3000` → Compooss app
-- `http://localhost:3001` (or whatever port your docs dev script uses) → docs/landing page
+### Scripts
 
-> Check the scripts in `apps/compooss/package.json` and `apps/docs/package.json` for the exact dev commands used in this repo.
+| Command | Description |
+|---|---|
+| `bun dev` | Start all apps in dev mode (Turbo TUI) |
+| `bun build` | Build all packages and apps |
+| `bun lint` | Run ESLint across the monorepo |
+| `bun type-check` | Run TypeScript type checking |
 
----
-
-## Release Roadmap (shipped & planned)
-
-- **v1.0.0 (MVP)** – Connection, database/collection list & CRUD, document view & CRUD, Docker image.
-- **v1.1.0** – Loading skeletons, better error handling and loading states.
-- **v1.2.0** – Full index management: create, drop, hide/unhide; usage stats; all major index types.
-- **v1.3.0** – Schema analysis: sampled schema view with types, frequency, distributions, nested structures.
-- **v1.5.0** – Aggregation pipelines: visual pipeline builder, stage templates, previews, saved pipelines, view creation.
-- **v1.6.0** – MongoDB Shell: embedded shell with autocomplete, history, syntax highlighting, CRUD/aggregation/admin helpers.
-- **v1.7.0** – Multiple connections: saved profiles, favorites, colors, dedicated `/connect` page, disconnect/reconnect from top bar.
-- **Planned** – Theming (system/dark/light), richer query tooling & UX, optional auth for shared dev environments, more deploy recipes.
-
-For a living roadmap, see [`docs/FEATURES.md`](docs/FEATURES.md) and [`docs/CHANGELOG.md`](docs/CHANGELOG.md).
+See [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) for a deeper guide on the codebase and architecture.
 
 ---
 
-## Documentation
+## Monorepo Structure
 
-- [`docs/FEATURES.md`](docs/FEATURES.md) – Feature list & roadmap.
-- [`docs/CHANGELOG.md`](docs/CHANGELOG.md) – Version history.
-- [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) – How to contribute.
-- [`docs/CODE_OF_CONDUCT.md`](docs/CODE_OF_CONDUCT.md) – Community guidelines.
-- [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) – Deeper dive into local development.
-- [`docs/SECURITY.md`](docs/SECURITY.md) – Security policy.
+```
+compooss/
+├── apps/
+│   ├── compooss/        # Main MongoDB GUI (Next.js 15)
+│   └── docs/            # Landing page / documentation site
+├── packages/
+│   ├── types/           # Shared TypeScript types (@compooss/types)
+│   └── ui/              # Shared UI components (@compooss/ui)
+├── docker/
+│   ├── docker-compose.dev.yml   # Local dev — MongoDB only
+│   └── docker-compose.yml       # Production — MongoDB + app
+├── docs/                # Project documentation
+└── Dockerfile           # Multi-stage build for the compooss app
+```
 
 ---
 
-## Author
+## Contributing
 
-**Abdullah Mia**  
-Compooss – MongoDB GUI for Docker‑based development workflows.
+Contributions are welcome. Please read [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) before opening a PR.
+
+Quick checklist:
+- Branch from `development`, not `main`
+- Follow [Conventional Commits](https://www.conventionalcommits.org) — enforced by Commitlint
+- Run `bun lint` and `bun type-check` before submitting
+
+---
+
+## Roadmap
+
+- Theming — system, dark, and light mode
+- Optional auth for shared dev environments
+- Richer query builder and UX improvements
+
+See [`docs/FEATURES.md`](docs/FEATURES.md) and [`docs/CHANGELOG.md`](docs/CHANGELOG.md) for the full history and planned work.
 
 ---
 
 ## License
 
-This project is licensed under the **MIT License**. You are free to use, modify, and distribute this software, subject to the terms of the MIT License.
+[MIT](LICENSE) © [Abdullah Mia](https://github.com/abdullahmia)
