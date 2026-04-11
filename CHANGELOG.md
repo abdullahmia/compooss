@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.1](https://github.com/abdullahmia/compooss/compare/v1.8.0...v1.8.1) (2026-04-11)
+
+
+### Bug Fixes
+
+* resolve type mismatch in optional-payload mutation hooks ([3268802](https://github.com/abdullahmia/compooss/commit/3268802b66f8ec02c50801053b2f51ee3f7bcb51))
+* resolve type mismatch in optional-payload mutation hooks ([c59844e](https://github.com/abdullahmia/compooss/commit/c59844e4b8031a355c51c60b633e2fffefefe7b4))
+
 ## [1.8.0](https://github.com/abdullahmia/compooss/compare/v1.7.0...v1.8.0) (2026-04-11)
 
 
