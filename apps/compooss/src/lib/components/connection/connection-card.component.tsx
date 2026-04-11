@@ -36,9 +36,9 @@ export const ConnectionCard: React.FC<Props> = ({
       className="group relative bg-card/60 border border-border/80 rounded-xl p-3.5 hover:bg-card hover:border-primary/20 transition-all duration-200 cursor-pointer"
       onClick={() => onConnect(connection)}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-center gap-3">
         {/* Color indicator + Favorite */}
-        <div className="flex flex-col items-center gap-1.5 pt-0.5">
+        <div className="flex flex-col items-center gap-1.5">
           <div
             className="w-2.5 h-2.5 rounded-full shrink-0"
             style={{
