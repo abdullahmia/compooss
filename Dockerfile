@@ -6,7 +6,7 @@ ARG VERSION=1.1.0
 WORKDIR /app
 
 # Copy workspace and lockfile
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 
 # Copy package manifests for all workspaces (needed for bun install)
 COPY apps/compooss/package.json ./apps/compooss/
