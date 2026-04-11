@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.10.0](https://github.com/abdullahmia/compooss/compare/v1.9.0...v1.10.0) (2026-04-11)
+
+
+### Features
+
+* **ci:** add label-gated deploy workflow and document CI labels ([b49736b](https://github.com/abdullahmia/compooss/commit/b49736b391e0a54f79e4d7a8c16ba931653ff0e2))
+* **docs:** redesign installation section and fix dev warnings ([819cef5](https://github.com/abdullahmia/compooss/commit/819cef55a3565b3b40e756eb19829f6cae8ea923))
+* **docs:** redesign Why Compooss section ([f030f43](https://github.com/abdullahmia/compooss/commit/f030f435fadcbe7acda746b6cfc99e3f28310845))
+
 ## [1.9.0](https://github.com/abdullahmia/compooss/compare/v1.8.1...v1.9.0) (2026-04-11)
 
 
