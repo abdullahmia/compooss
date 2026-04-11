@@ -8,6 +8,7 @@ import {
   ModalFooter,
   Button,
   Toggle,
+  Input,
 } from "@compooss/ui";
 import { Settings } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -92,14 +93,14 @@ export const PipelineSettingsModal: React.FC<Props> = ({
                   <label className="text-[11px] text-muted-foreground mb-1 block">
                     Sample Size
                   </label>
-                  <input
+                  <Input
+                    variant="mono"
                     type="number"
                     value={local.sampleSize}
                     onChange={(e) =>
                       update("sampleSize", Math.max(1, Number(e.target.value) || 1000))
                     }
                     min={1}
-                    className="w-full bg-secondary text-xs font-mono px-2 py-1 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 text-foreground outline-hidden"
                   />
                 </div>
               )}
@@ -109,7 +110,8 @@ export const PipelineSettingsModal: React.FC<Props> = ({
               <label className="text-xs text-muted-foreground mb-1.5 block">
                 Max Execution Time (ms)
               </label>
-              <input
+              <Input
+                variant="mono"
                 type="number"
                 value={local.maxTimeMS}
                 onChange={(e) =>
@@ -117,7 +119,6 @@ export const PipelineSettingsModal: React.FC<Props> = ({
                 }
                 min={1000}
                 step={1000}
-                className="w-full bg-secondary text-xs font-mono px-2 py-1 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 text-foreground outline-hidden"
               />
               <p className="text-[11px] text-muted-foreground mt-1">
                 Maximum time allowed for the aggregation to run before timing out.

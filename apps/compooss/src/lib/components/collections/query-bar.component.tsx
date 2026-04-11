@@ -8,7 +8,7 @@ import {
 } from "@/lib/constants";
 import { Braces, Play, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
-import { Button, IconButton } from "@compooss/ui";
+import { Button, IconButton, Input } from "@compooss/ui";
 
 export type QueryBarState = {
   filter: string;
@@ -198,17 +198,16 @@ export const QueryBar: React.FC<Props> = ({
     onRunQuery(QUERY_BAR_DEFAULT_STATE);
   }, [onRunQuery]);
 
-  const inputClass =
-    "bg-secondary text-xs font-mono text-foreground px-3 py-1.5 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 outline-hidden transition-colors";
-
   return (
     <div className="border-b border-border bg-querybar">
       <div className="flex items-center gap-2 px-4 py-2">
         <Braces className="h-4 w-4 text-muted-foreground shrink-0" />
         <span className="text-xs text-muted-foreground font-medium shrink-0">FILTER</span>
         <div className="flex-1 relative">
-          <input
+          <Input
             ref={filterRef}
+            variant="mono"
+            className="px-3 py-1.5"
             type="text"
             value={filter}
             onChange={(e) => handleFilterChange(e.target.value)}
@@ -218,7 +217,6 @@ export const QueryBar: React.FC<Props> = ({
               updateSuggestions(filter, pos, "filter", filterRef);
             }}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-            className={`w-full ${inputClass}`}
             placeholder='{ "field": "value" }'
           />
           {showSuggestions && suggestionContext === "filter" && suggestions.length > 0 && (
@@ -271,8 +269,10 @@ export const QueryBar: React.FC<Props> = ({
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground shrink-0">Project:</span>
             <div className="relative">
-              <input
+              <Input
                 ref={projectRef}
+                variant="mono"
+                className="px-3 py-1.5 w-40"
                 type="text"
                 value={project}
                 onChange={(e) => handleProjectChange(e.target.value)}
@@ -286,7 +286,6 @@ export const QueryBar: React.FC<Props> = ({
                     if (suggestionContext === "project") setShowSuggestions(false);
                   }, 150)
                 }
-                className={`${inputClass} w-40`}
                 placeholder="{ }"
               />
               {showSuggestions && suggestionContext === "project" && suggestions.length > 0 && (
@@ -311,8 +310,10 @@ export const QueryBar: React.FC<Props> = ({
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground shrink-0">Sort:</span>
             <div className="relative">
-              <input
+              <Input
                 ref={sortRef}
+                variant="mono"
+                className="px-3 py-1.5 w-40"
                 type="text"
                 value={sort}
                 onChange={(e) => handleSortChange(e.target.value)}
@@ -326,7 +327,6 @@ export const QueryBar: React.FC<Props> = ({
                     if (suggestionContext === "sort") setShowSuggestions(false);
                   }, 150)
                 }
-                className={`${inputClass} w-40`}
                 placeholder="{ }"
               />
               {showSuggestions && suggestionContext === "sort" && suggestions.length > 0 && (
@@ -350,7 +350,9 @@ export const QueryBar: React.FC<Props> = ({
           </div>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground shrink-0">Limit:</span>
-            <input
+            <Input
+              variant="mono"
+              className="px-3 py-1.5 w-20"
               type="number"
               min={1}
               max={1000}
@@ -361,12 +363,13 @@ export const QueryBar: React.FC<Props> = ({
                 if (!Number.isFinite(n) || n < 1) setLimit(DEFAULT_LIMIT);
                 else if (n > 1000) setLimit(1000);
               }}
-              className={`${inputClass} w-20`}
             />
           </div>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground shrink-0">Skip:</span>
-            <input
+            <Input
+              variant="mono"
+              className="px-3 py-1.5 w-20"
               type="number"
               min={0}
               value={skip}
@@ -375,7 +378,6 @@ export const QueryBar: React.FC<Props> = ({
                 const n = Number(skip);
                 if (!Number.isFinite(n) || n < 0) setSkip(DEFAULT_SKIP);
               }}
-              className={`${inputClass} w-20`}
             />
           </div>
         </div>

@@ -9,6 +9,7 @@ import {
   Button,
   IconButton,
   Badge,
+  Input,
 } from "@compooss/ui";
 import type { SavedPipeline } from "@compooss/types";
 import {
@@ -94,12 +95,12 @@ export const SavePipelineModal: React.FC<Props> = ({
                 <label className="text-xs text-muted-foreground mb-1.5 block">
                   Pipeline Name
                 </label>
-                <input
+                <Input
+                  variant="default"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="My aggregation pipeline"
                   onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                  className="w-full bg-secondary text-sm font-mono px-3 py-2 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 text-foreground outline-hidden"
                 />
               </div>
               {savedPipelines.length > 0 && (
@@ -136,11 +137,12 @@ export const SavePipelineModal: React.FC<Props> = ({
           ) : (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <input
+                <Input
+                  variant="compact"
+                  className="bg-transparent flex-1"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search pipelines..."
-                  className="flex-1 bg-transparent text-xs placeholder:text-muted-foreground w-full px-2 py-1.5 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 text-foreground outline-hidden"
                 />
                 <button
                   type="button"

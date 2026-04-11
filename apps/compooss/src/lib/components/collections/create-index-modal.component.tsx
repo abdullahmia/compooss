@@ -217,13 +217,14 @@ export const CreateIndexModal: React.FC<Props> = ({
                   <span className="text-xs font-medium text-muted-foreground">
                     TTL (expireAfterSeconds)
                   </span>
-                  <input
+                  <Input
+                    variant="default"
+                    className="h-9"
                     type="number"
                     min={0}
                     max={2147483647}
                     placeholder="Optional"
                     disabled={!hasSingleField}
-                    className="w-full h-9 text-sm font-mono px-3 py-1.5 rounded-sm border border-border bg-secondary text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/30 outline-hidden disabled:opacity-50"
                     {...form.register("expireAfterSeconds", {
                       setValueAs: (v) =>
                         v === "" || Number.isNaN(Number(v))

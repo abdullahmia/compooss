@@ -3,7 +3,7 @@
 import { useConnection } from "@/lib/providers/connection-provider";
 import { useGetDatabases } from "@/lib/services/database/database.service";
 import type { Database } from "@compooss/types";
-import { Button, DatabaseSidebarSkeleton, IconButton } from "@compooss/ui";
+import { Button, DatabaseSidebarSkeleton, IconButton, Input } from "@compooss/ui";
 import { AlertTriangle, Plus, RefreshCw, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
@@ -72,16 +72,14 @@ export const Sidebar: React.FC = () => {
         </div>
 
         <div className="p-2">
-          <div className="flex items-center gap-2 bg-secondary rounded-sm px-2 py-1.5">
-            <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-            <input
-              type="text"
-              placeholder="Filter databases..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground outline-hidden w-full"
-            />
-          </div>
+          <Input
+            variant="search"
+            icon={<Search className="h-3.5 w-3.5" />}
+            type="text"
+            placeholder="Filter databases..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
 
         <div className="flex-1 overflow-y-auto scrollbar-thin py-1">

@@ -7,6 +7,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Input,
 } from "@compooss/ui";
 import { Eye, Loader2 } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -45,12 +46,12 @@ export const CreateViewModal: React.FC<Props> = ({
             <label className="text-xs text-muted-foreground mb-1.5 block">
               View Name
             </label>
-            <input
+            <Input
+              variant="default"
               value={viewName}
               onChange={(e) => setViewName(e.target.value)}
               placeholder="my_view"
               onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-              className="w-full bg-secondary text-sm font-mono px-3 py-2 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 text-foreground outline-hidden"
             />
             <p className="text-[11px] text-muted-foreground mt-1.5">
               Creates a new view in the current database using the pipeline.

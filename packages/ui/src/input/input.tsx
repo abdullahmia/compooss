@@ -15,7 +15,9 @@ const inputVariants = cva(
           "w-full bg-secondary text-sm font-mono px-3 py-2 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30",
         search:
           "bg-transparent text-xs placeholder:text-muted-foreground w-full",
-        mono: "bg-secondary text-xs font-mono px-2 py-1 rounded-sm border border-border focus:border-primary w-full",
+        mono: "bg-secondary text-xs font-mono px-2 py-1 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 w-full",
+        compact:
+          "bg-secondary text-xs px-2.5 py-1.5 rounded-sm border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 w-full",
       },
       inputSize: {
         sm: "text-xs py-1 px-2",
@@ -31,13 +33,12 @@ const inputVariants = cva(
 );
 
 export interface InputProps
-  extends
-    Omit<InputHTMLAttributes<HTMLInputElement>, "size">,
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "size">,
     VariantProps<typeof inputVariants> {
   icon?: ReactNode;
   iconPosition?: "left" | "right";
-  hookForm: UseFormReturn<Record<string, unknown>>;
-  name: string;
+  hookForm?: UseFormReturn<Record<string, unknown>>;
+  name?: string;
   label?: ReactNode;
 }
 
@@ -56,37 +57,57 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref,
   ) => {
-    return (
-      <Controller
-        control={hookForm.control}
-        name={name}
-        render={({ field }) => {
-          const errorMessage = (hookForm.formState.errors as Record<string, { message?: string }>)?.[name]
-            ?.message;
+    if (hookForm && name) {
+      return (
+        <Controller
+          control={hookForm.control}
+          name={name}
+          render={({ field }) => {
+            const errorMessage = (hookForm.formState.errors as Record<string, { message?: string }>)?.[name]
+              ?.message;
 
-          return (
-            <>
-              {label && (
-                <Label htmlFor={name} className="mb-1.5">
-                  {label}
-                </Label>
-              )}
+            return (
+              <>
+                {label && (
+                  <Label htmlFor={name} className="mb-1.5">
+                    {label}
+                  </Label>
+                )}
 
-              {icon ? (
-                <div
-                  className={cn(
-                    "flex items-center gap-2",
-                    variant === "search" &&
-                      "bg-secondary rounded-sm px-2 py-1.5",
-                    className,
-                  )}
-                >
-                  {iconPosition === "left" && (
-                    <span className="text-muted-foreground shrink-0 flex items-center">
-                      {icon}
-                    </span>
-                  )}
+                {icon ? (
+                  <div
+                    className={cn(
+                      "flex items-center gap-2",
+                      variant === "search" &&
+                        "bg-secondary rounded-sm px-2 py-1.5",
+                      className,
+                    )}
+                  >
+                    {iconPosition === "left" && (
+                      <span className="text-muted-foreground shrink-0 flex items-center">
+                        {icon}
+                      </span>
+                    )}
 
+                    <input
+                      {...field}
+                      value={field.value as string | number | readonly string[] | undefined}
+                      {...props}
+                      id={name}
+                      ref={ref}
+                      className={cn(
+                        inputVariants({ variant, inputSize }),
+                        "flex-1",
+                      )}
+                    />
+
+                    {iconPosition === "right" && (
+                      <span className="text-muted-foreground shrink-0 flex items-center">
+                        {icon}
+                      </span>
+                    )}
+                  </div>
+                ) : (
                   <input
                     {...field}
                     value={field.value as string | number | readonly string[] | undefined}
@@ -95,37 +116,72 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     ref={ref}
                     className={cn(
                       inputVariants({ variant, inputSize }),
-                      "flex-1",
+                      className,
                     )}
                   />
+                )}
 
-                  {iconPosition === "right" && (
-                    <span className="text-muted-foreground shrink-0 flex items-center">
-                      {icon}
-                    </span>
-                  )}
-                </div>
-              ) : (
-                <input
-                  {...field}
-                  value={field.value as string | number | readonly string[] | undefined}
-                  {...props}
-                  id={name}
-                  ref={ref}
-                  className={cn(
-                    inputVariants({ variant, inputSize }),
-                    className,
-                  )}
-                />
-              )}
+                {errorMessage && (
+                  <p className="mt-1.5 ms-0.5 text-xs text-destructive">{errorMessage}</p>
+                )}
+              </>
+            );
+          }}
+        />
+      );
+    }
 
-              {errorMessage && (
-                <p className="mt-1.5 ms-0.5 text-xs text-destructive">{errorMessage}</p>
-              )}
-            </>
-          );
-        }}
-      />
+    // Plain (uncontrolled / controlled) input — no react-hook-form required
+    if (icon) {
+      return (
+        <>
+          {label && name && (
+            <Label htmlFor={name} className="mb-1.5">
+              {label}
+            </Label>
+          )}
+          <div
+            className={cn(
+              "flex items-center gap-2",
+              variant === "search" && "bg-secondary rounded-sm px-2 py-1.5",
+              className,
+            )}
+          >
+            {iconPosition === "left" && (
+              <span className="text-muted-foreground shrink-0 flex items-center">
+                {icon}
+              </span>
+            )}
+            <input
+              {...props}
+              name={name}
+              ref={ref}
+              className={cn(inputVariants({ variant, inputSize }), "flex-1")}
+            />
+            {iconPosition === "right" && (
+              <span className="text-muted-foreground shrink-0 flex items-center">
+                {icon}
+              </span>
+            )}
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {label && name && (
+          <Label htmlFor={name} className="mb-1.5">
+            {label}
+          </Label>
+        )}
+        <input
+          {...props}
+          name={name}
+          ref={ref}
+          className={cn(inputVariants({ variant, inputSize }), className)}
+        />
+      </>
     );
   },
 );

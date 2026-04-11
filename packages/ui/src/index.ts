@@ -1,4 +1,5 @@
 export { Badge, badgeVariants } from "./badge/badge";
+export { Checkbox, type CheckboxProps } from "./checkbox/checkbox";
 export { Button, buttonVariants } from "./button/button";
 export { IconButton, iconButtonVariants } from "./icon-button/icon-button";
 export { Input, inputVariants } from "./input/input";
