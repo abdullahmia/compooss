@@ -1,12 +1,25 @@
 # Contributing to Compooss
 
-Thank you for your interest in contributing! Here is everything you need to know.
+Thank you for your interest in contributing! This guide covers everything you need — from filing a bug to merging a pull request.
 
 ---
 
 ## Code of Conduct
 
 By participating in this project you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+---
+
+## New contributor?
+
+If this is your first open-source contribution, welcome! Here is a gentle starting path:
+
+1. Read the [Development Guide](DEVELOPMENT.md) to get the project running locally.
+2. Browse issues labelled [`good first issue`](https://github.com/abdullahmia/compooss/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) — these are small, well-scoped tasks with clear acceptance criteria.
+3. Leave a comment on the issue to let maintainers know you are working on it.
+4. Follow the [Pull Requests](#pull-requests) steps below.
+
+Not sure where to start? Open a [Discussion](https://github.com/abdullahmia/compooss/discussions) and ask — we are happy to help.
 
 ---
 
@@ -120,6 +133,14 @@ See [`docs/DEVELOPMENT.md`](DEVELOPMENT.md) for the full architecture guide.
 
 ---
 
+## Review process
+
+- A maintainer will review your PR within a few days of submission.
+- If changes are requested, address them in new commits — do not force-push once a review has started.
+- Once approved, a maintainer will merge the PR into `development` and it will be included in the next release.
+
+---
+
 ## Questions?
 
-Open a [Discussion](https://github.com/abdullahmia/compooss/discussions) or an issue.
+Open a [Discussion](https://github.com/abdullahmia/compooss/discussions) or drop a comment on a related issue.

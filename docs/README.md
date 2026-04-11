@@ -1,18 +1,38 @@
 # Compooss Documentation
 
-Documentation for the Compooss project.
+Everything you need to understand, run, and contribute to Compooss.
 
-## Contents
+---
+
+## Start here
+
+| Goal | Document |
+| ---- | -------- |
+| Run the app in 2 minutes | [Quick Start](../README.md#quick-start) |
+| Set up a local dev environment | [DEVELOPMENT.md](DEVELOPMENT.md) |
+| File a bug or request a feature | [CONTRIBUTING.md — Reporting Bugs](CONTRIBUTING.md#reporting-bugs) |
+| Make your first pull request | [CONTRIBUTING.md — Pull Requests](CONTRIBUTING.md#pull-requests) |
+| Understand the codebase architecture | [DEVELOPMENT.md — Architecture Notes](DEVELOPMENT.md#architecture-notes) |
+| Report a security vulnerability | [SECURITY.md](SECURITY.md) |
+
+---
+
+## All documents
 
 | Document | Description |
 | -------- | ----------- |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute – issues, PRs, coding standards |
-| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Community guidelines and expected behavior |
-| [DEVELOPMENT.md](DEVELOPMENT.md) | Local setup, tech stack, and development workflow |
-| [SECURITY.md](SECURITY.md) | How to report security vulnerabilities |
+| [DEVELOPMENT.md](DEVELOPMENT.md) | Local setup, tech stack, architecture notes, and troubleshooting |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute — issues, PRs, coding standards, review process |
+| [FEATURES.md](FEATURES.md) | Complete feature breakdown by release version |
 | [CHANGELOG.md](CHANGELOG.md) | Version history and release notes |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Community guidelines and expected behavior |
+| [SECURITY.md](SECURITY.md) | How to report security vulnerabilities privately |
 
-## Quick Links
+---
 
-- **Main README**: [../README.md](../README.md)
-- **License**: [../LICENSE](../LICENSE)
+## Quick links
+
+- [Main README](../README.md)
+- [License (MIT)](../LICENSE)
+- [Open an issue](https://github.com/abdullahmia/compooss/issues/new/choose)
+- [Start a discussion](https://github.com/abdullahmia/compooss/discussions)
