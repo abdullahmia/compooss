@@ -27,7 +27,6 @@ const inputVariants = cva(
     },
     defaultVariants: {
       variant: "default",
-      inputSize: "md",
     },
   },
 );
