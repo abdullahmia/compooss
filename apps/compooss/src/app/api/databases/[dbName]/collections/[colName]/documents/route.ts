@@ -1,16 +1,10 @@
 import { isProtectedDatabase } from "@compooss/types";
 import { documentRepository } from "@/lib/core-modules/document/document.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
+import { protectedDbResponse } from "@/lib/utils/api-route.util";
 import { NextResponse, type NextRequest } from "next/server";
 
 type DocParams = { params: Promise<{ dbName: string; colName: string }> };
-
-function protectedDbResponse() {
-  return NextResponse.json(
-    createApiResponse(null, "Access to system databases (admin, local, config) is not allowed.", 403),
-    { status: 403 },
-  );
-}
 
 /**
  * Converts JS-style object keys (unquoted) to valid JSON by quoting them.

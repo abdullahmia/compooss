@@ -1,21 +1,12 @@
 import { aggregationRepository } from "@/lib/core-modules/aggregation/aggregation.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
+import { extractErrorMessage } from "@/lib/utils/api-route.util";
 import { isProtectedDatabase } from "@compooss/types";
 import { NextResponse } from "next/server";
 
 type AggregateParams = {
   params: Promise<{ dbName: string; colName: string }>;
 };
-
-function extractErrorMessage(error: unknown): string {
-  if (error instanceof Error) {
-    const msg = error.message;
-    const causedBy = msg.match(/caused by :: (.+)/);
-    if (causedBy) return causedBy[1].trim();
-    return msg;
-  }
-  return String(error);
-}
 
 export async function POST(req: Request, { params }: AggregateParams) {
   try {

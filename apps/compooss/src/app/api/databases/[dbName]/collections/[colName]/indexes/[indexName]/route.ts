@@ -1,22 +1,12 @@
 import { isProtectedDatabase } from "@compooss/types";
 import { indexRepository } from "@/lib/core-modules/index/index.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
+import { protectedDbResponse } from "@/lib/utils/api-route.util";
 import { NextResponse } from "next/server";
 
 type IndexNameParams = {
   params: Promise<{ dbName: string; colName: string; indexName: string }>;
 };
-
-function protectedDbResponse() {
-  return NextResponse.json(
-    createApiResponse(
-      null,
-      "Access to system databases (admin, local, config) is not allowed.",
-      403,
-    ),
-    { status: 403 },
-  );
-}
 
 export async function DELETE(_req: Request, { params }: IndexNameParams) {
   try {

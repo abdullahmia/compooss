@@ -3,9 +3,7 @@ import { databaseRepository } from "@/lib/core-modules/database/database.reposit
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
 
-interface RouteParams {
-  params: Promise<{ dbName?: string }>;
-}
+type RouteParams = { params: Promise<{ dbName?: string }> };
 
 export async function GET(_req: Request, { params }: RouteParams) {
   const { dbName } = await params;

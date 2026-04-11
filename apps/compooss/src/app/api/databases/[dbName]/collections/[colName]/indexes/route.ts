@@ -1,21 +1,11 @@
 import { isProtectedDatabase } from "@compooss/types";
 import { indexRepository } from "@/lib/core-modules/index/index.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
+import { protectedDbResponse } from "@/lib/utils/api-route.util";
 import { NextResponse } from "next/server";
 import type { IndexDefinition } from "@compooss/types";
 
 type IndexParams = { params: Promise<{ dbName: string; colName: string }> };
-
-function protectedDbResponse() {
-  return NextResponse.json(
-    createApiResponse(
-      null,
-      "Access to system databases (admin, local, config) is not allowed.",
-      403,
-    ),
-    { status: 403 },
-  );
-}
 
 export type IndexWithStats = IndexDefinition & {
   usage?: { ops: number; since: string };
