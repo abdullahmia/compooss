@@ -10,12 +10,12 @@ export type AnalyzeSchemaPayload = { sampleSize?: number };
 export const useAnalyzeSchema = (
   db: string,
   col: string,
-  options: TMutationOptions<SchemaAnalysisResult, AnalyzeSchemaPayload> = {},
+  options: TMutationOptions<SchemaAnalysisResult, AnalyzeSchemaPayload | undefined> = {},
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
     ...options,
-    mutationFn: async (payload: AnalyzeSchemaPayload = {}) => {
+    mutationFn: async (payload: AnalyzeSchemaPayload | undefined = {}) => {
       const response = await apiClient.post<
         ApiResponse<SchemaAnalysisResult>,
         AnalyzeSchemaPayload

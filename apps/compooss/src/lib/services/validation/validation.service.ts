@@ -66,11 +66,11 @@ export type CheckValidationPayload = {
 export const useCheckValidation = (
   db: string,
   col: string,
-  options: TMutationOptions<ValidationCheckResult, CheckValidationPayload> = {},
+  options: TMutationOptions<ValidationCheckResult, CheckValidationPayload | undefined> = {},
 ) => {
   return useMutation({
     ...options,
-    mutationFn: async (payload: CheckValidationPayload = {}) => {
+    mutationFn: async (payload: CheckValidationPayload | undefined = {}) => {
       const response = await apiClient.post<
         ApiResponse<ValidationCheckResult>,
         CheckValidationPayload
