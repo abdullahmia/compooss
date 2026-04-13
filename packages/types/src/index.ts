@@ -4,6 +4,7 @@ export * from "./connection";
 export * from "./constants";
 export * from "./database";
 export * from "./document";
+export * from "./export";
 export * from "./index-types";
 export * from "./inputs";
 export * from "./schema";

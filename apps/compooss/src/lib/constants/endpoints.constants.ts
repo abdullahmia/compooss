@@ -36,6 +36,14 @@ export const ENDPOINTS = {
     root: (db: string, col: string) =>
       `/databases/${db}/collections/${col}/aggregate`,
   },
+  export: {
+    root: (db: string, col: string) =>
+      `/databases/${db}/collections/${col}/export`,
+  },
+  import: {
+    root: (db: string, col: string) =>
+      `/databases/${db}/collections/${col}/import`,
+  },
   shell: {
     eval: "/shell/eval",
   },

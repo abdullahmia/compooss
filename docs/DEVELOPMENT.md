@@ -82,6 +82,35 @@ compooss/
 | `bun type-check` | Run TypeScript type checking |
 | `bun storybook` | Start Storybook for the UI package |
 | `bun build-storybook` | Build Storybook static site |
+| `bun run db:seed` | Seed local MongoDB with dummy development data |
+
+---
+
+## Seeding Development Data
+
+The seed script populates your local MongoDB instance with realistic dummy data across three databases so you can explore the app without a real dataset.
+
+**Requirements:** the local MongoDB container must be running first (see Local Setup above).
+
+```bash
+bun run db:seed
+```
+
+This drops and recreates the following databases on every run:
+
+| Database | Collections | Contents |
+|---|---|---|
+| `ecommerce_dev` | users, products, orders, reviews | 50 users · 80 products · ~150 orders · ~100 reviews |
+| `blog_dev` | authors, posts, comments | 10 authors · 60 posts · ~300 comments |
+| `analytics_dev` | sessions, events, daily_metrics | 200 sessions · ~800 events · 90 days of metrics |
+
+The script uses the `MONGODB_URI` environment variable if set, otherwise it defaults to the dev container URI:
+
+```
+mongodb://root:example@localhost:27017/?authSource=admin
+```
+
+The seed is **idempotent** — running it multiple times always produces a clean, consistent dataset.
 
 ---
 

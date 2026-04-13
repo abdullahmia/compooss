@@ -8,16 +8,20 @@ import {
   ChevronLeft,
   ChevronRight,
   Code2,
+  Download,
   FileText,
   Grid3X3,
+  Upload,
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { QueryBar, type QueryBarState } from "@/lib/components/collections/query-bar.component";
 import { QUERY_BAR_DEFAULT_STATE } from "@/lib/constants";
-import { IconButton } from "@compooss/ui";
+import { Button, IconButton } from "@compooss/ui";
 import { AddDocument } from "@/lib/components/collections/add-document.component";
 import { DocumentFormModal } from "@/lib/components/collections/document-form-modal.component";
+import { ExportModal } from "@/lib/components/collections/export-import/export-modal.component";
+import { ImportModal } from "@/lib/components/collections/export-import/import-modal.component";
 
 type Props = { readOnly?: boolean };
 
@@ -45,6 +49,8 @@ export const DocumentsTab: React.FC<Props> = ({ readOnly = false }) => {
   const [viewMode, setViewMode] = useState<"list" | "json" | "table">("list");
   const [queryParams, setQueryParams] = useState<QueryBarState>(QUERY_BAR_DEFAULT_STATE);
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [importModalOpen, setImportModalOpen] = useState(false);
   const [editingDocument, setEditingDocument] = useState<{
     id: string;
     json: string;
@@ -144,6 +150,26 @@ export const DocumentsTab: React.FC<Props> = ({ readOnly = false }) => {
           </span>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={<Download className="h-3.5 w-3.5" />}
+            onClick={() => setExportModalOpen(true)}
+            disabled={!dbName || !collectionName}
+          >
+            Export
+          </Button>
+          {!readOnly && (
+            <Button
+              variant="ghost"
+              size="sm"
+              icon={<Upload className="h-3.5 w-3.5" />}
+              onClick={() => setImportModalOpen(true)}
+              disabled={!dbName || !collectionName}
+            >
+              Import
+            </Button>
+          )}
           {!readOnly && (
             <AddDocument
               dbName={dbName}
@@ -261,6 +287,24 @@ export const DocumentsTab: React.FC<Props> = ({ readOnly = false }) => {
           collectionName={collectionName}
           documentId={editingDocument?.id}
           initialJson={editingDocument?.json}
+        />
+      )}
+
+      <ExportModal
+        open={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        dbName={dbName}
+        collectionName={collectionName}
+        currentFilter={queryParams.filter}
+        totalDocuments={total}
+      />
+
+      {!readOnly && (
+        <ImportModal
+          open={importModalOpen}
+          onClose={() => setImportModalOpen(false)}
+          dbName={dbName}
+          collectionName={collectionName}
         />
       )}
     </>

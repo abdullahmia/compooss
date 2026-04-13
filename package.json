@@ -15,6 +15,7 @@
     "storybook": "turbo run storybook",
     "build-storybook": "turbo run build-storybook",
     "prepare": "husky",
+    "db:seed": "bun run scripts/seed.ts",
     "docker:build": "docker build -t compooss:$(node -p \"require('./package.json').version\") --build-arg VERSION=$(node -p \"require('./package.json').version\") .",
     "docker:push": "docker build -t ${DOCKERHUB_USER:-compooss}/compooss:$(node -p \"require('./package.json').version\") --build-arg VERSION=$(node -p \"require('./package.json').version\") . && docker push ${DOCKERHUB_USER:-compooss}/compooss:$(node -p \"require('./package.json').version\")",
     "docker:publish": "VERSION=$(node -p \"require('./package.json').version\") && IMAGE_USER=${DOCKERHUB_USER:-compooss} && IMAGE_NAME=${DOCKER_IMAGE_NAME:-compooss} && docker build -t $IMAGE_USER/$IMAGE_NAME:$VERSION -t $IMAGE_USER/$IMAGE_NAME:latest --build-arg VERSION=$VERSION . && docker push $IMAGE_USER/$IMAGE_NAME:$VERSION && docker push $IMAGE_USER/$IMAGE_NAME:latest"
@@ -23,6 +24,7 @@
     "@commitlint/cli": "^20.4.3",
     "@commitlint/config-conventional": "^20.4.3",
     "husky": "^9.1.7",
+    "mongodb": "^7.1.0",
     "turbo": "^2.3.3",
     "typescript": "^5.8.3"
   }

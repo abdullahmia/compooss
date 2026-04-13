@@ -1,9 +1,7 @@
-import { cn } from "../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
-
-// ─── Modal Overlay ────────────────────────────────────────────────────────────
+import { cn } from "../lib/utils";
 
 export interface ModalOverlayProps extends HTMLAttributes<HTMLDivElement> {
   onClose?: () => void;
@@ -23,8 +21,6 @@ const ModalOverlay = forwardRef<HTMLDivElement, ModalOverlayProps>(
   )
 );
 ModalOverlay.displayName = "ModalOverlay";
-
-// ─── Modal Content ────────────────────────────────────────────────────────────
 
 const modalContentVariants = cva(
   "relative bg-card border border-border rounded-lg shadow-xl mx-4",
@@ -57,8 +53,6 @@ const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
   )
 );
 ModalContent.displayName = "ModalContent";
-
-// ─── Modal Header ─────────────────────────────────────────────────────────────
 
 export interface ModalHeaderProps extends HTMLAttributes<HTMLDivElement> {
   icon?: ReactNode;
@@ -93,8 +87,6 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
 );
 ModalHeader.displayName = "ModalHeader";
 
-// ─── Modal Body ───────────────────────────────────────────────────────────────
-
 const ModalBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
@@ -105,8 +97,6 @@ const ModalBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   )
 );
 ModalBody.displayName = "ModalBody";
-
-// ─── Modal Footer ─────────────────────────────────────────────────────────────
 
 const ModalFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
@@ -121,8 +111,6 @@ const ModalFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   )
 );
 ModalFooter.displayName = "ModalFooter";
-
-// ─── Modal Root ───────────────────────────────────────────────────────────────
 
 export interface ModalProps {
   open: boolean;
@@ -144,11 +132,6 @@ function Modal({ open, onClose, children }: ModalProps) {
 Modal.displayName = "Modal";
 
 export {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  modalContentVariants,
+  Modal, ModalBody, ModalContent, modalContentVariants, ModalFooter, ModalHeader, ModalOverlay
 };
+
