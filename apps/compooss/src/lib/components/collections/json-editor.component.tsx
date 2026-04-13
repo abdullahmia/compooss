@@ -1,9 +1,15 @@
 "use client";
 
-import Editor from "@monaco-editor/react";
 import { defineMonacoThemes } from "@/lib/components/collections/monaco-themes";
+import Editor from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { useTheme } from "next-themes";
+
+type Props = {
+  value: string;
+  onChange: (value: string) => void;
+  height?: string;
+}
 
 export const JsonEditor: React.FC<Props> = ({ value, onChange, height = "260px" }) => {
   const { resolvedTheme } = useTheme();
