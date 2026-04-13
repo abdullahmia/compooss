@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.0](https://github.com/abdullahmia/compooss/compare/v1.10.0...v1.11.0) (2026-04-13)
+
+
+### Features
+
+* add light/dark/system theme switching with Monaco editor support ([b305c03](https://github.com/abdullahmia/compooss/commit/b305c03a063caefbe4bfeefb1209d1dbd1abb169))
+* add light/dark/system theme switching with Monaco editor support ([4083884](https://github.com/abdullahmia/compooss/commit/40838846f3defca13f310d5de804b90490161e71))
+
 ## [1.10.0](https://github.com/abdullahmia/compooss/compare/v1.9.0...v1.10.0) (2026-04-11)
 
 
