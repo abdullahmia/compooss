@@ -1,6 +1,17 @@
+"use client";
+
 import { Palette } from "lucide-react";
+import { useTheme } from "next-themes";
+
+const THEMES = [
+  { label: "Dark", value: "dark" },
+  { label: "Light", value: "light" },
+  { label: "System", value: "system" },
+] as const;
 
 export const AppearanceSettings: React.FC = () => {
+  const { theme, setTheme } = useTheme();
+
   return (
     <div>
       <h3 className="text-xs font-semibold text-foreground mb-3 flex items-center gap-1.5">
@@ -8,21 +19,22 @@ export const AppearanceSettings: React.FC = () => {
         Appearance
       </h3>
       <div className="grid grid-cols-3 gap-2">
-        {["Dark", "Light", "System"].map((theme) => (
+        {THEMES.map(({ label, value }) => (
           <button
-            key={theme}
+            key={value}
+            onClick={() => setTheme(value)}
             className={`p-3 rounded-sm border text-xs font-medium transition-colors ${
-              theme === "Dark"
+              theme === value
                 ? "border-primary bg-primary/15 text-primary"
                 : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
             }`}
           >
-            {theme}
+            {label}
           </button>
         ))}
       </div>
       <p className="text-[10px] text-muted-foreground mt-3">
-        Choose your preferred theme. Currently using the dark theme.
+        Choose your preferred theme. Currently using the {theme} theme.
       </p>
     </div>
   );

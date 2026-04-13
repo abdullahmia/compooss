@@ -1,7 +1,9 @@
 "use client";
 
 import Editor from "@monaco-editor/react";
+import { defineMonacoThemes } from "@/lib/components/collections/monaco-themes";
 import type { editor } from "monaco-editor";
+import { useTheme } from "next-themes";
 import { useCallback, useRef, useState } from "react";
 import { Badge, Button } from "@compooss/ui";
 import { AlertTriangle, Check } from "lucide-react";
@@ -12,6 +14,8 @@ type Props = {
 };
 
 export const TextModeEditor: React.FC<Props> = ({ pipeline }) => {
+  const { resolvedTheme } = useTheme();
+  const monacoTheme = resolvedTheme === "light" ? "compooss-light" : "compooss-dark";
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [localText, setLocalText] = useState(pipeline.pipelineText);
   const [parseError, setParseError] = useState<string | null>(null);
@@ -95,9 +99,10 @@ export const TextModeEditor: React.FC<Props> = ({ pipeline }) => {
         <Editor
           height="100%"
           defaultLanguage="json"
-          theme="vs-dark"
+          theme={monacoTheme}
           value={localText}
           onChange={handleChange}
+          beforeMount={defineMonacoThemes}
           onMount={handleMount}
           options={{
             scrollBeyondLastLine: false,
