@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.0](https://github.com/abdullahmia/compooss/compare/v1.11.1...v1.12.0) (2026-04-13)
+
+
+### Features
+
+* add collection export/import, dev seed script, and settings cle… ([305cd9a](https://github.com/abdullahmia/compooss/commit/305cd9a3bb24b845e541b5bde4c106def4fbd05f))
+* add collection export/import, dev seed script, and settings cleanup ([d8f3cf9](https://github.com/abdullahmia/compooss/commit/d8f3cf931cdb43aa695010007e4faad2469eb76d))
+
 ## [1.11.1](https://github.com/abdullahmia/compooss/compare/v1.11.0...v1.11.1) (2026-04-13)
 
 
