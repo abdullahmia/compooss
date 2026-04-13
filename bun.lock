@@ -8,6 +8,7 @@
         "@commitlint/cli": "^20.4.3",
         "@commitlint/config-conventional": "^20.4.3",
         "husky": "^9.1.7",
+        "mongodb": "^7.1.0",
         "turbo": "^2.3.3",
         "typescript": "^5.8.3",
       },

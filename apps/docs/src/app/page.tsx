@@ -7,6 +7,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import {
   AlertTriangle,
   ArrowRight,
+  ArrowUpDown,
   Check,
   ChevronRight,
   Code2,
@@ -123,16 +124,22 @@ const FEATURES = [
     description:
       "Clean interface with dark, light, and system-aware themes built with Tailwind CSS and shadcn/ui. Designed to feel native to modern development workflows.",
   },
+  {
+    icon: <ArrowUpDown size={20} />,
+    title: "Data Export & Import",
+    description:
+      "Export any collection to JSON or CSV with optional filter and limit controls. Import documents from JSON arrays or CSV files with a drag-and-drop UI, live preview, and per-row error reporting.",
+  },
 ];
 
 // Subset of core product features to highlight in the main grid
 const CORE_FEATURES = [
-  FEATURES[0], // Database Management
-  FEATURES[1], // Collection Explorer
-  FEATURES[4], // Full Document CRUD
-  FEATURES[8], // MongoDB Shell
-  FEATURES[9], // Multiple Connections
-  FEATURES[12], // Modern Developer UI
+  FEATURES[0],  // Database Management
+  FEATURES[1],  // Collection Explorer
+  FEATURES[4],  // Full Document CRUD
+  FEATURES[14], // Data Export & Import
+  FEATURES[9],  // Multiple Connections
+  FEATURES[13], // Modern Developer UI
 ];
 
 type ComparisonValue = "yes" | "no" | "partial" | string;
@@ -239,6 +246,20 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   },
   {
     feature: "Multiple connection profiles",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "yes",
+  },
+  {
+    feature: "Data export (JSON / CSV)",
+    compooss: "yes",
+    compass: "yes",
+    mongoExpress: "no",
+    studio3t: "yes",
+  },
+  {
+    feature: "Data import (JSON / CSV)",
     compooss: "yes",
     compass: "yes",
     mongoExpress: "no",
@@ -1108,12 +1129,12 @@ export default function LandingPage() {
 
             {[
               {
-                icon: <Code2 size={18} />,
+                icon: <ArrowUpDown size={18} />,
                 title: "Data Export & Import",
                 description:
                   "Export collections to JSON or CSV and import data from files directly through the UI.",
-                status: "In Progress",
-                statusColor: "emerald",
+                status: "Shipped",
+                statusColor: "shipped",
               },
               {
                 icon: <Eye size={18} />,
@@ -1145,9 +1166,11 @@ export default function LandingPage() {
                     <div className="flex h-3 w-3 -translate-x-1/2 items-center justify-center">
                       <div
                         className={`h-3 w-3 rounded-full ${
-                          item.statusColor === "emerald"
-                            ? "bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.4)]"
-                            : "border-2 border-zinc-600 bg-zinc-900"
+                          item.statusColor === "shipped"
+                            ? "bg-emerald-400"
+                            : item.statusColor === "emerald"
+                              ? "bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.4)]"
+                              : "border-2 border-zinc-600 bg-zinc-900"
                         }`}
                       />
                     </div>
@@ -1191,11 +1214,16 @@ export default function LandingPage() {
                       >
                         <span
                           className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            item.statusColor === "emerald"
-                              ? "bg-emerald-500/10 text-emerald-400"
-                              : "bg-zinc-800 text-zinc-500"
+                            item.statusColor === "shipped"
+                              ? "bg-emerald-500/15 text-emerald-300"
+                              : item.statusColor === "emerald"
+                                ? "bg-emerald-500/10 text-emerald-400"
+                                : "bg-zinc-800 text-zinc-500"
                           }`}
                         >
+                          {item.statusColor === "shipped" && (
+                            <Check size={10} strokeWidth={3} />
+                          )}
                           {item.statusColor === "emerald" && (
                             <span className="relative flex h-1.5 w-1.5">
                               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
