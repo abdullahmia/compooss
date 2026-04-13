@@ -121,7 +121,7 @@ const FEATURES = [
     icon: <LayoutGrid size={20} />,
     title: "Modern Developer UI",
     description:
-      "Clean, dark-themed interface built with Tailwind CSS and shadcn/ui. Designed to feel native to modern development workflows.",
+      "Clean interface with dark, light, and system-aware themes built with Tailwind CSS and shadcn/ui. Designed to feel native to modern development workflows.",
   },
 ];
 
@@ -175,11 +175,11 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     studio3t: "no",
   },
   {
-    feature: "Modern UI / Dark theme",
+    feature: "Dark, light & system themes",
     compooss: "yes",
-    compass: "yes",
+    compass: "partial",
     mongoExpress: "no",
-    studio3t: "yes",
+    studio3t: "partial",
   },
   {
     feature: "Document CRUD",
@@ -449,7 +449,7 @@ export default function LandingPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                v1.7.0 — Now with Multiple Connections
+                v1.8.0 — Now with Theming Support
               </motion.div>
 
               <motion.h1
@@ -1108,20 +1108,12 @@ export default function LandingPage() {
 
             {[
               {
-                icon: <LayoutGrid size={18} />,
-                title: "Theming Support",
-                description:
-                  "System-aware theming with dedicated dark and light modes, matching your OS preference automatically.",
-                status: "In Progress",
-                statusColor: "emerald",
-              },
-              {
                 icon: <Code2 size={18} />,
                 title: "Data Export & Import",
                 description:
                   "Export collections to JSON or CSV and import data from files directly through the UI.",
-                status: "Planned",
-                statusColor: "zinc",
+                status: "In Progress",
+                statusColor: "emerald",
               },
               {
                 icon: <Eye size={18} />,

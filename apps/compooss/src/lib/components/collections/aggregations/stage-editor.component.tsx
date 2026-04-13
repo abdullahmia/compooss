@@ -1,7 +1,9 @@
 "use client";
 
 import Editor from "@monaco-editor/react";
+import { defineMonacoThemes } from "@/lib/components/collections/monaco-themes";
 import type { editor } from "monaco-editor";
+import { useTheme } from "next-themes";
 import { useCallback, useRef } from "react";
 
 type Props = {
@@ -17,6 +19,8 @@ export const StageEditor: React.FC<Props> = ({
   height = "120px",
   readOnly = false,
 }) => {
+  const { resolvedTheme } = useTheme();
+  const monacoTheme = resolvedTheme === "light" ? "compooss-light" : "compooss-dark";
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
   const handleChange = useCallback(
@@ -50,13 +54,14 @@ export const StageEditor: React.FC<Props> = ({
   );
 
   return (
-    <div className="border border-border rounded-sm overflow-hidden bg-card">
+    <div className="border border-border rounded-sm overflow-hidden">
       <Editor
         height={height}
         defaultLanguage="json"
-        theme="vs-dark"
+        theme={monacoTheme}
         value={value}
         onChange={handleChange}
+        beforeMount={defineMonacoThemes}
         onMount={handleMount}
         options={{
           scrollBeyondLastLine: false,
