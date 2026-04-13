@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.1](https://github.com/abdullahmia/compooss/compare/v1.11.0...v1.11.1) (2026-04-13)
+
+
+### Bug Fixes
+
+* resolve the build issues ([cef79a2](https://github.com/abdullahmia/compooss/commit/cef79a2cc017d958148c069aca9874dcf576aa12))
+* resolve the build issues ([f2d7a24](https://github.com/abdullahmia/compooss/commit/f2d7a245a34902fe9d35de997f938451c674f661))
+
 ## [1.11.0](https://github.com/abdullahmia/compooss/compare/v1.10.0...v1.11.0) (2026-04-13)
 
 
