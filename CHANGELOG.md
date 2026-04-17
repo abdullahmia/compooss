@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.12.1](https://github.com/abdullahmia/compooss/compare/v1.12.0...v1.12.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* validate db reachability before saving connection on connect ([e3fcefa](https://github.com/abdullahmia/compooss/commit/e3fcefafb95f4ce1ee19c87f9dea272c2d2f9cff))
+
+
+### Refactors
+
+* remove Windows alert banner and related state management ([71c02c8](https://github.com/abdullahmia/compooss/commit/71c02c8819bd8b6a689886d1dd1f4f2ef6ed609b))
+* remove Windows alert banner and related state management ([86d8b92](https://github.com/abdullahmia/compooss/commit/86d8b921157211a66e7682b80bf10e49537174a6))
+
 ## [1.12.0](https://github.com/abdullahmia/compooss/compare/v1.11.1...v1.12.0) (2026-04-13)
 
 
