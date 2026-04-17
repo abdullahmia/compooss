@@ -2,6 +2,8 @@
 
 import { connectionDB } from "@/lib/storage/connection-db";
 import { useConnection } from "@/lib/providers/connection-provider";
+import { apiClient } from "@/lib/config/api.config";
+import { ENDPOINTS } from "@/lib/constants";
 import type { SavedConnection } from "@compooss/types";
 import { Leaf } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -18,7 +20,6 @@ export const ConnectionPage: React.FC = () => {
   const [editingConnection, setEditingConnection] =
     useState<SavedConnection | null>(null);
   const [connectingId, setConnectingId] = useState<string | null>(null);
-  const [formError, setFormError] = useState<string | null>(null);
 
   const loadConnections = useCallback(async () => {
     const all = await connectionDB.getAll();
@@ -30,16 +31,14 @@ export const ConnectionPage: React.FC = () => {
   }, [loadConnections]);
 
   const handleFormSubmit = async (data: TConnectionForm) => {
-    setFormError(null);
-
     try {
       const result = await testConnection(data.connectionString);
       if (!result.ok) {
-        setFormError(result.message || "Connection test failed");
+        toast.error(result.message || "Connection test failed");
         return;
       }
     } catch {
-      setFormError("Connection test failed");
+      toast.error("Connection test failed");
       return;
     }
 
@@ -62,18 +61,23 @@ export const ConnectionPage: React.FC = () => {
       lastUsedAt: now,
     };
 
-    await connectionDB.save(saved);
-
     try {
       await connect(saved);
-      toast.success(`Connected to ${saved.name}`);
-      router.push("/");
     } catch (err) {
-      setFormError(
-        err instanceof Error ? err.message : "Connection failed",
-      );
-      await loadConnections();
+      toast.error(err instanceof Error ? err.message : "Connection failed");
+      return;
     }
+
+    try {
+      await apiClient.get(ENDPOINTS.databases.root);
+    } catch {
+      toast.error("Unable to reach the database. Please check your connection string.");
+      return;
+    }
+
+    await connectionDB.save(saved);
+    toast.success(`Connected to ${saved.name}`);
+    router.push("/");
   };
 
   const handleTest = async (uri: string) => {
@@ -200,7 +204,6 @@ export const ConnectionPage: React.FC = () => {
               onTest={handleTest}
               isConnecting={isConnecting}
               editMode={!!editingConnection}
-              submitError={formError}
             />
           </div>
         </div>
