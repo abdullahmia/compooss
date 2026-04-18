@@ -14,7 +14,7 @@
     "type-check": "turbo run type-check",
     "storybook": "turbo run storybook",
     "build-storybook": "turbo run build-storybook",
-    "prepare": "echo skipping-husky",
+    "prepare": "husky install",
     "db:seed": "bun run scripts/seed.ts",
     "docker:build": "docker build -t compooss:$(node -p \"require('./package.json').version\") --build-arg VERSION=$(node -p \"require('./package.json').version\") .",
     "docker:push": "docker build -t ${DOCKERHUB_USER:-compooss}/compooss:$(node -p \"require('./package.json').version\") --build-arg VERSION=$(node -p \"require('./package.json').version\") . && docker push ${DOCKERHUB_USER:-compooss}/compooss:$(node -p \"require('./package.json').version\")",
