@@ -226,7 +226,7 @@ export const DocumentsTab: React.FC<Props> = ({ readOnly = false }) => {
         ) : viewMode === "list" ? (
           documents.map((doc, i) => (
             <JsonDocument
-              key={doc._id}
+              key={i}
               document={doc}
               index={startIndex - 1 + i}
               onEdit={readOnly ? undefined : handleOpenEdit}
