@@ -1,1 +1,2 @@
-npx --no -- commitlint --edit "$1"
+#!/bin/sh
+bun run commitlint --edit "$1"

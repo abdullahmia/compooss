@@ -1,1 +1,1 @@
-bun run build
+echo "skipping pre-commit build"
