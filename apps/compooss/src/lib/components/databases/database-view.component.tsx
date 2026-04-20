@@ -5,7 +5,7 @@ import { CreateCollectionModal } from "@/lib/components/collections/create-colle
 import { useGetCollections } from "@/lib/services/collections/collection.service";
 import { formatBytes } from "@/lib/utils";
 import type { Collection } from "@compooss/types";
-import { DatabaseBackupIcon, Plus, Table } from "lucide-react";
+import { DatabaseBackupIcon, Plus, Share2, Table } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -32,13 +32,23 @@ export const DatabaseView: React.FC<Props> = ({ dbName }) => {
                 {collections?.length === 1 ? "" : "s"}
               </span>
             </div>
-            <Button
-              variant="primary"
-              icon={<Plus className="h-3.5 w-3.5" />}
-              onClick={() => setAddCollectionModalOpen(true)}
-            >
-              Add collection
-            </Button>
+            <div className="flex items-center gap-2">
+              <Link href={`/databases/${dbName}/diagram`}>
+                <Button
+                  variant="outline"
+                  icon={<Share2 className="h-3.5 w-3.5" />}
+                >
+                  ER Diagram
+                </Button>
+              </Link>
+              <Button
+                variant="primary"
+                icon={<Plus className="h-3.5 w-3.5" />}
+                onClick={() => setAddCollectionModalOpen(true)}
+              >
+                Add collection
+              </Button>
+            </div>
           </div>
         </div>
 
