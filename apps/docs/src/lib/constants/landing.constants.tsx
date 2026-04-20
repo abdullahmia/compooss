@@ -1,19 +1,20 @@
+import type { ComparisonRow } from "@/lib/types/landing.type";
 import {
   ArrowUpDown,
   Container,
   Database,
   Eye,
   FileJson,
+  GitBranch,
   Grid3X3,
-  LayoutGrid,
   Layers,
+  LayoutGrid,
   Plug2,
   Search,
   Shield,
   Terminal,
   Zap,
 } from "lucide-react";
-import type { ComparisonRow } from "@/lib/types/landing.type";
 
 export const NAV_LINKS = [
   { label: "Features", href: "#features" },
@@ -112,7 +113,13 @@ export const FEATURES = [
     icon: <ArrowUpDown size={20} />,
     title: "Data Export & Import",
     description:
-      "Export any collection to JSON or CSV with optional filter and limit controls. Import documents from JSON arrays or CSV files with a drag-and-drop UI, live preview, and per-row error reporting.",
+      "Export any collection to JSON or CSV. JSON exports support three Extended JSON modes — Default, Relaxed, and Canonical — preserving BSON types like ObjectId, Long, and Decimal128. Import from JSON or CSV with drag-and-drop, live preview, and per-row error reporting.",
+  },
+  {
+    icon: <GitBranch size={20} />,
+    title: "ER Diagram Generation",
+    description:
+      "Automatically visualize collection relationships as an interactive ER diagram. Detects foreign-key references from ObjectId fields and field names with configurable sample sizes. Powered by ReactFlow and Dagre for auto-layout.",
   },
 ];
 
@@ -121,8 +128,8 @@ export const CORE_FEATURES = [
   FEATURES[1],  // Collection Explorer
   FEATURES[4],  // Full Document CRUD
   FEATURES[14], // Data Export & Import
+  FEATURES[15], // ER Diagram Generation
   FEATURES[9],  // Multiple Connections
-  FEATURES[13], // Modern Developer UI
 ];
 
 export const COMPARISON_TOOLS = [
@@ -147,6 +154,7 @@ export const COMPARISON_ROWS: ComparisonRow[] = [
   { feature: "No signup or cloud required", compooss: "yes", compass: "yes", mongoExpress: "yes", studio3t: "no" },
   { feature: "Multiple connection profiles", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "yes" },
   { feature: "Data export (JSON / CSV)", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "yes" },
+  { feature: "Extended JSON export modes (Default / Relaxed / Canonical)", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "partial" },
   { feature: "Data import (JSON / CSV)", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "yes" },
   { feature: "System DB read-only protection", compooss: "yes", compass: "no", mongoExpress: "no", studio3t: "no" },
   { feature: "Single-container deployment", compooss: "yes", compass: "no", mongoExpress: "yes", studio3t: "no" },

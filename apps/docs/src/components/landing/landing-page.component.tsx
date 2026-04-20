@@ -770,6 +770,14 @@ export const LandingPage: React.FC = () => {
                   "Test connections before saving",
                   "Color-code and label connections for quick identification",
                   "Switch between MongoDB deployments from the top bar",
+                  "Export collections to JSON or CSV with filter and limit",
+                  "Choose Default, Relaxed, or Canonical Extended JSON format",
+                  "Preserve BSON types (ObjectId, Long, Decimal128, Date) in exports",
+                  "Import documents from JSON arrays or CSV files",
+                  "Generate interactive ER diagrams from any database",
+                  "Auto-detect collection relationships from ObjectId fields and names",
+                  "Navigate and zoom interactive diagrams with ReactFlow",
+                  "Visualize per-collection schema as a field diagram",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3">
                     <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
@@ -811,15 +819,15 @@ export const LandingPage: React.FC = () => {
                 icon: <ArrowUpDown size={18} />,
                 title: "Data Export & Import",
                 description:
-                  "Export collections to JSON or CSV and import data from files directly through the UI.",
+                  "Export collections to JSON or CSV with optional filter and document limit. JSON exports support three Extended JSON modes — Default (legacy v1), Relaxed, and Canonical — to preserve BSON types like ObjectId, Long, Decimal128, and Dates. Import from JSON arrays or CSV with drag-and-drop, live preview, and per-row error reporting.",
                 status: "Shipped",
                 statusColor: "shipped",
               },
               {
                 icon: <Layers size={18} />,
-                title: "Diagram Generation",
+                title: "ER Diagram Generation",
                 description:
-                  "Visualize collection relationships and schema structures as interactive diagrams directly from your database.",
+                  "Automatically generate interactive ER diagrams from any database. Detects foreign-key relationships by analyzing ObjectId field types and field-name patterns across all collections. Configurable sample size (100–5000 docs), auto-layout via Dagre, and confidence-level edge coloring.",
                 status: "Shipped",
                 statusColor: "shipped",
               },
