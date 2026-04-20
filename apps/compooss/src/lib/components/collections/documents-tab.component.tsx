@@ -1,7 +1,10 @@
 "use client";
 
 import { EmptyState } from "@compooss/ui";
-import { JsonDocumentSkeleton, JsonDocument } from "@/lib/components/collections/json-document.component";
+import {
+  JsonDocumentSkeleton,
+  JsonDocument,
+} from "@/lib/components/collections/json-document.component";
 import { getDocumentId } from "@/lib/utils";
 import { useGetDocuments } from "@/lib/services/documents/documents.service";
 import {
@@ -15,7 +18,10 @@ import {
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import { QueryBar, type QueryBarState } from "@/lib/components/collections/query-bar.component";
+import {
+  QueryBar,
+  type QueryBarState,
+} from "@/lib/components/collections/query-bar.component";
 import { QUERY_BAR_DEFAULT_STATE } from "@/lib/constants";
 import { Button, IconButton } from "@compooss/ui";
 import { AddDocument } from "@/lib/components/collections/add-document.component";
@@ -47,7 +53,9 @@ function getFieldsFromDocs(docs: Record<string, unknown>[]): string[] {
 
 export const DocumentsTab: React.FC<Props> = ({ readOnly = false }) => {
   const [viewMode, setViewMode] = useState<"list" | "json" | "table">("list");
-  const [queryParams, setQueryParams] = useState<QueryBarState>(QUERY_BAR_DEFAULT_STATE);
+  const [queryParams, setQueryParams] = useState<QueryBarState>(
+    QUERY_BAR_DEFAULT_STATE,
+  );
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [importModalOpen, setImportModalOpen] = useState(false);
@@ -59,7 +67,12 @@ export const DocumentsTab: React.FC<Props> = ({ readOnly = false }) => {
   const params = useParams();
   const dbName = (params?.dbName as string) ?? "";
   const collectionName = (params?.collectionName as string) ?? "";
-  const { data, error: queryError, isError, isLoading } = useGetDocuments(dbName, collectionName, {
+  const {
+    data,
+    error: queryError,
+    isError,
+    isLoading,
+  } = useGetDocuments(dbName, collectionName, {
     enabled: !!dbName && !!collectionName,
     queryParams: {
       filter: queryParams.filter,
@@ -76,8 +89,12 @@ export const DocumentsTab: React.FC<Props> = ({ readOnly = false }) => {
   const pageCount = Math.max(1, data?.totalPages ?? 1);
   const hasNextPage = data?.hasNextPage ?? false;
   const hasPrevPage = data?.hasPrevPage ?? false;
-  const startIndex = total === 0 ? 0 : (currentPage - 1) * (data?.limit ?? queryParams.limit) + 1;
-  const endIndex = total === 0 ? 0 : Math.min(startIndex + documents.length - 1, total);
+  const startIndex =
+    total === 0
+      ? 0
+      : (currentPage - 1) * (data?.limit ?? queryParams.limit) + 1;
+  const endIndex =
+    total === 0 ? 0 : Math.min(startIndex + documents.length - 1, total);
 
   const fieldSuggestions = useMemo(
     () => getFieldsFromDocs(documents),
@@ -219,14 +236,17 @@ export const DocumentsTab: React.FC<Props> = ({ readOnly = false }) => {
             description="No documents match the current filter. Try adjusting the filter or add a new document."
             primaryAction={
               !readOnly
-                ? { label: "Add document", onClick: () => setAddModalOpen(true) }
+                ? {
+                    label: "Add document",
+                    onClick: () => setAddModalOpen(true),
+                  }
                 : undefined
             }
           />
         ) : viewMode === "list" ? (
           documents.map((doc, i) => (
             <JsonDocument
-              key={doc._id}
+              key={getDocumentId(doc, i)}
               document={doc}
               index={startIndex - 1 + i}
               onEdit={readOnly ? undefined : handleOpenEdit}
@@ -255,9 +275,9 @@ export const DocumentsTab: React.FC<Props> = ({ readOnly = false }) => {
                 </tr>
               </thead>
               <tbody>
-                {documents.map((doc) => (
+                {documents.map((doc, i) => (
                   <tr
-                    key={doc._id}
+                    key={getDocumentId(doc, i)}
                     className="border-b border-border hover:bg-muted/20 transition-colors"
                   >
                     {Object.values(doc).map((val, i) => (
