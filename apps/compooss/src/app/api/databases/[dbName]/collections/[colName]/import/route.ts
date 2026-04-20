@@ -5,6 +5,7 @@ import {
 } from "@/lib/core-modules/export/export.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { extractErrorMessage, protectedDbResponse } from "@/lib/utils/api-route.util";
+import { BSON } from "mongodb";
 import { NextResponse, type NextRequest } from "next/server";
 
 type Params = { params: Promise<{ dbName: string; colName: string }> };
@@ -46,10 +47,11 @@ export async function POST(req: NextRequest, { params }: Params) {
         );
       }
     } else {
-      // Treat as JSON
+      // Treat as JSON — use EJSON.parse so BSON types (ObjectId, Long, Decimal128,
+      // Date, etc.) are properly restored instead of stored as plain objects.
       let parsed: unknown;
       try {
-        parsed = JSON.parse(text);
+        parsed = BSON.EJSON.parse(text, { relaxed: true });
       } catch {
         return NextResponse.json(
           createApiResponse(null, "Invalid JSON: could not parse file.", 400),

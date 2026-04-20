@@ -4,13 +4,15 @@ import { ENDPOINTS } from "@/lib/constants";
 import type { TMutationOptions } from "@/lib/query.types";
 import { COLLECTION_QUERY_KEYS } from "@/lib/services/collections/collection-query.key";
 import { DOCUMENTS_QUERY_KEYS } from "@/lib/services/documents/documents-query.key";
-import type { ExportFormat, ImportResult } from "@compooss/types";
+import type { ExportFormat, ImportResult, JsonExportMode } from "@compooss/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export type ExportVariables = {
   db: string;
   collection: string;
   format: ExportFormat;
+  /** Only used when format === "json". Defaults to "default" on the server. */
+  jsonMode?: JsonExportMode;
   /** Current filter as a JSON string, e.g. '{"status":"active"}' */
   filter?: string;
   /** 0 = all (server hard-cap applies) */
@@ -26,8 +28,11 @@ export const useExportCollection = (
 ) => {
   return useMutation({
     ...options,
-    mutationFn: async ({ db, collection, format, filter, limit }: ExportVariables) => {
+    mutationFn: async ({ db, collection, format, jsonMode, filter, limit }: ExportVariables) => {
       const params = new URLSearchParams({ format });
+      if (format === "json" && jsonMode) {
+        params.set("jsonMode", jsonMode);
+      }
       if (filter && filter.trim() !== "{}" && filter.trim() !== "") {
         params.set("filter", filter);
       }

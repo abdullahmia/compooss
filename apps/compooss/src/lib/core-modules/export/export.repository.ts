@@ -1,4 +1,5 @@
-import type { DocumentRecord, ImportResult } from "@compooss/types";
+import type { DocumentRecord, ImportResult, JsonExportMode } from "@compooss/types";
+import { BSON } from "mongodb";
 import { BaseRepository } from "../base.repository";
 
 const EXPORT_HARD_LIMIT = 100_000;
@@ -111,6 +112,15 @@ export function csvToDocuments(text: string): Record<string, unknown>[] {
       headers.map((h, i) => [h.trim(), coerceValue(values[i]?.trim() ?? "")]),
     );
   });
+}
+
+/** Serialises an array of documents to an Extended JSON string. */
+export function documentsToJson(docs: DocumentRecord[], mode: JsonExportMode): string {
+  const options =
+    mode === "relaxed"   ? { relaxed: true,  legacy: false } :
+    mode === "canonical" ? { relaxed: false, legacy: false } :
+                           { relaxed: false, legacy: true  };
+  return BSON.EJSON.stringify(docs, options, 2);
 }
 
 export class ExportRepository extends BaseRepository {

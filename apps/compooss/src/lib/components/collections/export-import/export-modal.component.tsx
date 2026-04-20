@@ -9,8 +9,8 @@ import {
   Button,
 } from "@compooss/ui";
 import { useExportCollection } from "@/lib/services/export/export.service";
-import type { ExportFormat } from "@compooss/types";
-import { Download, FileJson, FileText } from "lucide-react";
+import type { ExportFormat, JsonExportMode } from "@compooss/types";
+import { ChevronDown, ChevronRight, Download, FileJson, FileText } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
@@ -26,6 +26,26 @@ type Props = {
 
 type LimitMode = "all" | "custom";
 
+const JSON_MODE_OPTIONS: { value: JsonExportMode; label: string; example: string }[] = [
+  {
+    value: "default",
+    label: "Default Extended JSON",
+    example: '{ "fortyTwo": 42, "oneHalf": 0.5, "bignumber": { "$numberLong": "5000000000" } }',
+  },
+  {
+    value: "relaxed",
+    label: "Relaxed Extended JSON",
+    example:
+      '{ "fortyTwo": 42, "oneHalf": 0.5, "bignumber": 5000000000 }. Large numbers (>= 2^53) will change with this format.',
+  },
+  {
+    value: "canonical",
+    label: "Canonical Extended JSON",
+    example:
+      '{ "fortyTwo": { "$numberInt": "42" }, "oneHalf": { "$numberDouble": "0.5" }, "bignumber": { "$numberLong": "5000000000" } }',
+  },
+];
+
 export const ExportModal: React.FC<Props> = ({
   open,
   onClose,
@@ -35,6 +55,8 @@ export const ExportModal: React.FC<Props> = ({
   totalDocuments = 0,
 }) => {
   const [format, setFormat] = useState<ExportFormat>("json");
+  const [jsonMode, setJsonMode] = useState<JsonExportMode>("default");
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const [applyFilter, setApplyFilter] = useState(false);
   const [limitMode, setLimitMode] = useState<LimitMode>("all");
   const [customLimit, setCustomLimit] = useState("1000");
@@ -54,10 +76,13 @@ export const ExportModal: React.FC<Props> = ({
       db: dbName,
       collection: collectionName,
       format,
+      jsonMode: format === "json" ? jsonMode : undefined,
       filter: applyFilter && hasActiveFilter ? currentFilter : undefined,
       limit,
     });
   };
+
+  const selectedModeLabel = JSON_MODE_OPTIONS.find((o) => o.value === jsonMode)?.label ?? "";
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -100,6 +125,53 @@ export const ExportModal: React.FC<Props> = ({
                 : "Exports a flat CSV. Nested fields use dot notation; arrays are serialised as JSON strings."}
             </p>
           </div>
+
+          {/* Advanced JSON Format */}
+          {format === "json" && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setAdvancedOpen((v) => !v)}
+                className="flex items-center gap-1.5 text-xs font-medium text-foreground hover:text-primary transition-colors w-full text-left"
+              >
+                {advancedOpen ? (
+                  <ChevronDown className="h-3.5 w-3.5 shrink-0" />
+                ) : (
+                  <ChevronRight className="h-3.5 w-3.5 shrink-0" />
+                )}
+                Advanced JSON Format
+                {!advancedOpen && (
+                  <span className="ml-1 text-muted-foreground font-normal">— {selectedModeLabel}</span>
+                )}
+              </button>
+
+              {advancedOpen && (
+                <div className="mt-2 space-y-2">
+                  {JSON_MODE_OPTIONS.map((opt) => (
+                    <label
+                      key={opt.value}
+                      className="flex items-start gap-2.5 cursor-pointer rounded-sm border border-border bg-secondary px-3 py-2.5 hover:border-primary/50 transition-colors"
+                    >
+                      <input
+                        type="radio"
+                        name="jsonMode"
+                        value={opt.value}
+                        checked={jsonMode === opt.value}
+                        onChange={() => setJsonMode(opt.value)}
+                        className="mt-0.5 accent-primary shrink-0"
+                      />
+                      <span className="text-sm leading-tight">
+                        <span className="font-medium text-foreground">{opt.label}</span>
+                        <span className="block text-xs text-muted-foreground font-mono mt-0.5 break-words">
+                          Example: {opt.example}
+                        </span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Filter */}
           {hasActiveFilter && (
