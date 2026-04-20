@@ -1,5 +1,5 @@
-import { isProtectedDatabase } from "@compooss/types";
-import { exportRepository, documentsToCsv } from "@/lib/core-modules/export/export.repository";
+import { isProtectedDatabase, type JsonExportMode } from "@compooss/types";
+import { exportRepository, documentsToCsv, documentsToJson } from "@/lib/core-modules/export/export.repository";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { extractErrorMessage, protectedDbResponse } from "@/lib/utils/api-route.util";
 import { NextResponse, type NextRequest } from "next/server";
@@ -23,6 +23,9 @@ export async function GET(req: NextRequest, { params }: Params) {
     const sp = req.nextUrl.searchParams;
     const format = sp.get("format") === "csv" ? "csv" : "json";
     const limit = Math.max(0, Number(sp.get("limit") ?? 0));
+    const jsonModeRaw = sp.get("jsonMode");
+    const jsonMode: JsonExportMode =
+      jsonModeRaw === "relaxed" || jsonModeRaw === "canonical" ? jsonModeRaw : "default";
 
     let filter: Record<string, unknown> = {};
     const filterRaw = sp.get("filter");
@@ -49,8 +52,8 @@ export async function GET(req: NextRequest, { params }: Params) {
       });
     }
 
-    // JSON — pretty-print for readability
-    const json = JSON.stringify(docs, null, 2);
+    // JSON — serialise with Extended JSON to preserve BSON types
+    const json = documentsToJson(docs, jsonMode);
     return new Response(json, {
       status: 200,
       headers: {

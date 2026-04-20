@@ -129,10 +129,64 @@ function JsonValue({ value, depth = 0 }: { value: unknown; depth?: number }) {
       );
     }
     if (keys.length === 1 && keys[0] === "$date") {
+      // $date can be a string (relaxed EJSON) or { $numberLong: "..." } (canonical)
+      const raw = obj.$date;
+      const dateStr =
+        typeof raw === "string"
+          ? raw
+          : typeof raw === "object" && raw !== null && "$numberLong" in (raw as object)
+            ? new Date(Number((raw as Record<string, string>).$numberLong)).toISOString()
+            : String(raw);
       return (
         <span className="text-json-string font-mono text-xs">
-          ISODate(&quot;{obj.$date as string}&quot;)
+          ISODate(&quot;{dateStr}&quot;)
         </span>
+      );
+    }
+    if (keys.length === 1 && keys[0] === "$numberLong") {
+      return (
+        <span className="text-json-number font-mono text-xs">
+          Long({obj.$numberLong as string})
+        </span>
+      );
+    }
+    if (keys.length === 1 && keys[0] === "$numberInt") {
+      return (
+        <span className="text-json-number font-mono text-xs">
+          {obj.$numberInt as string}
+        </span>
+      );
+    }
+    if (keys.length === 1 && keys[0] === "$numberDouble") {
+      return (
+        <span className="text-json-number font-mono text-xs">
+          {obj.$numberDouble as string}
+        </span>
+      );
+    }
+    if (keys.length === 1 && keys[0] === "$numberDecimal") {
+      return (
+        <span className="text-json-number font-mono text-xs">
+          Decimal128({obj.$numberDecimal as string})
+        </span>
+      );
+    }
+    if (keys.length === 1 && keys[0] === "$timestamp") {
+      const ts = obj.$timestamp as Record<string, number>;
+      return (
+        <span className="text-json-number font-mono text-xs">
+          Timestamp({ts.t}, {ts.i})
+        </span>
+      );
+    }
+    if (keys.length === 1 && keys[0] === "$binary") {
+      return (
+        <span className="text-json-string font-mono text-xs">Binary(...)</span>
+      );
+    }
+    if (keys.length === 1 && (keys[0] === "$minKey" || keys[0] === "$maxKey")) {
+      return (
+        <span className="text-muted-foreground font-mono text-xs">{keys[0]}</span>
       );
     }
 
