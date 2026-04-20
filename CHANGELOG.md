@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.13.0](https://github.com/abdullahmia/compooss/compare/v1.12.1...v1.13.0) (2026-04-20)
+
+
+### Features
+
+* add interactive ER diagram and schema visualization ([6fa2371](https://github.com/abdullahmia/compooss/commit/6fa23716bf1e8a4113e6c7af89795821568159f1))
+* add interactive ER diagram and schema visualization ([532dafb](https://github.com/abdullahmia/compooss/commit/532dafb73c4b3b6f95b58f539515b1c0033700a4))
+
+
+### Bug Fixes
+
+* improve getDocumentId function to handle undefined and null _id cases ([b7451ad](https://github.com/abdullahmia/compooss/commit/b7451ada2fff90b998dcb3905564e2fa9eecd7c5))
+* update commit-msg hook to use bun instead of npx ([2579b46](https://github.com/abdullahmia/compooss/commit/2579b46e0997353dc7cfc583aa873f74098b9cb3))
+
 ## [1.12.1](https://github.com/abdullahmia/compooss/compare/v1.12.0...v1.12.1) (2026-04-17)
 
 
