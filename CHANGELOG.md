@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.14.0](https://github.com/abdullahmia/compooss/compare/v1.13.0...v1.14.0) (2026-04-20)
+
+
+### Features
+
+* add Extended JSON export modes and fix EJSON import/render ([cc9675b](https://github.com/abdullahmia/compooss/commit/cc9675bc23c55ddf2efbcafb52efd1cd66ab0c6c))
+* add Extended JSON export modes and fix EJSON import/render ([929317a](https://github.com/abdullahmia/compooss/commit/929317ab572d6b83244d2b33d6dfe413dead5dba))
+
+
+### Refactors
+
+* refactor the landing page ([c614f00](https://github.com/abdullahmia/compooss/commit/c614f006f50dd9eb842677dbb2c0daed1eca01ec))
+
 ## [1.13.0](https://github.com/abdullahmia/compooss/compare/v1.12.1...v1.13.0) (2026-04-20)
 
 
