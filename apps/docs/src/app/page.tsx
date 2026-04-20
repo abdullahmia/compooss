@@ -1114,14 +1114,6 @@ export default function LandingPage() {
                 statusColor: "shipped",
               },
               {
-                icon: <Eye size={18} />,
-                title: "Database Monitoring",
-                description:
-                  "Live dashboard with real-time server metrics, operation counters, connection pool status, and slow query tracking.",
-                status: "Planned",
-                statusColor: "zinc",
-              },
-              {
                 icon: <Layers size={18} />,
                 title: "Diagram Generation",
                 description:
