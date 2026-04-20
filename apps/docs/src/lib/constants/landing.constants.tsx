@@ -1,0 +1,191 @@
+import {
+  ArrowUpDown,
+  Container,
+  Database,
+  Eye,
+  FileJson,
+  Grid3X3,
+  LayoutGrid,
+  Layers,
+  Plug2,
+  Search,
+  Shield,
+  Terminal,
+  Zap,
+} from "lucide-react";
+import type { ComparisonRow } from "@/lib/types/landing.type";
+
+export const NAV_LINKS = [
+  { label: "Features", href: "#features" },
+  { label: "Why Compooss", href: "#why-compooss" },
+  { label: "Installation", href: "#installation" },
+  { label: "Usage", href: "#usage" },
+  { label: "Roadmap", href: "#roadmap" },
+];
+
+export const FEATURES = [
+  {
+    icon: <Database size={20} />,
+    title: "Database Management",
+    description:
+      "List, create, and drop MongoDB databases from a visual admin panel. Get real-time stats on document counts, storage size, and indexes at a glance.",
+  },
+  {
+    icon: <Layers size={20} />,
+    title: "Collection Explorer",
+    description:
+      "Navigate MongoDB collections with an expandable sidebar. Instantly view document count, storage size, index count, and average document size per collection.",
+  },
+  {
+    icon: <Search size={20} />,
+    title: "Query & Filter Documents",
+    description:
+      "Run MongoDB queries with native filter syntax. Sort, paginate, and explore documents without switching to the terminal or writing scripts.",
+  },
+  {
+    icon: <Eye size={20} />,
+    title: "Multiple View Modes",
+    description:
+      "Switch between list, JSON, and table views to inspect your MongoDB data. Choose the best format for your data exploration and debugging workflow.",
+  },
+  {
+    icon: <FileJson size={20} />,
+    title: "Full Document CRUD",
+    description:
+      "Create, read, update, and delete MongoDB documents with an intuitive Monaco-powered editor. Supports JSON validation and syntax highlighting.",
+  },
+  {
+    icon: <Grid3X3 size={20} />,
+    title: "Index Management",
+    description:
+      "Create, drop, hide, and inspect indexes with full support for unique, compound, text, geospatial, TTL, partial, and hashed indexes. View usage statistics at a glance.",
+  },
+  {
+    icon: <LayoutGrid size={20} />,
+    title: "Schema Analysis",
+    description:
+      "Analyze collection schema from sampled documents: view detected fields, type distribution, frequency, value distributions, nested and array structures, and missing or inconsistent fields. Refresh on demand.",
+  },
+  {
+    icon: <Layers size={20} />,
+    title: "Aggregation Pipelines",
+    description:
+      "Build MongoDB aggregation pipelines visually with stage templates, drag-and-drop stages, per-stage previews, text mode editing, saved pipelines, and view creation from pipelines.",
+  },
+  {
+    icon: <Terminal size={20} />,
+    title: "MongoDB Shell",
+    description:
+      "Run ad-hoc MongoDB commands from an embedded shell panel. Execute CRUD operations, aggregation pipelines, admin commands, and JavaScript scripts with autocomplete, syntax highlighting, and session persistence.",
+  },
+  {
+    icon: <Plug2 size={20} />,
+    title: "Multiple Connections",
+    description:
+      "Save, edit, and switch between MongoDB connection profiles from a dedicated connection page. Supports authentication (SCRAM, X.509, LDAP, Kerberos), TLS/SSL, color-coded profiles, favorites, and test-before-connect.",
+  },
+  {
+    icon: <Shield size={20} />,
+    title: "Built-In Safety Guards",
+    description:
+      "System databases (admin, local, config) are automatically read-only. Prevent accidental destructive operations on critical MongoDB data.",
+  },
+  {
+    icon: <Container size={20} />,
+    title: "Docker Native Deployment",
+    description:
+      "Ships as a lightweight Docker image you can add to any docker-compose.yml. One service definition, no external dependencies, instant setup.",
+  },
+  {
+    icon: <Zap size={20} />,
+    title: "Instant Startup",
+    description:
+      "Built on Next.js with standalone output for a minimal container footprint. Starts in seconds with zero configuration required.",
+  },
+  {
+    icon: <LayoutGrid size={20} />,
+    title: "Modern Developer UI",
+    description:
+      "Clean interface with dark, light, and system-aware themes built with Tailwind CSS and shadcn/ui. Designed to feel native to modern development workflows.",
+  },
+  {
+    icon: <ArrowUpDown size={20} />,
+    title: "Data Export & Import",
+    description:
+      "Export any collection to JSON or CSV with optional filter and limit controls. Import documents from JSON arrays or CSV files with a drag-and-drop UI, live preview, and per-row error reporting.",
+  },
+];
+
+export const CORE_FEATURES = [
+  FEATURES[0],  // Database Management
+  FEATURES[1],  // Collection Explorer
+  FEATURES[4],  // Full Document CRUD
+  FEATURES[14], // Data Export & Import
+  FEATURES[9],  // Multiple Connections
+  FEATURES[13], // Modern Developer UI
+];
+
+export const COMPARISON_TOOLS = [
+  { name: "Compooss", highlight: true },
+  { name: "MongoDB Compass", highlight: false },
+  { name: "Mongo Express", highlight: false },
+  { name: "Studio 3T", highlight: false },
+];
+
+export const COMPARISON_ROWS: ComparisonRow[] = [
+  { feature: "Docker-native deployment", compooss: "yes", compass: "no", mongoExpress: "partial", studio3t: "no" },
+  { feature: "Zero configuration", compooss: "yes", compass: "no", mongoExpress: "partial", studio3t: "no" },
+  { feature: "Web-based (no install)", compooss: "yes", compass: "no", mongoExpress: "yes", studio3t: "no" },
+  { feature: "Dark, light & system themes", compooss: "yes", compass: "partial", mongoExpress: "no", studio3t: "partial" },
+  { feature: "Document CRUD", compooss: "yes", compass: "yes", mongoExpress: "yes", studio3t: "yes" },
+  { feature: "Index management", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "yes" },
+  { feature: "Schema analysis", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "yes" },
+  { feature: "Aggregation pipeline builder", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "yes" },
+  { feature: "Built-in MongoDB shell", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "partial" },
+  { feature: "Query with MongoDB syntax", compooss: "yes", compass: "yes", mongoExpress: "partial", studio3t: "yes" },
+  { feature: "Free & open-source", compooss: "yes", compass: "partial", mongoExpress: "yes", studio3t: "no" },
+  { feature: "No signup or cloud required", compooss: "yes", compass: "yes", mongoExpress: "yes", studio3t: "no" },
+  { feature: "Multiple connection profiles", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "yes" },
+  { feature: "Data export (JSON / CSV)", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "yes" },
+  { feature: "Data import (JSON / CSV)", compooss: "yes", compass: "yes", mongoExpress: "no", studio3t: "yes" },
+  { feature: "System DB read-only protection", compooss: "yes", compass: "no", mongoExpress: "no", studio3t: "no" },
+  { feature: "Single-container deployment", compooss: "yes", compass: "no", mongoExpress: "yes", studio3t: "no" },
+];
+
+export const DOCKER_COMPOSE_CODE = `services:
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+
+  compooss:
+    image: abdullahmia/compooss:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo`;
+
+export const DOCKER_RUN_CODE = `# Run Compooss and connect via the /connect page
+docker run -p 3000:3000 \\
+  abdullahmia/compooss:latest`;
+
+export const USAGE_STEPS = [
+  {
+    step: "01",
+    title: "Add to your Docker Compose file",
+    description:
+      "Drop the Compooss service into your existing docker-compose.yml alongside your MongoDB container. One service definition is all you need.",
+  },
+  {
+    step: "02",
+    title: "Connect from the UI",
+    description:
+      "Open the /connect page in Compooss, enter your MongoDB connection string, and save a connection profile. You can test the connection before using it.",
+  },
+  {
+    step: "03",
+    title: "Open and start exploring",
+    description:
+      "Navigate to localhost:3000 in your browser. Instantly browse databases, run queries, edit documents, and manage your MongoDB data through a visual interface.",
+  },
+];
