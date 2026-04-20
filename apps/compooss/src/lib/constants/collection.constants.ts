@@ -4,7 +4,8 @@ export type ViewTab =
   | "schema"
   | "explain"
   | "indexes"
-  | "validation";
+  | "validation"
+  | "diagram";
 
 export const VALID_TABS: ViewTab[] = [
   "documents",
@@ -13,4 +14,5 @@ export const VALID_TABS: ViewTab[] = [
   "explain",
   "indexes",
   "validation",
+  "diagram",
 ];
