@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.15.0](https://github.com/abdullahmia/compooss/compare/v1.14.0...v1.15.0) (2026-04-23)
+
+
+### Features
+
+* add circular reveal theme toggle to top bar ([6ce9420](https://github.com/abdullahmia/compooss/commit/6ce94207b388d8d39c0c9efe1debba90b688c394))
+* improve shell UI, connection form UX, and sidebar collections ([ac39f60](https://github.com/abdullahmia/compooss/commit/ac39f60e45fee7e7ab39575d2c3041d901d5a5df))
+* replace inline connection loader with animated FullPageLoader ([9cc1f37](https://github.com/abdullahmia/compooss/commit/9cc1f37ebce5c8e64c9ce4489dab35e42462d2eb))
+
+
+### Bug Fixes
+
+* correct shell input stale closures, clear command, and history nav ([e8cd0e2](https://github.com/abdullahmia/compooss/commit/e8cd0e251a261def04066cf7dedb72c8a24ee447))
+
 ## [1.14.0](https://github.com/abdullahmia/compooss/compare/v1.13.0...v1.14.0) (2026-04-20)
 
 
