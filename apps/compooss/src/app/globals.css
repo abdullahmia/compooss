@@ -224,6 +224,21 @@
   background: hsl(var(--muted-foreground));
 }
 
+/* ─── Circular reveal theme toggle (View Transitions API) ────────────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Light → Dark: new dark snapshot expands on top */
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+
+/* Dark → Light: old dark snapshot shrinks on top, light revealed beneath */
+[data-theme-transition="dark-to-light"]::view-transition-old(root) { z-index: 2; }
+[data-theme-transition="dark-to-light"]::view-transition-new(root) { z-index: 1; }
+
 /* ─── React Flow theme overrides ─────────────────────────────────────────── */
 /* React Flow uses var(--xy-foo, var(--xy-foo-default)) throughout its styles. */
 /* Setting --xy-foo (no -default suffix) on .react-flow always wins over the   */
