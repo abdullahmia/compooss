@@ -42,6 +42,7 @@ export const ConnectionForm: React.FC<Props> = ({
     message: string;
   } | null>(null);
   const [isTesting, setIsTesting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(),
   );
@@ -81,7 +82,12 @@ export const ConnectionForm: React.FC<Props> = ({
 
   const handleFormSubmit = async (data: TConnectionForm) => {
     setTestResult(null);
-    await onSubmit(data);
+    setIsSubmitting(true);
+    try {
+      await onSubmit(data);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const toggleSection = (id: string) => {
@@ -164,27 +170,14 @@ export const ConnectionForm: React.FC<Props> = ({
           className="w-full"
         />
 
-        <div className="mt-4 grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-[11px] font-medium text-muted-foreground mb-1.5 block">
-              Label
-            </label>
-            <Input
-              variant="compact"
-              className="rounded-lg px-3 py-2"
-              {...form.register("label")}
-              placeholder="e.g. dev, staging"
-            />
-          </div>
-          <div>
-            <label className="text-[11px] font-medium text-muted-foreground mb-1.5 block">
-              Color
-            </label>
-            <ColorPicker
-              value={colorValue}
-              onChange={(c) => form.setValue("color", c)}
-            />
-          </div>
+        <div className="mt-4">
+          <label className="text-[11px] font-medium text-muted-foreground mb-1.5 block">
+            Color
+          </label>
+          <ColorPicker
+            value={colorValue}
+            onChange={(c) => form.setValue("color", c)}
+          />
         </div>
       </div>
 
@@ -219,8 +212,8 @@ export const ConnectionForm: React.FC<Props> = ({
       <div className="flex items-center gap-3 pt-1">
         <Button
           type="submit"
-          disabled={isConnecting}
-          loading={isConnecting}
+          disabled={isSubmitting || isConnecting}
+          loading={isSubmitting || isConnecting}
           icon={<Plug2 className="h-3.5 w-3.5" />}
         >
           {editMode ? "Save & Connect" : "Connect"}

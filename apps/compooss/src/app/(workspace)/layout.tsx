@@ -4,6 +4,7 @@ import React, { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useConnection } from "@/lib/providers/connection-provider";
 import { WorkspaceShell } from "@/lib/components/workspace/workspace-shell.component";
+import { FullPageLoader } from "@/lib/components/common/full-page-loader.component";
 
 export default function WorkspaceLayout({
   children,
@@ -20,13 +21,7 @@ export default function WorkspaceLayout({
   }, [isLoading, isConnected, router]);
 
   if (isLoading) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse text-muted-foreground text-sm">
-          Checking connection...
-        </div>
-      </div>
-    );
+    return <FullPageLoader />;
   }
 
   if (!isConnected) {

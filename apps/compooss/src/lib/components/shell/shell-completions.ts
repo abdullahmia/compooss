@@ -75,9 +75,9 @@ function setRange(items: languages.CompletionItem[], range: IRange): languages.C
 
 export function registerShellCompletions(
   monacoInstance: typeof import("monaco-editor"),
-  collectionNames: string[] = [],
-): void {
-  monacoInstance.languages.registerCompletionItemProvider("javascript", {
+  getCollectionNames: () => string[] = () => [],
+): { dispose: () => void } {
+  return monacoInstance.languages.registerCompletionItemProvider("javascript", {
     triggerCharacters: [".", " "],
     provideCompletionItems(
       model: editor.ITextModel,
@@ -106,7 +106,7 @@ export function registerShellCompletions(
 
       // After db. -> suggest collection names + db methods
       if (textUntilPosition.match(/db\.$/)) {
-        const collectionSuggestions: languages.CompletionItem[] = collectionNames.map(
+        const collectionSuggestions: languages.CompletionItem[] = getCollectionNames().map(
           (name) =>
             ({
               label: name,
