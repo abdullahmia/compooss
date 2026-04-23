@@ -108,15 +108,18 @@ export function useShell() {
           setCurrentDatabase(response.database);
         }
 
-        const entry: ShellEntry = {
-          id: entryId,
-          command: trimmed,
-          database: currentDatabase,
-          response,
-          timestamp: Date.now(),
-        };
-
-        setEntries((prev) => [...prev.slice(-MAX_HISTORY + 1), entry]);
+        if (response.result === "__clear__") {
+          setEntries([]);
+        } else {
+          const entry: ShellEntry = {
+            id: entryId,
+            command: trimmed,
+            database: currentDatabase,
+            response,
+            timestamp: Date.now(),
+          };
+          setEntries((prev) => [...prev.slice(-MAX_HISTORY + 1), entry]);
+        }
       } catch (err) {
         const errorResponse: ShellResponse = {
           result: err instanceof Error ? err.message : String(err),
@@ -156,8 +159,8 @@ export function useShell() {
             ? commandHistory.length - 1
             : Math.max(0, historyIndex - 1);
       } else {
-        newIndex =
-          historyIndex === -1 ? -1 : historyIndex + 1;
+        if (historyIndex === -1) return null;
+        newIndex = historyIndex + 1;
         if (newIndex >= commandHistory.length) {
           setHistoryIndex(-1);
           return "";
