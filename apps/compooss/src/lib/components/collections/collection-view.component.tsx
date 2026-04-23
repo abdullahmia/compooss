@@ -1,7 +1,6 @@
 "use client";
 
 import { AggregationsTab } from "@/lib/components/collections/aggregations/aggregations-tab.component";
-import { SchemaDiagram } from "@/lib/components/collections/diagram/schema-diagram.component";
 import { DocumentsTab } from "@/lib/components/collections/documents-tab.component";
 import { ExplainTab } from "@/lib/components/collections/explain-tab.component";
 import { IndexesTab } from "@/lib/components/collections/indexes-tab.component";
@@ -12,7 +11,7 @@ import { useGetCollections } from "@/lib/services/collections/collection.service
 import { formatBytes } from "@/lib/utils";
 import { isProtectedDatabase } from "@compooss/types";
 import { Badge, Tabs } from "@compooss/ui";
-import { BarChart3, FileText, Grid3X3, Share2, ShieldCheck } from "lucide-react";
+import { BarChart3, FileText, Grid3X3, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
@@ -61,11 +60,6 @@ export const CollectionView: React.FC<Props> = ({
       label: "Validation",
       icon: <ShieldCheck className="h-3.5 w-3.5" />,
     },
-    {
-      id: "diagram",
-      label: "Diagram",
-      icon: <Share2 className="h-3.5 w-3.5" />,
-    },
   ];
 
   const handleTabChange = (id: string) => {
@@ -88,8 +82,6 @@ export const CollectionView: React.FC<Props> = ({
         return <IndexesTab readOnly={readOnly} />;
       case "validation":
         return <ValidationTab readOnly={readOnly} />;
-      case "diagram":
-        return <SchemaDiagram />;
       default:
         return null;
     }

@@ -6,7 +6,6 @@ import { ShellInput } from "@/lib/components/shell/shell-input.component";
 import { ShellOutput } from "@/lib/components/shell/shell-output.component";
 import { IconButton } from "@compooss/ui";
 import {
-  ChevronDown,
   ClipboardCopy,
   Eraser,
   GripHorizontal,
@@ -108,19 +107,24 @@ export const ShellPanel: React.FC = () => {
     >
       {/* Drag handle */}
       <div
-        className="h-1 cursor-row-resize flex items-center justify-center hover:bg-primary/20 transition-colors group"
+        className="h-1.5 cursor-row-resize flex items-center justify-center hover:bg-emerald-500/10 transition-colors group shrink-0"
         onMouseDown={handleDragStart}
       >
-        <GripHorizontal className="h-3 w-3 text-muted-foreground/30 group-hover:text-muted-foreground/60" />
+        <GripHorizontal className="h-3 w-3 text-zinc-700 group-hover:text-zinc-500 transition-colors" />
       </div>
 
       {/* Toolbar */}
-      <div className="h-8 flex items-center gap-1 px-2 border-b border-border/30 shrink-0">
-        <ChevronDown className="h-3.5 w-3.5 text-emerald-400" />
-        <span className="text-xs font-semibold text-foreground/80 tracking-tight">
-          MongoDB Shell
-        </span>
-        <span className="text-[10px] font-mono text-muted-foreground/60 ml-1">
+      <div className="h-8 flex items-center gap-2 px-3 border-b border-zinc-800 shrink-0 bg-[#161616]">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-500/70 shrink-0" />
+          <span className="text-[11px] font-semibold text-zinc-300 tracking-tight">
+            MONGOSH
+          </span>
+        </div>
+
+        <div className="h-3.5 w-px bg-zinc-700/60" />
+
+        <span className="text-[11px] font-mono text-emerald-400/80">
           {currentDatabase}
         </span>
 
@@ -129,17 +133,17 @@ export const ShellPanel: React.FC = () => {
         <IconButton
           variant="ghost"
           size="sm"
-          icon={<ClipboardCopy className="h-3.5 w-3.5" />}
+          icon={<ClipboardCopy className="h-3 w-3" />}
           label="Copy last result"
-          className="hover:bg-white/5 rounded-sm"
+          className="text-zinc-500 hover:text-zinc-300 hover:bg-white/5 rounded"
           onClick={copyLastResult}
         />
         <IconButton
           variant="ghost"
           size="sm"
-          icon={<Eraser className="h-3.5 w-3.5" />}
+          icon={<Eraser className="h-3 w-3" />}
           label="Clear output"
-          className="hover:bg-white/5 rounded-sm"
+          className="text-zinc-500 hover:text-zinc-300 hover:bg-white/5 rounded"
           onClick={clearOutput}
         />
         <IconButton
@@ -147,21 +151,22 @@ export const ShellPanel: React.FC = () => {
           size="sm"
           icon={
             isMaximized ? (
-              <Minimize2 className="h-3.5 w-3.5" />
+              <Minimize2 className="h-3 w-3" />
             ) : (
-              <Maximize2 className="h-3.5 w-3.5" />
+              <Maximize2 className="h-3 w-3" />
             )
           }
           label={isMaximized ? "Restore" : "Maximize"}
-          className="hover:bg-white/5 rounded-sm"
+          className="text-zinc-500 hover:text-zinc-300 hover:bg-white/5 rounded"
           onClick={toggleMaximize}
         />
+        <div className="h-3.5 w-px bg-zinc-700/60" />
         <IconButton
           variant="ghost"
           size="sm"
-          icon={<X className="h-3.5 w-3.5" />}
+          icon={<X className="h-3 w-3" />}
           label="Close shell"
-          className="hover:bg-white/5 rounded-sm"
+          className="text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded"
           onClick={close}
         />
       </div>

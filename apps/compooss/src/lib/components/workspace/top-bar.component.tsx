@@ -6,7 +6,6 @@ import { SettingsModal } from "@/lib/components/settings/settings-modal.componen
 import { Button, ConfirmDestructiveModal, IconButton } from "@compooss/ui";
 import {
   Database,
-  HelpCircle,
   Leaf,
   LogOut,
   Settings,
@@ -87,11 +86,6 @@ export const TopBar: React.FC = () => {
           icon={<Settings className="h-4 w-4" />}
           label="Settings"
           onClick={() => setSettingsOpen(true)}
-        />
-        <IconButton
-          variant="default"
-          icon={<HelpCircle className="h-4 w-4" />}
-          label="Help"
         />
       </div>
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />

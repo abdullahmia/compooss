@@ -150,8 +150,8 @@ export const ShellInput: React.FC<Props> = ({
   }, []);
 
   return (
-    <div className="border-t border-border/30 bg-[#1e1e1e] flex items-start">
-      <span className="text-emerald-400 text-xs font-mono shrink-0 pl-3 pt-[9px] select-none">
+    <div className="border-t border-zinc-800 bg-[#1a1a1a] flex items-start">
+      <span className="text-emerald-400 text-[11px] font-mono shrink-0 pl-3 pt-[9px] select-none">
         {database}&gt;
       </span>
       <div className="flex-1 min-w-0">

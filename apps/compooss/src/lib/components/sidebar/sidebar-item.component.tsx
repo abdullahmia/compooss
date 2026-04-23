@@ -1,6 +1,7 @@
 "use client";
 
-import { ConfirmDestructiveModal } from "@compooss/ui";
+import { Badge, ConfirmDestructiveModal, IconButton } from "@compooss/ui";
+import { SidebarCollectionSkeleton } from "./sidebar-collection-skeleton.component";
 import { CreateCollectionModal } from "@/lib/components/collections/create-collection-modal.component";
 import { isProtectedDatabase } from "@compooss/types";
 import { useDeleteDatabase } from "@/lib/services/database/database.service";
@@ -19,7 +20,6 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { Badge, IconButton } from "@compooss/ui";
 
 type Props = {
   db: Database;
@@ -40,7 +40,7 @@ export const SidebarItem: React.FC<Props> = ({
   const [collectionToDelete, setCollectionToDelete] =
     useState<Collection | null>(null);
 
-  const { data: collections } = useGetCollections(db.name, {
+  const { data: collections, isLoading: isLoadingCollections } = useGetCollections(db.name, {
     enabled: expanded,
   });
 
@@ -86,6 +86,7 @@ export const SidebarItem: React.FC<Props> = ({
   };
 
   const handleNavigate = () => {
+    if (!expanded) onToggleExpand();
     router.push(`/databases/${db.name}`);
   };
 
@@ -152,7 +153,8 @@ export const SidebarItem: React.FC<Props> = ({
 
         {expanded && (
           <div className="ml-4">
-            {collections?.map((col) => (
+            {isLoadingCollections && <SidebarCollectionSkeleton />}
+            {!isLoadingCollections && collections?.map((col) => (
               <div
                 key={col.name}
                 className="group/col flex items-center w-full hover:bg-sidebar-accent transition-colors"
