@@ -1,0 +1,132 @@
+# AGENTS.md
+
+Shared guidance for all AI coding agents (Claude Code, OpenAI Codex, Cursor, Copilot, Windsurf, etc.).
+
+## What is Compooss?
+
+A self-hosted, browser-based MongoDB GUI. Runs as a Docker container alongside MongoDB — no cloud account needed. MongoDB URIs are entered in the UI and stored in IndexedDB; there are no environment variables to configure.
+
+## Commands
+
+```bash
+# Development
+bun dev              # Start all apps (Turborepo TUI)
+bun build            # Build all packages and apps
+bun lint             # ESLint across monorepo
+bun type-check       # TypeScript strict check
+
+# Database
+bun run db:seed      # Seed local MongoDB with dummy data (ecommerce_dev, blog_dev, analytics_dev)
+docker compose -f docker/docker-compose.dev.yml up -d  # Start dev MongoDB only
+
+# UI development
+bun storybook        # Storybook for @compooss/ui (port 6006)
+
+# Docker
+bun run docker:build   # Build Docker image locally
+bun run docker:publish # Build and push multi-arch image
+docker compose -f docker/docker-compose.yml up -d      # Full production stack
+```
+
+There is no test runner configured. Validation is done via `bun type-check` and `bun lint`.
+
+Commits must follow [Conventional Commits](https://www.conventionalcommits.org) — enforced by Commitlint + Husky. Never skip hooks. Branch off `development`, not `main`.
+
+## Monorepo Structure
+
+```
+apps/compooss/       # Main Next.js 15 app
+apps/docs/           # Landing / docs site
+packages/types/      # @compooss/types — shared TypeScript types (no JS output)
+packages/ui/         # @compooss/ui — shared shadcn/ui + Radix primitives
+docker/              # docker-compose files (dev and production)
+scripts/seed.ts      # Dev data seeder (Bun)
+docs/                # DEVELOPMENT.md, FEATURES.md, CONTRIBUTING.md, SHELL.md
+```
+
+Turborepo builds `@compooss/types` and `@compooss/ui` before `apps/compooss`.
+
+## Architecture
+
+### Three-Tier Flow
+
+```
+Browser (Next.js client components)
+  → React Context (ConnectionProvider, ShellProvider)
+  → TanStack Query hooks  [lib/services/*/]
+  → ApiClient (fetch wrapper)  [lib/config/api-client.ts]
+  → Next.js API routes  [app/api/]
+  → Repository classes  [lib/core-modules/*/]
+  → MongoDriver  [lib/driver/]
+  → MongoDB
+```
+
+### Server-Side: Repository Pattern
+
+All MongoDB access goes through repository classes that extend `BaseRepository` (provides `driver` getter and `db(dbName)` helper). Specialized repositories live in `lib/core-modules/`:
+
+- `DocumentRepository` — CRUD, filter, sort, export
+- `CollectionRepository` — list, create, drop, rename, stats
+- `IndexRepository` — list, create, drop
+- `SchemaRepository` — samples documents to infer field types/frequency
+- `AggregationRepository` — run and explain pipelines
+- `ShellEvaluator` — executes user JS against MongoDB via Function constructor
+
+Repositories are used server-side in API routes only — never imported on the client.
+
+### Connection Management (Two Separate Systems)
+
+- **`ConnectionManager`** (server-side singleton on `global`): holds live Node.js MongoDB connections across API requests
+- **`connectionDB`** (`lib/storage/`) (browser IndexedDB via `idb`): persists saved connection profiles
+- **`ConnectionProvider`** bridges these — React context reads from IndexedDB; API calls use ConnectionManager
+
+URI passwords are masked before being sent to the frontend.
+
+### Client-Side State
+
+- **TanStack Query v5** for server state — hooks in `lib/services/` (one file per domain: `database.service.ts`, `collection.service.ts`, etc.)
+- **Zustand** for UI state (minimal usage)
+- **URL search params / dynamic routes** for navigational state (bookmarkable)
+
+### Key Conventions
+
+**Query key factories** — never use magic strings; use `DATABASE_QUERY_KEYS`, `COLLECTION_QUERY_KEYS`, etc. from `lib/constants/`.
+
+**Endpoint constants** — all API URLs defined in `lib/constants/endpoints.constants.ts`; supports parameterized routes like `ENDPOINTS.documents.byId(db, col, id)`.
+
+**API response shape** — every route returns `ApiResponse<T>` from `@compooss/types`:
+```typescript
+{ status: number; message: string; data: TData }
+```
+Use `createApiResponse(data, message, status)` from `lib/utils/`.
+
+**Protected databases** — `admin`, `config`, `local` are read-only; use `isProtectedDatabase(dbName)` in route handlers to return 403 on write attempts.
+
+**Next.js 15 params** — route params are Promises; always `await params` before destructuring:
+```typescript
+const { dbName, colName } = await params
+```
+
+**Filter query parsing** — the documents API accepts JSON in URL params (`?filter={email:"a"}`). `RelaxToJson` utility converts unquoted JS object literals to valid JSON; string filter values are auto-wrapped in `$regex` with case-insensitive flag and special chars are escaped.
+
+**Zod schemas** — form validation schemas in `lib/schemas/`; types are inferred with `z.infer<typeof Schema>`. Never duplicate type definitions — derive them from schemas.
+
+**Custom TanStack Query types** — use `TMutationOptions<TData, TVariables>` and `TQueryOptions<TData>` (which omit `mutationFn`/`queryFn`) when accepting options overrides.
+
+## Tech Stack
+
+| Concern | Library |
+|---|---|
+| Framework | Next.js 15 (App Router, `output: "standalone"`) |
+| Package manager | Bun 1.3.8 |
+| Monorepo | Turborepo + Bun workspaces |
+| UI primitives | shadcn/ui (Radix + Tailwind CSS 4.1) |
+| Server state | TanStack Query v5 |
+| Client state | Zustand |
+| Validation | Zod 4 |
+| Forms | react-hook-form |
+| MongoDB | `mongodb` 7.1 (Node.js driver) |
+| Browser storage | `idb` (IndexedDB wrapper) |
+| Code editor | Monaco Editor |
+| Visual pipeline | XYFlow / @xyflow/react |
+| Theming | next-themes |

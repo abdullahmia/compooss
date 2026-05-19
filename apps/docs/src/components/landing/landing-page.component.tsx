@@ -242,7 +242,7 @@ export const LandingPage: React.FC = () => {
                     <div className="ml-3 flex flex-1 items-center gap-2 rounded-md bg-zinc-800/50 px-3 py-1">
                       <ShieldCheck size={12} className="text-emerald-400/60" />
                       <span className="font-mono text-xs text-zinc-500">
-                        localhost:3000 — Compooss
+                        localhost:6969 — Compooss
                       </span>
                     </div>
                   </div>

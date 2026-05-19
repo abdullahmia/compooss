@@ -71,6 +71,7 @@ export interface SavedConnection {
 export interface ConnectionStatus {
   connected: boolean;
   maskedUri?: string;
+  resolvedUri?: string;
   serverInfo?: {
     version?: string;
     host?: string;
@@ -80,6 +81,7 @@ export interface ConnectionStatus {
 export interface ConnectionTestResult {
   ok: boolean;
   message: string;
+  resolvedUri?: string;
   serverInfo?: {
     version?: string;
     host?: string;
