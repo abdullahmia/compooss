@@ -25,7 +25,7 @@ interface ConnectionContextValue {
   isLoading: boolean;
   activeConnection: SavedConnection | null;
   maskedUri: string | null;
-  connect: (connection: SavedConnection) => Promise<void>;
+  connect: (connection: SavedConnection) => Promise<ConnectionStatus | undefined>;
   disconnect: () => Promise<void>;
   testConnection: (
     uri: string,
@@ -120,7 +120,7 @@ export function ConnectionProvider({
     }
   }, [checkStatus]);
 
-  const connect = useCallback(async (connection: SavedConnection) => {
+  const connect = useCallback(async (connection: SavedConnection): Promise<ConnectionStatus | undefined> => {
     setIsConnecting(true);
     try {
       const options = buildConnectOptions(connection);
@@ -137,6 +137,7 @@ export function ConnectionProvider({
       localStorage.setItem(ACTIVE_CONNECTION_KEY, connection.id);
 
       await connectionDB.markUsed(connection.id);
+      return status;
     } finally {
       setIsConnecting(false);
     }

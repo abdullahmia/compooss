@@ -31,11 +31,16 @@ export const ConnectionPage: React.FC = () => {
   }, [loadConnections]);
 
   const handleFormSubmit = async (data: TConnectionForm) => {
+    let effectiveUri = data.connectionString;
+
     try {
       const result = await testConnection(data.connectionString);
       if (!result.ok) {
         toast.error(result.message || "Connection test failed");
         return;
+      }
+      if (result.resolvedUri) {
+        effectiveUri = result.resolvedUri;
       }
     } catch {
       toast.error("Connection test failed");
@@ -48,7 +53,7 @@ export const ConnectionPage: React.FC = () => {
     const saved: SavedConnection = {
       id,
       name: data.connectionName,
-      uri: data.connectionString,
+      uri: effectiveUri,
       color: data.color,
       label: data.label,
       isFavorite: data.isFavorite,
@@ -62,7 +67,10 @@ export const ConnectionPage: React.FC = () => {
     };
 
     try {
-      await connect(saved);
+      const status = await connect(saved);
+      if (status?.resolvedUri) {
+        toast.info("Docker detected — saved connection using `mongo` instead of `localhost`");
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Connection failed");
       return;
