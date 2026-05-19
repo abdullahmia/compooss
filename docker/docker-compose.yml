@@ -5,9 +5,6 @@ services:
     restart: unless-stopped
     expose:
       - "27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     volumes:
       - mongo_data:/data/db
     networks:
@@ -20,9 +17,7 @@ services:
       start_period: 20s
 
   app:
-    build:
-      context: ..
-      dockerfile: Dockerfile
+    image: abdullahmia/compooss:latest
     container_name: compooss-app
     restart: unless-stopped
     ports:

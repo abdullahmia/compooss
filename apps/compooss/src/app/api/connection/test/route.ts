@@ -15,8 +15,7 @@ export async function POST(req: Request) {
 
     const result = await connectionManager.testConnection(uri, options);
     return NextResponse.json(
-      createApiResponse(result, result.ok ? "Connection test passed" : result.message, result.ok ? 200 : 422),
-      { status: result.ok ? 200 : 422 },
+      createApiResponse(result, result.ok ? "Connection test passed" : result.message, 200),
     );
   } catch (error) {
     const message =

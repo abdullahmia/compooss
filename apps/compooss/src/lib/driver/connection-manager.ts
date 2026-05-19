@@ -13,6 +13,19 @@ function maskUri(uri: string): string {
   }
 }
 
+function resolveDockerHost(uri: string): string | null {
+  try {
+    const url = new URL(uri);
+    if (url.hostname === "localhost" || url.hostname === "127.0.0.1") {
+      url.hostname = "mongo";
+      return url.toString();
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 class ConnectionManager {
   private static _instance: ConnectionManager | null = null;
   private activeDriver: MongoDriver | null = null;
@@ -34,21 +47,40 @@ class ConnectionManager {
     }
 
     const driver = new MongoDriver(uri, options);
-    const ok = await driver.ping();
+    let ok = await driver.ping();
+    let resolvedUri: string | undefined;
+
     if (!ok) {
       await driver.disconnect();
-      throw new Error(
-        "Could not connect to MongoDB. Check the connection string and ensure the server is running.",
-      );
+      const fallback = resolveDockerHost(uri);
+      if (fallback) {
+        const fallbackDriver = new MongoDriver(fallback, options);
+        const fallbackOk = await fallbackDriver.ping();
+        if (!fallbackOk) {
+          await fallbackDriver.disconnect();
+          throw new Error(
+            "Could not connect to MongoDB. Check the connection string and ensure the server is running.",
+          );
+        }
+        this.activeDriver = fallbackDriver;
+        this.activeUri = fallback;
+        resolvedUri = fallback;
+        ok = true;
+      } else {
+        throw new Error(
+          "Could not connect to MongoDB. Check the connection string and ensure the server is running.",
+        );
+      }
+    } else {
+      this.activeDriver = driver;
+      this.activeUri = uri;
     }
 
-    this.activeDriver = driver;
-    this.activeUri = uri;
-
-    const serverInfo = await driver.getServerInfo();
+    const serverInfo = await this.activeDriver.getServerInfo();
     return {
       connected: true,
-      maskedUri: maskUri(uri),
+      maskedUri: maskUri(this.activeUri!),
+      ...(resolvedUri && { resolvedUri }),
       serverInfo,
     };
   }
@@ -68,14 +100,30 @@ class ConnectionManager {
     const driver = new MongoDriver(uri, options);
     try {
       const ok = await driver.ping();
-      if (!ok) {
+      if (ok) {
+        const serverInfo = await driver.getServerInfo();
+        return { ok: true, message: "Connection successful", serverInfo };
+      }
+
+      const fallback = resolveDockerHost(uri);
+      if (!fallback) {
         return { ok: false, message: "Ping failed. Check your connection string." };
       }
-      const serverInfo = await driver.getServerInfo();
-      return { ok: true, message: "Connection successful", serverInfo };
+
+      await driver.disconnect();
+      const fallbackDriver = new MongoDriver(fallback, options);
+      try {
+        const fallbackOk = await fallbackDriver.ping();
+        if (!fallbackOk) {
+          return { ok: false, message: "Ping failed. Check your connection string." };
+        }
+        const serverInfo = await fallbackDriver.getServerInfo();
+        return { ok: true, message: "Connection successful", resolvedUri: fallback, serverInfo };
+      } finally {
+        await fallbackDriver.disconnect();
+      }
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Connection test failed";
+      const message = err instanceof Error ? err.message : "Connection test failed";
       return { ok: false, message };
     } finally {
       await driver.disconnect();

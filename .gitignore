@@ -60,5 +60,5 @@ Thumbs.db
 *.local
 
 # Claude
-CLAUDE.md
 .claude/*
+CLAUDE.md

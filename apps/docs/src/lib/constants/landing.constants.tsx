@@ -169,12 +169,12 @@ export const DOCKER_COMPOSE_CODE = `services:
   compooss:
     image: abdullahmia/compooss:latest
     ports:
-      - "3000:3000"
+      - "6969:3000"
     depends_on:
       - mongo`;
 
 export const DOCKER_RUN_CODE = `# Run Compooss and connect via the /connect page
-docker run -p 3000:3000 \\
+docker run -p 6969:3000 \\
   abdullahmia/compooss:latest`;
 
 export const USAGE_STEPS = [
@@ -194,6 +194,6 @@ export const USAGE_STEPS = [
     step: "03",
     title: "Open and start exploring",
     description:
-      "Navigate to localhost:3000 in your browser. Instantly browse databases, run queries, edit documents, and manage your MongoDB data through a visual interface.",
+      "Navigate to localhost:6969 in your browser. Instantly browse databases, run queries, edit documents, and manage your MongoDB data through a visual interface.",
   },
 ];
