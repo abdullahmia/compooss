@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.16.0](https://github.com/abdullahmia/compooss/compare/v1.15.0...v1.16.0) (2026-05-19)
+
+
+### Features
+
+* auto-retry localhost connections using mongo service name in docker ([e01e248](https://github.com/abdullahmia/compooss/commit/e01e248d72b781d41bda88dfc9179d6bd4dae6d2))
+* auto-retry localhost connections using mongo service name in Docker ([e5ac1da](https://github.com/abdullahmia/compooss/commit/e5ac1dafa20a09b31a134a83ce5b40db578dbb4f))
+
 ## [1.15.0](https://github.com/abdullahmia/compooss/compare/v1.14.0...v1.15.0) (2026-04-23)
 
 
