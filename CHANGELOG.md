@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.0](https://github.com/abdullahmia/compooss/compare/v1.17.0...v1.18.0) (2026-05-29)
+
+
+### Features
+
+* added multiple theme support ([a8d8d87](https://github.com/abdullahmia/compooss/commit/a8d8d87d1bf3430edc3faaadd583c9046e11d739))
+
 ## [1.17.0](https://github.com/abdullahmia/compooss/compare/v1.16.0...v1.17.0) (2026-05-29)
 
 
