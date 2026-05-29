@@ -1,6 +1,7 @@
 import type { MongoClientOptions } from "mongodb";
 import type { ConnectionStatus, ConnectionTestResult } from "@compooss/types";
-import { serverLogger, maskUri } from "@/lib/logger";
+import { maskUri } from "@/lib/logger";
+import { serverLogger } from "@/lib/logger/logger.server";
 import { MongoDriver } from "./mongodb.driver";
 
 const log = serverLogger.child({ module: "connection" });

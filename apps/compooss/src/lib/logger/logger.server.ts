@@ -6,18 +6,19 @@ const createTransport = () => {
     process.env.LOG_PRETTY === "true" ||
     (process.env.LOG_PRETTY !== "false" && process.env.NODE_ENV !== "production");
 
-  if (pretty) {
-    return pino.transport({
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-        translateTime: "HH:MM:ss",
-        ignore: "pid,hostname",
-        messageFormat: "[{module}] {msg}",
-      },
-    });
-  }
-  return undefined;
+  if (!pretty) return undefined;
+
+  // Require pino-pretty directly as a stream instead of using pino.transport().
+  // pino.transport() spawns a worker thread which is unavailable in browser/edge
+  // builds. Direct stream usage works in any Node.js context.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const PinoPretty = require("pino-pretty");
+  return PinoPretty({
+    colorize: true,
+    translateTime: "HH:MM:ss",
+    ignore: "pid,hostname",
+    messageFormat: "[{module}] {msg}",
+  });
 };
 
 const level =

@@ -1,6 +1,6 @@
 import { connectionManager } from "@/lib/driver/connection-manager";
 import type { MongoDriver } from "@/lib/driver/mongodb.driver";
-import { serverLogger } from "@/lib/logger";
+import { serverLogger } from "@/lib/logger/logger.server";
 
 const SLOW_OPERATION_MS = 1000;
 

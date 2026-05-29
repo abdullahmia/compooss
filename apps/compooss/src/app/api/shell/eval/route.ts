@@ -1,5 +1,6 @@
 import { evaluateShellCommand } from "@/lib/core-modules/shell/shell.evaluator";
-import { serverLogger, withLogging } from "@/lib/logger";
+import { withLogging } from "@/lib/logger";
+import { serverLogger } from "@/lib/logger/logger.server";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
 

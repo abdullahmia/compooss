@@ -3,6 +3,5 @@ export { maskUri, redact } from "./redact";
 export { clientLogger } from "./logger.client";
 export { withLogging } from "./with-logging";
 
-// Server logger — only import on the server side.
-// Use `serverLogger` in API routes and server-side modules.
-export { serverLogger } from "./logger.server";
+// serverLogger is intentionally NOT re-exported here.
+// Import it directly: import { serverLogger } from "@/lib/logger/logger.server"

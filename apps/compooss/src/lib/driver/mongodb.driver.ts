@@ -1,6 +1,6 @@
 import { Admin, Db, MongoClient, MongoClientOptions } from "mongodb";
 import type { Database } from "@compooss/types";
-import { serverLogger } from "@/lib/logger";
+import { serverLogger } from "@/lib/logger/logger.server";
 
 const log = serverLogger.child({ module: "driver" });
 
