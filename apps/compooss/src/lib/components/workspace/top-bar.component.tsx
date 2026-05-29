@@ -3,11 +3,13 @@
 import { useConnection } from "@/lib/providers/connection-provider";
 import { useShellPanel } from "@/lib/providers/shell-provider";
 import { ThemeSwitcher } from "@/lib/components/common/theme-switcher.component";
+import { SettingsModal } from "@/lib/components/settings/settings-modal.component";
 import { Button, ConfirmDestructiveModal, IconButton } from "@compooss/ui";
 import {
   Database,
   Leaf,
   LogOut,
+  Settings,
   TerminalSquare,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -17,6 +19,7 @@ import { toast } from "sonner";
 export const TopBar: React.FC = () => {
   const [disconnectOpen, setDisconnectOpen] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const { isOpen: isShellOpen, toggle: toggleShell } = useShellPanel();
   const { activeConnection, maskedUri, disconnect } = useConnection();
   const router = useRouter();
@@ -62,6 +65,12 @@ export const TopBar: React.FC = () => {
         </div>
 
         <ThemeSwitcher />
+        <IconButton
+          variant="ghost"
+          icon={<Settings className="h-4 w-4" />}
+          label="Settings"
+          onClick={() => setSettingsOpen(true)}
+        />
         <Button
           variant="outline"
           size="sm"
@@ -81,6 +90,8 @@ export const TopBar: React.FC = () => {
           onClick={toggleShell}
         />
       </div>
+
+      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       <ConfirmDestructiveModal
         open={disconnectOpen}
         onClose={() => setDisconnectOpen(false)}

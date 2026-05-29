@@ -8,13 +8,9 @@ import { Button, cn, Input } from "@compooss/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CheckCircle2,
-  ChevronDown,
-  Loader2,
   Plug2,
   Star,
-  Unplug,
   XCircle,
-  Zap,
 } from "lucide-react";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -43,9 +39,6 @@ export const ConnectionForm: React.FC<Props> = ({
   } | null>(null);
   const [isTesting, setIsTesting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(),
-  );
 
   const form = useForm<TConnectionForm>({
     resolver: zodResolver(ConnectionFormSchema),
@@ -90,126 +83,108 @@ export const ConnectionForm: React.FC<Props> = ({
     }
   };
 
-  const toggleSection = (id: string) => {
-    setExpandedSections((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  const sectionHeader = (id: string, label: string) => (
-    <button
-      type="button"
-      onClick={() => toggleSection(id)}
-      className="w-full flex items-center justify-between py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors"
-    >
-      {label}
-      <ChevronDown
-        className={cn(
-          "h-3.5 w-3.5 transition-transform",
-          expandedSections.has(id) && "rotate-180",
-        )}
-      />
-    </button>
-  );
-
   return (
-    <form
-      onSubmit={form.handleSubmit(handleFormSubmit)}
-      className="space-y-4"
-    >
-      {/* Connection URI Card */}
-      <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl p-5 shadow-lg shadow-black/5">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
-            <Unplug className="h-3 w-3 text-primary" />
+    <form onSubmit={form.handleSubmit(handleFormSubmit)}>
+      <div className="relative rounded-2xl overflow-hidden shadow-xl shadow-black/10 dark:shadow-black/30">
+        {/* Glass surface */}
+        <div className="absolute inset-0 bg-white/60 dark:bg-white/[0.04] backdrop-blur-2xl" />
+        <div className="absolute inset-0 border border-black/[0.06] dark:border-white/[0.12] rounded-2xl pointer-events-none" />
+        <div className="absolute inset-px rounded-2xl bg-gradient-to-b from-white/80 to-white/20 dark:from-white/[0.06] dark:to-transparent pointer-events-none" />
+
+        <div className="relative z-10 p-6 space-y-5">
+          {/* Connection string */}
+          <div className="space-y-1.5">
+            <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Connection String
+            </label>
+            <Input
+              hookForm={
+                form as unknown as import("react-hook-form").UseFormReturn<
+                  Record<string, unknown>
+                >
+              }
+              name="connectionString"
+              placeholder="mongodb://localhost:27017"
+              variant="default"
+              inputSize="lg"
+              className="w-full font-mono text-[13px]"
+            />
+            <p className="text-[11px] text-muted-foreground/50">
+              Standard URI or SRV (mongodb+srv://)
+            </p>
           </div>
-          <span className="text-xs font-semibold text-foreground">Connection URI</span>
+
+          {/* Thin rule */}
+          <div className="border-t border-black/[0.06] dark:border-white/[0.06]" />
+
+          {/* Display name */}
+          <div className="space-y-1.5">
+            <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Display Name
+            </label>
+            <Input
+              hookForm={
+                form as unknown as import("react-hook-form").UseFormReturn<
+                  Record<string, unknown>
+                >
+              }
+              name="connectionName"
+              placeholder="e.g. Local Dev, Staging Cluster"
+              variant="default"
+              inputSize="lg"
+              className="w-full"
+            />
+          </div>
+
+          {/* Color tag */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Tag Color
+              </p>
+              <p className="text-[11px] text-muted-foreground/50 mt-0.5">
+                Shown as a dot in the sidebar
+              </p>
+            </div>
+            <ColorPicker
+              value={colorValue}
+              onChange={(c) => form.setValue("color", c)}
+            />
+          </div>
         </div>
-        <Input
-          hookForm={
-            form as unknown as import("react-hook-form").UseFormReturn<
-              Record<string, unknown>
-            >
-          }
-          name="connectionString"
-          placeholder="mongodb://localhost:27017"
-          variant="default"
-          inputSize="lg"
-          className="w-full font-mono"
-        />
-        <p className="text-[11px] text-muted-foreground/70 mt-2">
-          Paste your MongoDB connection string or SRV address
-        </p>
       </div>
 
-      {/* Connection Details Card */}
-      <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl p-5 shadow-lg shadow-black/5">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
-            <Zap className="h-3 w-3 text-primary" />
-          </div>
-          <span className="text-xs font-semibold text-foreground">Details</span>
-        </div>
-
-        <label className="text-[11px] font-medium text-muted-foreground mb-1.5 block">
-          Connection Name
-        </label>
-        <Input
-          hookForm={
-            form as unknown as import("react-hook-form").UseFormReturn<
-              Record<string, unknown>
+      {/* Feedback banners */}
+      {(testResult || submitError) && (
+        <div className="mt-3 space-y-2">
+          {testResult && (
+            <div
+              className={cn(
+                "flex items-start gap-2.5 text-xs px-3.5 py-3 rounded-xl border",
+                testResult.ok
+                  ? "bg-success/5 text-success border-success/20"
+                  : "bg-destructive/5 text-destructive border-destructive/20",
+              )}
             >
-          }
-          name="connectionName"
-          placeholder="e.g. Local Development"
-          variant="default"
-          inputSize="lg"
-          className="w-full"
-        />
-
-        <div className="mt-4">
-          <label className="text-[11px] font-medium text-muted-foreground mb-1.5 block">
-            Color
-          </label>
-          <ColorPicker
-            value={colorValue}
-            onChange={(c) => form.setValue("color", c)}
-          />
-        </div>
-      </div>
-
-      {/* Test result */}
-      {testResult && (
-        <div
-          className={cn(
-            "flex items-center gap-2.5 text-xs px-4 py-3 rounded-xl border transition-all",
-            testResult.ok
-              ? "bg-success/5 text-success border-success/20"
-              : "bg-destructive/5 text-destructive border-destructive/20",
+              {testResult.ok ? (
+                <CheckCircle2 className="h-3.5 w-3.5 mt-px shrink-0" />
+              ) : (
+                <XCircle className="h-3.5 w-3.5 mt-px shrink-0" />
+              )}
+              <span>{testResult.message}</span>
+            </div>
           )}
-        >
-          {testResult.ok ? (
-            <CheckCircle2 className="h-4 w-4 shrink-0" />
-          ) : (
-            <XCircle className="h-4 w-4 shrink-0" />
+          {submitError && (
+            <div className="flex items-start gap-2.5 text-xs px-3.5 py-3 rounded-xl border bg-destructive/5 text-destructive border-destructive/20">
+              <XCircle className="h-3.5 w-3.5 mt-px shrink-0" />
+              <span>{submitError}</span>
+            </div>
           )}
-          <span>{testResult.message}</span>
-        </div>
-      )}
-
-      {/* Submit / connection error */}
-      {submitError && (
-        <div className="flex items-center gap-2.5 text-xs px-4 py-3 rounded-xl border bg-destructive/5 text-destructive border-destructive/20">
-          <XCircle className="h-4 w-4 shrink-0" />
-          <span>{submitError}</span>
         </div>
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-3 pt-1">
+      <div className="flex items-center gap-2 mt-5">
         <Button
           type="submit"
           disabled={isSubmitting || isConnecting}
@@ -226,27 +201,27 @@ export const ConnectionForm: React.FC<Props> = ({
           disabled={isTesting || !connectionString}
           loading={isTesting}
         >
-          Test
+          {isTesting ? "Testing…" : "Test Connection"}
         </Button>
 
         <div className="flex-1" />
 
         <button
           type="button"
-          className={cn(
-            "flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all",
-            isFavorite
-              ? "bg-warning/10 text-warning border border-warning/20"
-              : "text-muted-foreground hover:text-foreground hover:bg-secondary border border-transparent",
-          )}
           onClick={() =>
             form.setValue("isFavorite", !form.getValues("isFavorite"))
           }
+          className={cn(
+            "flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition-all",
+            isFavorite
+              ? "bg-warning/10 text-warning border-warning/20"
+              : "text-muted-foreground hover:text-foreground hover:bg-secondary border-transparent",
+          )}
         >
           <Star
             className={cn(
-              "h-3 w-3 transition-colors",
-              isFavorite && "fill-warning text-warning",
+              "h-3 w-3 transition-all",
+              isFavorite ? "fill-warning text-warning" : "",
             )}
           />
           {isFavorite ? "Favorited" : "Favorite"}

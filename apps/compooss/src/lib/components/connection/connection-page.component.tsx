@@ -5,6 +5,7 @@ import { useConnection } from "@/lib/providers/connection-provider";
 import { apiClient } from "@/lib/config/api.config";
 import { ENDPOINTS } from "@/lib/constants";
 import type { SavedConnection } from "@compooss/types";
+import { ThemeSwitcher } from "@/lib/components/common/theme-switcher.component";
 import { Leaf } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -156,14 +157,19 @@ export const ConnectionPage: React.FC = () => {
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
       {/* Topbar */}
-      <div className="h-11 flex items-center justify-between px-4 bg-topbar border-b border-border shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-md bg-primary/15 flex items-center justify-center">
+      <div className="h-12 flex items-center justify-between px-4 shrink-0 sticky top-0 z-20 bg-topbar/60 backdrop-blur-xl border-b border-black/[0.06] dark:border-white/[0.06]">
+        {/* Left edge sheen */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent dark:from-white/[0.04] pointer-events-none" />
+        <div className="relative flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-lg bg-primary/15 flex items-center justify-center ring-1 ring-primary/20">
             <Leaf className="h-3.5 w-3.5 text-primary" />
           </div>
           <span className="font-semibold text-sm text-foreground tracking-tight">
             Compooss
           </span>
+        </div>
+        <div className="relative">
+          <ThemeSwitcher />
         </div>
       </div>
 
