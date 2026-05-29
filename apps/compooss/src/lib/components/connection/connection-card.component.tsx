@@ -3,14 +3,7 @@
 import type { SavedConnection } from "@compooss/types";
 import { Button, IconButton, cn } from "@compooss/ui";
 import { formatDistanceToNow } from "date-fns";
-import {
-  Clock,
-  Pencil,
-  Plug2,
-  Star,
-  StarOff,
-  Trash2,
-} from "lucide-react";
+import { Clock, Pencil, Plug2, Star, StarOff, Trash2 } from "lucide-react";
 
 type Props = {
   connection: SavedConnection;
@@ -33,60 +26,61 @@ export const ConnectionCard: React.FC<Props> = ({
 
   return (
     <div
-      className="group relative bg-card/60 border border-border/80 rounded-xl p-3.5 hover:bg-card hover:border-primary/20 transition-all duration-200 cursor-pointer"
+      className="group relative rounded-xl border border-border/70 bg-card/50 hover:bg-card hover:border-border hover:shadow-sm transition-all duration-150 cursor-pointer overflow-hidden"
       onClick={() => onConnect(connection)}
     >
-      <div className="flex items-center gap-3">
-        {/* Color indicator + Favorite */}
-        <div className="flex flex-col items-center gap-1.5">
-          <div
-            className="w-2.5 h-2.5 rounded-full shrink-0"
-            style={{
-              backgroundColor: connection.color || "hsl(var(--muted-foreground))",
-              boxShadow: connection.color ? `0 0 0 2px hsl(var(--card)), 0 0 0 3px ${connection.color}40` : undefined,
-            }}
-          />
-        </div>
+      {/* Color strip */}
+      {connection.color && (
+        <div
+          className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-xl"
+          style={{ backgroundColor: connection.color }}
+        />
+      )}
 
-        {/* Content */}
+      <div className={cn("flex items-center gap-3 px-3.5 py-3", connection.color && "pl-5")}>
+        {/* Color dot (when no strip, still show dot) */}
+        {!connection.color && (
+          <div className="w-2 h-2 rounded-full bg-border shrink-0" />
+        )}
+
+        {/* Info */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="text-[13px] font-medium text-foreground truncate">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <span className="text-[13px] font-medium text-foreground truncate leading-tight">
               {connection.name}
             </span>
             {connection.isFavorite && (
               <Star className="h-3 w-3 fill-warning text-warning shrink-0" />
             )}
             {connection.label && (
-              <span className="text-[10px] px-1.5 py-0.5 bg-primary/8 text-primary/80 rounded-md font-medium shrink-0">
+              <span className="text-[10px] px-1.5 py-px bg-primary/8 text-primary/70 rounded font-medium shrink-0 border border-primary/10">
                 {connection.label}
               </span>
             )}
           </div>
-          <div className="flex items-center gap-3 mt-1">
-            {connection.lastUsedAt && (
-              <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                <Clock className="h-2.5 w-2.5" />
-                {formatDistanceToNow(new Date(connection.lastUsedAt), { addSuffix: true })}
-              </span>
-            )}
-          </div>
+          {connection.lastUsedAt && (
+            <span className="text-[11px] text-muted-foreground/60 flex items-center gap-1">
+              <Clock className="h-2.5 w-2.5" />
+              {formatDistanceToNow(new Date(connection.lastUsedAt), { addSuffix: true })}
+            </span>
+          )}
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-1 shrink-0">
+        {/* Actions — visible on hover */}
+        <div className="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
           <IconButton
             icon={
               <FavIcon
-                className={cn("h-3.5 w-3.5", connection.isFavorite && "fill-warning")}
+                className={cn(
+                  "h-3.5 w-3.5",
+                  connection.isFavorite && "fill-warning text-warning",
+                )}
               />
             }
-            label={connection.isFavorite ? "Remove from favorites" : "Add to favorites"}
+            label={connection.isFavorite ? "Unfavorite" : "Favorite"}
             className={cn(
-              "rounded-lg transition-all",
-              connection.isFavorite
-                ? "text-warning hover:text-warning/70"
-                : "text-muted-foreground/50 hover:text-warning opacity-0 group-hover:opacity-100",
+              "rounded-lg",
+              !connection.isFavorite && "text-muted-foreground/50 hover:text-warning",
             )}
             onClick={(e) => {
               e.stopPropagation();
@@ -94,10 +88,9 @@ export const ConnectionCard: React.FC<Props> = ({
             }}
           />
           <IconButton
-            variant="default"
             icon={<Pencil className="h-3.5 w-3.5" />}
             label="Edit"
-            className="opacity-0 group-hover:opacity-100 rounded-lg"
+            className="rounded-lg text-muted-foreground/50 hover:text-foreground"
             onClick={(e) => {
               e.stopPropagation();
               onEdit(connection);
@@ -107,26 +100,27 @@ export const ConnectionCard: React.FC<Props> = ({
             variant="danger"
             icon={<Trash2 className="h-3.5 w-3.5" />}
             label="Delete"
-            className="opacity-0 group-hover:opacity-100 rounded-lg"
+            className="rounded-lg"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(connection.id);
             }}
           />
-          <Button
-            variant="soft"
-            size="sm"
-            icon={<Plug2 className="h-3 w-3" />}
-            loading={isConnecting}
-            className="ml-1 rounded-lg"
-            onClick={(e) => {
-              e.stopPropagation();
-              onConnect(connection);
-            }}
-          >
-            Connect
-          </Button>
         </div>
+
+        <Button
+          variant="soft"
+          size="sm"
+          icon={<Plug2 className="h-3 w-3" />}
+          loading={isConnecting}
+          className="rounded-lg shrink-0 ml-1"
+          onClick={(e) => {
+            e.stopPropagation();
+            onConnect(connection);
+          }}
+        >
+          Connect
+        </Button>
       </div>
     </div>
   );
