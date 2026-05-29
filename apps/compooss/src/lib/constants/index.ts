@@ -1,4 +1,5 @@
 export * from './endpoints.constants';
+export * from './theme.constants';
 export * from "./query-key.contants";
 export * from "./collection.constants";
 export * from "./connection.constants";
