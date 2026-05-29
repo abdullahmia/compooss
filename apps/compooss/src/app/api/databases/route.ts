@@ -1,8 +1,9 @@
 import { databaseRepository } from "@/lib/core-modules/database/database.repository";
+import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export const GET = withLogging(async () => {
   try {
     const databases = await databaseRepository.getAllDatabases();
     return NextResponse.json(createApiResponse(databases, "Databases fetched successfully", 200));
@@ -14,9 +15,9 @@ export async function GET() {
       { status: 503 },
     );
   }
-}
+}, "/api/databases");
 
-export async function POST(req: Request) {
+export const POST = withLogging(async (req) => {
   const { dbName, collectionName } = await req.json();
   try {
     const created = await databaseRepository.createDatabase({
@@ -32,4 +33,4 @@ export async function POST(req: Request) {
     }
     return NextResponse.json(createApiResponse(null, message, 500), { status: 500 });
   }
-}
+}, "/api/databases");

@@ -1,4 +1,5 @@
 import { validationRepository } from "@/lib/core-modules/validation/validation.repository";
+import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { extractErrorMessage } from "@/lib/utils/api-route.util";
 import { isProtectedDatabase } from "@compooss/types";
@@ -6,9 +7,9 @@ import { NextResponse } from "next/server";
 
 type ValidationParams = { params: Promise<{ dbName: string; colName: string }> };
 
-export async function GET(_req: Request, { params }: ValidationParams) {
+export const GET = withLogging(async (_req, ctx) => {
   try {
-    const { dbName, colName } = await params;
+    const { dbName, colName } = await (ctx as ValidationParams).params;
     const result = await validationRepository.getValidation(dbName, colName);
 
     return NextResponse.json(
@@ -21,11 +22,11 @@ export async function GET(_req: Request, { params }: ValidationParams) {
       { status: 500 },
     );
   }
-}
+}, "/api/databases/[dbName]/collections/[colName]/validation");
 
-export async function PUT(req: Request, { params }: ValidationParams) {
+export const PUT = withLogging(async (req, ctx) => {
   try {
-    const { dbName, colName } = await params;
+    const { dbName, colName } = await (ctx as ValidationParams).params;
 
     if (isProtectedDatabase(dbName)) {
       return NextResponse.json(
@@ -75,11 +76,11 @@ export async function PUT(req: Request, { params }: ValidationParams) {
       { status: 500 },
     );
   }
-}
+}, "/api/databases/[dbName]/collections/[colName]/validation");
 
-export async function POST(req: Request, { params }: ValidationParams) {
+export const POST = withLogging(async (req, ctx) => {
   try {
-    const { dbName, colName } = await params;
+    const { dbName, colName } = await (ctx as ValidationParams).params;
     const body = (await req.json().catch(() => ({}))) as { sampleSize?: number };
     const sampleSize = typeof body?.sampleSize === "number" ? body.sampleSize : undefined;
 
@@ -99,4 +100,4 @@ export async function POST(req: Request, { params }: ValidationParams) {
       { status: 500 },
     );
   }
-}
+}, "/api/databases/[dbName]/collections/[colName]/validation");

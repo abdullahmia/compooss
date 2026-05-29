@@ -1,17 +1,9 @@
 import type { MongoClientOptions } from "mongodb";
 import type { ConnectionStatus, ConnectionTestResult } from "@compooss/types";
+import { serverLogger, maskUri } from "@/lib/logger";
 import { MongoDriver } from "./mongodb.driver";
 
-function maskUri(uri: string): string {
-  try {
-    return uri.replace(
-      /^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@/,
-      "mongodb$1://$2:***@",
-    );
-  } catch {
-    return uri;
-  }
-}
+const log = serverLogger.child({ module: "connection" });
 
 function resolveDockerHost(uri: string): string | null {
   try {
@@ -54,6 +46,7 @@ class ConnectionManager {
       await driver.disconnect();
       const fallback = resolveDockerHost(uri);
       if (fallback) {
+        log.warn("direct connect failed, retrying with docker host", { maskedUri: maskUri(uri) });
         const fallbackDriver = new MongoDriver(fallback, options);
         const fallbackOk = await fallbackDriver.ping();
         if (!fallbackOk) {
@@ -77,6 +70,13 @@ class ConnectionManager {
     }
 
     const serverInfo = await this.activeDriver.getServerInfo();
+    log.info("connection established", {
+      maskedUri: maskUri(this.activeUri!),
+      ...(resolvedUri && { resolvedUri: maskUri(resolvedUri) }),
+      mongoVersion: serverInfo.version,
+      host: serverInfo.host,
+    });
+
     return {
       connected: true,
       maskedUri: maskUri(this.activeUri!),
@@ -87,6 +87,7 @@ class ConnectionManager {
 
   async disconnect(): Promise<void> {
     if (this.activeDriver) {
+      log.info("disconnecting", { maskedUri: this.activeUri ? maskUri(this.activeUri) : undefined });
       await this.activeDriver.disconnect();
       this.activeDriver = null;
       this.activeUri = null;
@@ -97,6 +98,7 @@ class ConnectionManager {
     uri: string,
     options?: MongoClientOptions,
   ): Promise<ConnectionTestResult> {
+    log.debug("testing connection", { maskedUri: maskUri(uri) });
     const driver = new MongoDriver(uri, options);
     try {
       const ok = await driver.ping();

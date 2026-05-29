@@ -1,14 +1,13 @@
 import { isProtectedDatabase } from "@compooss/types";
 import { collectionRepository } from "@/lib/core-modules/collection/collection.repository";
+import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-interface DbParamProps {
-  params: Promise<{ dbName?: string }>;
-}
+type DbParamProps = { params: Promise<{ dbName?: string }> };
 
-export async function GET(req: NextRequest, { params }: DbParamProps) {
-  const { dbName } = await params;
+export const GET = withLogging(async (_req, ctx) => {
+  const { dbName } = await (ctx as DbParamProps).params;
   if (!dbName) {
     return NextResponse.json(
       createApiResponse(null, "Missing dbName parameter", 400),
@@ -19,10 +18,10 @@ export async function GET(req: NextRequest, { params }: DbParamProps) {
   return NextResponse.json(
     createApiResponse(collections, "Collections fetched successfully", 200),
   );
-}
+}, "/api/databases/[dbName]/collections");
 
-export async function POST(req: NextRequest, { params }: DbParamProps) {
-  const { dbName } = await params;
+export const POST = withLogging(async (req, ctx) => {
+  const { dbName } = await (ctx as DbParamProps).params;
   if (!dbName) {
     return NextResponse.json(
       createApiResponse(null, "Missing dbName parameter", 400),
@@ -78,4 +77,4 @@ export async function POST(req: NextRequest, { params }: DbParamProps) {
       { status: isConflict ? 409 : 500 },
     );
   }
-}
+}, "/api/databases/[dbName]/collections");

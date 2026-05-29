@@ -4,6 +4,7 @@ import {
   ConnectionSchema,
   TConnectionSchema,
 } from "@/lib/schemas/connection.schema";
+import { clientLogger } from "@/lib/logger";
 import { Button, IconButton, cn, Input } from "@compooss/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatDistanceToNow } from "date-fns";
@@ -43,20 +44,22 @@ export const NewConnection: React.FC = () => {
     name: "isFavorite",
   });
 
+  const log = clientLogger.child({ module: "connection" });
+
   const onFormSubmit = async (data: TConnectionSchema) => {
     try {
-      console.log(data);
+      log.debug("form submitted", { connectionName: data.connectionName });
     } catch (error) {
-      console.error("Failed to create connection:", error);
+      log.error("failed to create connection", { err: String(error) });
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
-      console.log(id);
+      log.debug("deleting connection", { id });
       router.refresh();
     } catch (error) {
-      console.error("Failed to delete connection:", error);
+      log.error("failed to delete connection", { id, err: String(error) });
     }
   };
 

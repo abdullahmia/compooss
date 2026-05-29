@@ -1,15 +1,12 @@
 import { isProtectedDatabase } from "@compooss/types";
 import { documentRepository } from "@/lib/core-modules/document/document.repository";
+import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { protectedDbResponse } from "@/lib/utils/api-route.util";
 import { NextResponse, type NextRequest } from "next/server";
 
 type DocParams = { params: Promise<{ dbName: string; colName: string }> };
 
-/**
- * Converts JS-style object keys (unquoted) to valid JSON by quoting them.
- * e.g. { email: "x" } -> { "email": "x" }
- */
 function relaxToJson(str: string): string {
   return str.replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)(\s*:)/g, '$1"$2"$3');
 }
@@ -33,15 +30,10 @@ function parseJsonParam(value: string | null, fallback: Record<string, unknown>)
   }
 }
 
-/** Escape special regex characters so the string is matched literally as a substring. */
 function escapeRegex(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-/**
- * Converts string values in the filter to partial, case-insensitive matches using MongoDB $regex.
- * e.g. { email: "gmail" } -> { email: { $regex: "gmail", $options: "i" } }
- */
 function filterStringsToPartialMatch(obj: Record<string, unknown>): Record<string, unknown> {
   const result: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(obj)) {
@@ -56,9 +48,9 @@ function filterStringsToPartialMatch(obj: Record<string, unknown>): Record<strin
   return result;
 }
 
-export async function GET(req: NextRequest, { params }: DocParams) {
-  const { dbName, colName } = await params;
-  const searchParams = req.nextUrl.searchParams;
+export const GET = withLogging(async (req, ctx) => {
+  const { dbName, colName } = await (ctx as DocParams).params;
+  const searchParams = (req as NextRequest).nextUrl.searchParams;
 
   const filterRaw = searchParams.get("filter");
   const sortRaw = searchParams.get("sort");
@@ -82,11 +74,11 @@ export async function GET(req: NextRequest, { params }: DocParams) {
   });
 
   return NextResponse.json(createApiResponse(result, "Documents fetched successfully", 200));
-}
+}, "/api/databases/[dbName]/collections/[colName]/documents");
 
-export async function POST(req: Request, { params }: DocParams) {
+export const POST = withLogging(async (req, ctx) => {
   try {
-    const { dbName, colName } = await params;
+    const { dbName, colName } = await (ctx as DocParams).params;
     if (isProtectedDatabase(dbName)) return protectedDbResponse();
     const body = await req.json();
     const document = body?.document ?? body;
@@ -104,4 +96,4 @@ export async function POST(req: Request, { params }: DocParams) {
       { status: 400 },
     );
   }
-}
+}, "/api/databases/[dbName]/collections/[colName]/documents");

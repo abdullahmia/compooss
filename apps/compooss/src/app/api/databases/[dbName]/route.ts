@@ -1,12 +1,13 @@
 import { isProtectedDatabase } from "@compooss/types";
 import { databaseRepository } from "@/lib/core-modules/database/database.repository";
+import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
 
 type RouteParams = { params: Promise<{ dbName?: string }> };
 
-export async function GET(_req: Request, { params }: RouteParams) {
-  const { dbName } = await params;
+export const GET = withLogging(async (_req, ctx) => {
+  const { dbName } = await (ctx as RouteParams).params;
   if (!dbName) {
     return NextResponse.json(
       createApiResponse(null, "Missing database name.", 400),
@@ -30,10 +31,10 @@ export async function GET(_req: Request, { params }: RouteParams) {
     createApiResponse(database, "Database found.", 200),
     { status: 200 },
   );
-}
+}, "/api/databases/[dbName]");
 
-export async function DELETE(_req: Request, { params }: RouteParams) {
-  const { dbName } = await params;
+export const DELETE = withLogging(async (_req, ctx) => {
+  const { dbName } = await (ctx as RouteParams).params;
   if (!dbName) {
     return NextResponse.json(
       createApiResponse(null, "Missing database name.", 400),
@@ -64,10 +65,9 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
       );
     }
 
-    console.error("[DELETE /api/databases/[dbName]]", error);
     return NextResponse.json(
       createApiResponse(null, "Failed to delete database. Please try again.", 500),
       { status: 500 },
     );
   }
-}
+}, "/api/databases/[dbName]");

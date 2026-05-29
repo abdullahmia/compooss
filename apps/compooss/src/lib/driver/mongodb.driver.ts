@@ -1,5 +1,8 @@
 import { Admin, Db, MongoClient, MongoClientOptions } from "mongodb";
 import type { Database } from "@compooss/types";
+import { serverLogger } from "@/lib/logger";
+
+const log = serverLogger.child({ module: "driver" });
 
 export class MongoDriver {
   private clientPromise: Promise<MongoClient> | null = null;
@@ -33,6 +36,7 @@ export class MongoDriver {
       const client = await this.clientPromise;
       await client.close();
       this.clientPromise = null;
+      log.debug("driver disconnected");
     }
   }
 
@@ -41,7 +45,10 @@ export class MongoDriver {
       const client = await this.getClient();
       await client.db("admin").command({ ping: 1 });
       return true;
-    } catch {
+    } catch (err) {
+      log.warn("ping failed", {
+        err: err instanceof Error ? { name: err.name, message: err.message } : String(err),
+      });
       return false;
     }
   }
@@ -69,7 +76,10 @@ export class MongoDriver {
         version: info.version,
         host: hello.me ?? hello.primary,
       };
-    } catch {
+    } catch (err) {
+      log.warn("getServerInfo failed", {
+        err: err instanceof Error ? { name: err.name, message: err.message } : String(err),
+      });
       return {};
     }
   }
@@ -102,4 +112,3 @@ export class MongoDriver {
     return `${size.toFixed(1)} ${units[unitIndex]}`;
   }
 }
-

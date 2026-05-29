@@ -1,6 +1,7 @@
 "use client";
 
 import { JsonEditor } from "@/lib/components/collections/json-editor.component";
+import { clientLogger } from "@/lib/logger";
 import {
   Button,
   Modal,
@@ -49,7 +50,7 @@ export const DocumentFormModal: React.FC<Props> = ({
       setError(null);
     },
     onError: (err) => {
-      console.error(err);
+      clientLogger.error("add document failed", { err: String(err) });
     },
   });
 
@@ -60,7 +61,7 @@ export const DocumentFormModal: React.FC<Props> = ({
         setError(null);
       },
       onError: (err) => {
-        console.error(err);
+        clientLogger.error("update document failed", { err: String(err) });
       },
     });
 

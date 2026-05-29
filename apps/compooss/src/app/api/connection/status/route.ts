@@ -1,8 +1,9 @@
 import { connectionManager } from "@/lib/driver/connection-manager";
+import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export const GET = withLogging(async () => {
   try {
     const status = connectionManager.getStatus();
     return NextResponse.json(
@@ -16,4 +17,4 @@ export async function GET() {
       { status: 500 },
     );
   }
-}
+}, "/api/connection/status");

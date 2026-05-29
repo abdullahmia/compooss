@@ -1,5 +1,6 @@
 import { isProtectedDatabase } from "@compooss/types";
 import { indexRepository } from "@/lib/core-modules/index/index.repository";
+import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { protectedDbResponse } from "@/lib/utils/api-route.util";
 import { NextResponse } from "next/server";
@@ -8,9 +9,9 @@ type IndexNameParams = {
   params: Promise<{ dbName: string; colName: string; indexName: string }>;
 };
 
-export async function DELETE(_req: Request, { params }: IndexNameParams) {
+export const DELETE = withLogging(async (_req, ctx) => {
   try {
-    const { dbName, colName, indexName } = await params;
+    const { dbName, colName, indexName } = await (ctx as IndexNameParams).params;
     const decodedName = decodeURIComponent(indexName);
     if (isProtectedDatabase(dbName)) return protectedDbResponse();
     const result = await indexRepository.dropIndex({
@@ -29,11 +30,11 @@ export async function DELETE(_req: Request, { params }: IndexNameParams) {
       { status },
     );
   }
-}
+}, "/api/databases/[dbName]/collections/[colName]/indexes/[indexName]");
 
-export async function PATCH(req: Request, { params }: IndexNameParams) {
+export const PATCH = withLogging(async (req, ctx) => {
   try {
-    const { dbName, colName, indexName } = await params;
+    const { dbName, colName, indexName } = await (ctx as IndexNameParams).params;
     const decodedName = decodeURIComponent(indexName);
     if (isProtectedDatabase(dbName)) return protectedDbResponse();
     const body = await req.json();
@@ -57,4 +58,4 @@ export async function PATCH(req: Request, { params }: IndexNameParams) {
       { status: 500 },
     );
   }
-}
+}, "/api/databases/[dbName]/collections/[colName]/indexes/[indexName]");

@@ -1,5 +1,6 @@
 import { isProtectedDatabase } from "@compooss/types";
 import { indexRepository } from "@/lib/core-modules/index/index.repository";
+import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { protectedDbResponse } from "@/lib/utils/api-route.util";
 import { NextResponse } from "next/server";
@@ -11,9 +12,9 @@ export type IndexWithStats = IndexDefinition & {
   usage?: { ops: number; since: string };
 };
 
-export async function GET(_req: Request, { params }: IndexParams) {
+export const GET = withLogging(async (_req, ctx) => {
   try {
-    const { dbName, colName } = await params;
+    const { dbName, colName } = await (ctx as IndexParams).params;
     const [indexes, stats] = await Promise.all([
       indexRepository.getIndexes(dbName, colName),
       indexRepository.getIndexStats(dbName, colName),
@@ -34,11 +35,11 @@ export async function GET(_req: Request, { params }: IndexParams) {
       { status: 500 },
     );
   }
-}
+}, "/api/databases/[dbName]/collections/[colName]/indexes");
 
-export async function POST(req: Request, { params }: IndexParams) {
+export const POST = withLogging(async (req, ctx) => {
   try {
-    const { dbName, colName } = await params;
+    const { dbName, colName } = await (ctx as IndexParams).params;
     if (isProtectedDatabase(dbName)) return protectedDbResponse();
     const body = await req.json();
     const {
@@ -83,4 +84,4 @@ export async function POST(req: Request, { params }: IndexParams) {
       { status: 500 },
     );
   }
-}
+}, "/api/databases/[dbName]/collections/[colName]/indexes");
