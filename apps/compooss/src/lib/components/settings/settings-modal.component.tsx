@@ -10,20 +10,16 @@ type Props = {
   onClose: () => void;
 };
 
-type SettingsTab = "theme";
+type SettingsTab = "appearance";
 
 export const SettingsModal: React.FC<Props> = ({ open, onClose }) => {
-  const [activeTab, setActiveTab] = useState<SettingsTab>("theme");
+  const [activeTab, setActiveTab] = useState<SettingsTab>("appearance");
 
   if (!open) return null;
 
   const tabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
-    { id: "theme", label: "Theme", icon: <Palette className="h-3.5 w-3.5" /> },
+    { id: "appearance", label: "Appearance", icon: <Palette className="h-3.5 w-3.5" /> },
   ];
-
-  const handleTabChange = (id: string) => {
-    setActiveTab(id as SettingsTab);
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -31,7 +27,7 @@ export const SettingsModal: React.FC<Props> = ({ open, onClose }) => {
         className="absolute inset-0 bg-background/10 backdrop-blur-xs"
         onClick={onClose}
       />
-      <div className="relative bg-card border border-border rounded-lg shadow-xl w-full max-w-lg mx-4">
+      <div className="relative bg-card border border-border rounded-lg shadow-xl w-full max-w-3xl mx-4">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex items-center gap-2">
             <Settings className="h-4 w-4 text-primary" />
@@ -51,14 +47,13 @@ export const SettingsModal: React.FC<Props> = ({ open, onClose }) => {
             variant="pill"
             items={tabs}
             activeTab={activeTab}
-            onTabChange={handleTabChange}
+            onTabChange={(id) => setActiveTab(id as SettingsTab)}
           />
 
           <div className="flex-1 p-5 space-y-5 overflow-y-auto">
-            {activeTab === "theme" && <AppearanceSettings />}
+            {activeTab === "appearance" && <AppearanceSettings />}
           </div>
         </div>
-
       </div>
     </div>
   );

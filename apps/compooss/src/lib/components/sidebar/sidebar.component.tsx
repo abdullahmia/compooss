@@ -1,5 +1,7 @@
 "use client";
 
+import { CreateDatabaseModal } from "@/lib/components/databases/create-database-modal.component";
+import { SidebarItem } from "@/lib/components/sidebar/sidebar-item.component";
 import { useConnection } from "@/lib/providers/connection-provider";
 import { useGetDatabases } from "@/lib/services/database/database.service";
 import type { Database } from "@compooss/types";
@@ -7,8 +9,6 @@ import { Button, DatabaseSidebarSkeleton, IconButton, Input } from "@compooss/ui
 import { AlertTriangle, Plus, RefreshCw, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import { CreateDatabaseModal } from "@/lib/components/databases/create-database-modal.component";
-import { SidebarItem } from "@/lib/components/sidebar/sidebar-item.component";
 
 /** Parses pathname to get the active database name (e.g. /databases/foo/... -> foo). */
 function getActiveDbNameFromPath(pathname: string): string | null {
@@ -140,7 +140,7 @@ export const Sidebar: React.FC = () => {
                 ) : (
                   <span className="text-primary font-medium">●</span>
                 )}
-                {`Connected — ${filtered?.length ?? 0} databases`}
+                {`Connected ${filtered?.length ?? 0} databases`}
               </>
             ) : (
               <>
