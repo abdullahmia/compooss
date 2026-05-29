@@ -1,5 +1,4 @@
 import { validationRepository } from "@/lib/core-modules/validation/validation.repository";
-import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { extractErrorMessage } from "@/lib/utils/api-route.util";
 import { isProtectedDatabase } from "@compooss/types";
@@ -7,9 +6,9 @@ import { NextResponse } from "next/server";
 
 type ValidationParams = { params: Promise<{ dbName: string; colName: string }> };
 
-export const GET = withLogging(async (_req, ctx) => {
+export async function GET(_req: Request, { params }: ValidationParams) {
   try {
-    const { dbName, colName } = await (ctx as ValidationParams).params;
+    const { dbName, colName } = await params;
     const result = await validationRepository.getValidation(dbName, colName);
 
     return NextResponse.json(
@@ -22,11 +21,11 @@ export const GET = withLogging(async (_req, ctx) => {
       { status: 500 },
     );
   }
-}, "/api/databases/[dbName]/collections/[colName]/validation");
+}
 
-export const PUT = withLogging(async (req, ctx) => {
+export async function PUT(req: Request, { params }: ValidationParams) {
   try {
-    const { dbName, colName } = await (ctx as ValidationParams).params;
+    const { dbName, colName } = await params;
 
     if (isProtectedDatabase(dbName)) {
       return NextResponse.json(
@@ -76,11 +75,11 @@ export const PUT = withLogging(async (req, ctx) => {
       { status: 500 },
     );
   }
-}, "/api/databases/[dbName]/collections/[colName]/validation");
+}
 
-export const POST = withLogging(async (req, ctx) => {
+export async function POST(req: Request, { params }: ValidationParams) {
   try {
-    const { dbName, colName } = await (ctx as ValidationParams).params;
+    const { dbName, colName } = await params;
     const body = (await req.json().catch(() => ({}))) as { sampleSize?: number };
     const sampleSize = typeof body?.sampleSize === "number" ? body.sampleSize : undefined;
 
@@ -100,4 +99,4 @@ export const POST = withLogging(async (req, ctx) => {
       { status: 500 },
     );
   }
-}, "/api/databases/[dbName]/collections/[colName]/validation");
+}

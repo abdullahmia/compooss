@@ -1,9 +1,8 @@
 import { connectionManager } from "@/lib/driver/connection-manager";
-import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
 
-export const POST = withLogging(async () => {
+export async function POST() {
   try {
     await connectionManager.disconnect();
     return NextResponse.json(
@@ -17,4 +16,4 @@ export const POST = withLogging(async () => {
       { status: 500 },
     );
   }
-}, "/api/connection/disconnect");
+}

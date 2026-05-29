@@ -1,19 +1,26 @@
 import { isProtectedDatabase, type JsonExportMode } from "@compooss/types";
 import { exportRepository, documentsToCsv, documentsToJson } from "@/lib/core-modules/export/export.repository";
-import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { extractErrorMessage, protectedDbResponse } from "@/lib/utils/api-route.util";
 import { NextResponse, type NextRequest } from "next/server";
 
 type Params = { params: Promise<{ dbName: string; colName: string }> };
 
-export const GET = withLogging(async (req, ctx) => {
+/**
+ * GET /api/databases/[dbName]/collections/[colName]/export
+ *
+ * Query parameters:
+ *   format  - "json" | "csv"  (default: "json")
+ *   limit   - max documents   (default: 0 = server hard-cap of 100 000)
+ *   filter  - JSON filter     (default: "{}")
+ */
+export async function GET(req: NextRequest, { params }: Params) {
   try {
-    const { dbName, colName } = await (ctx as Params).params;
+    const { dbName, colName } = await params;
 
     if (isProtectedDatabase(dbName)) return protectedDbResponse();
 
-    const sp = (req as NextRequest).nextUrl.searchParams;
+    const sp = req.nextUrl.searchParams;
     const format = sp.get("format") === "csv" ? "csv" : "json";
     const limit = Math.max(0, Number(sp.get("limit") ?? 0));
     const jsonModeRaw = sp.get("jsonMode");
@@ -45,6 +52,7 @@ export const GET = withLogging(async (req, ctx) => {
       });
     }
 
+    // JSON — serialise with Extended JSON to preserve BSON types
     const json = documentsToJson(docs, jsonMode);
     return new Response(json, {
       status: 200,
@@ -59,4 +67,4 @@ export const GET = withLogging(async (req, ctx) => {
       { status: 500 },
     );
   }
-}, "/api/databases/[dbName]/collections/[colName]/export");
+}

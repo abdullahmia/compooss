@@ -1,13 +1,14 @@
 import { isProtectedDatabase } from "@compooss/types";
 import { collectionRepository } from "@/lib/core-modules/collection/collection.repository";
-import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
-type DbParamProps = { params: Promise<{ dbName?: string }> };
+interface DbParamProps {
+  params: Promise<{ dbName?: string }>;
+}
 
-export const GET = withLogging(async (_req, ctx) => {
-  const { dbName } = await (ctx as DbParamProps).params;
+export async function GET(req: NextRequest, { params }: DbParamProps) {
+  const { dbName } = await params;
   if (!dbName) {
     return NextResponse.json(
       createApiResponse(null, "Missing dbName parameter", 400),
@@ -18,10 +19,10 @@ export const GET = withLogging(async (_req, ctx) => {
   return NextResponse.json(
     createApiResponse(collections, "Collections fetched successfully", 200),
   );
-}, "/api/databases/[dbName]/collections");
+}
 
-export const POST = withLogging(async (req, ctx) => {
-  const { dbName } = await (ctx as DbParamProps).params;
+export async function POST(req: NextRequest, { params }: DbParamProps) {
+  const { dbName } = await params;
   if (!dbName) {
     return NextResponse.json(
       createApiResponse(null, "Missing dbName parameter", 400),
@@ -77,4 +78,4 @@ export const POST = withLogging(async (req, ctx) => {
       { status: isConflict ? 409 : 500 },
     );
   }
-}, "/api/databases/[dbName]/collections");
+}
