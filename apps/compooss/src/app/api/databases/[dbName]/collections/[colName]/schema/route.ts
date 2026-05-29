@@ -1,13 +1,12 @@
 import { schemaRepository } from "@/lib/core-modules/schema/schema.repository";
-import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
 
 type SchemaParams = { params: Promise<{ dbName: string; colName: string }> };
 
-export const POST = withLogging(async (req, ctx) => {
+export async function POST(req: Request, { params }: SchemaParams) {
   try {
-    const { dbName, colName } = await (ctx as SchemaParams).params;
+    const { dbName, colName } = await params;
     const body = (await req.json().catch(() => ({}))) as { sampleSize?: number };
     const sampleSize = typeof body?.sampleSize === "number" ? body.sampleSize : undefined;
 
@@ -27,4 +26,4 @@ export const POST = withLogging(async (req, ctx) => {
       { status: 500 },
     );
   }
-}, "/api/databases/[dbName]/collections/[colName]/schema");
+}

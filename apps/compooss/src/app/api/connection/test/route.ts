@@ -1,19 +1,18 @@
 import { connectionManager } from "@/lib/driver/connection-manager";
-import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { NextResponse } from "next/server";
 
-export const POST = withLogging(async (req) => {
-  const { uri, options } = await req.json();
-
-  if (!uri || typeof uri !== "string") {
-    return NextResponse.json(
-      createApiResponse(null, "Connection URI is required", 400),
-      { status: 400 },
-    );
-  }
-
+export async function POST(req: Request) {
   try {
+    const { uri, options } = await req.json();
+
+    if (!uri || typeof uri !== "string") {
+      return NextResponse.json(
+        createApiResponse(null, "Connection URI is required", 400),
+        { status: 400 },
+      );
+    }
+
     const result = await connectionManager.testConnection(uri, options);
     return NextResponse.json(
       createApiResponse(result, result.ok ? "Connection test passed" : result.message, 200),
@@ -26,4 +25,4 @@ export const POST = withLogging(async (req) => {
       { status: 500 },
     );
   }
-}, "/api/connection/test");
+}

@@ -1,5 +1,4 @@
 import { aggregationRepository } from "@/lib/core-modules/aggregation/aggregation.repository";
-import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { extractErrorMessage } from "@/lib/utils/api-route.util";
 import { isProtectedDatabase } from "@compooss/types";
@@ -9,9 +8,9 @@ type AggregateParams = {
   params: Promise<{ dbName: string; colName: string }>;
 };
 
-export const POST = withLogging(async (req, ctx) => {
+export async function POST(req: Request, { params }: AggregateParams) {
   try {
-    const { dbName, colName } = await (ctx as AggregateParams).params;
+    const { dbName, colName } = await params;
     const body = (await req.json()) as {
       pipeline?: Record<string, unknown>[];
       action?: "run" | "createView";
@@ -100,4 +99,4 @@ export const POST = withLogging(async (req, ctx) => {
       { status: 500 },
     );
   }
-}, "/api/databases/[dbName]/collections/[colName]/aggregate");
+}

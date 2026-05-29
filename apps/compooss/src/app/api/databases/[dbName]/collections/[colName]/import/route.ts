@@ -3,17 +3,24 @@ import {
   exportRepository,
   csvToDocuments,
 } from "@/lib/core-modules/export/export.repository";
-import { withLogging } from "@/lib/logger";
 import { createApiResponse } from "@/lib/utils/api-response.util";
 import { extractErrorMessage, protectedDbResponse } from "@/lib/utils/api-route.util";
 import { BSON } from "mongodb";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 type Params = { params: Promise<{ dbName: string; colName: string }> };
 
-export const POST = withLogging(async (req, ctx) => {
+/**
+ * POST /api/databases/[dbName]/collections/[colName]/import
+ *
+ * Body: multipart/form-data
+ *   file - .json or .csv file
+ *
+ * Returns: ImportResult { inserted, failed, errors }
+ */
+export async function POST(req: NextRequest, { params }: Params) {
   try {
-    const { dbName, colName } = await (ctx as Params).params;
+    const { dbName, colName } = await params;
 
     if (isProtectedDatabase(dbName)) return protectedDbResponse();
 
@@ -86,4 +93,4 @@ export const POST = withLogging(async (req, ctx) => {
       { status: 500 },
     );
   }
-}, "/api/databases/[dbName]/collections/[colName]/import");
+}

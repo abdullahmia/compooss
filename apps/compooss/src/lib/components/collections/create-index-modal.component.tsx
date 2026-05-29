@@ -8,7 +8,6 @@ import {
   ModalHeader,
 } from "@compooss/ui";
 import { Button, Input, Toggle } from "@compooss/ui";
-import { clientLogger } from "@/lib/logger";
 import {
   createIndexSchema,
   type TCreateIndexFormValues,
@@ -68,7 +67,7 @@ export const CreateIndexModal: React.FC<Props> = ({
         });
         onClose();
       },
-      onError: (err) => clientLogger.error("create index failed", { err: String(err) }),
+      onError: (err) => console.error(err),
     },
   );
 
