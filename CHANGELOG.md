@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.17.0](https://github.com/abdullahmia/compooss/compare/v1.16.0...v1.17.0) (2026-05-29)
+
+
+### Features
+
+* add multi-theme system with 8 skins and settings entry point ([3f38aff](https://github.com/abdullahmia/compooss/commit/3f38aff69b8e67d9c8288fa104c298818c3d92a5))
+* add Pookie and Liquid Glass skins to the theme system ([076410c](https://github.com/abdullahmia/compooss/commit/076410c01a3505571d64b00d662c9a67e5be234a))
+* add structured logging with pino across server and client ([27a007f](https://github.com/abdullahmia/compooss/commit/27a007f11170fb97a28f12bef2161a18eff766ac))
+* added multiple theme support ([f83cf98](https://github.com/abdullahmia/compooss/commit/f83cf98985c0114e3cf7108b28273640760f5880))
+* redesign connection page UI with glass effects and modern components ([9b19724](https://github.com/abdullahmia/compooss/commit/9b1972461c3ad6324d1ae15e26a6356b97501b0d))
+* redesign the landing page why compooss section ([abf7d4b](https://github.com/abdullahmia/compooss/commit/abf7d4b67be632038321cc1e2c04e2c3f0334a30))
+
+
+### Refactors
+
+* split landing page into section components and fix logger imports ([e1fbb67](https://github.com/abdullahmia/compooss/commit/e1fbb67de36977da1821deee3c17d9e847a37c5e))
+
 ## [1.16.0](https://github.com/abdullahmia/compooss/compare/v1.15.0...v1.16.0) (2026-05-19)
 
 
