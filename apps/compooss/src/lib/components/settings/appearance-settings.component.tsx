@@ -1,9 +1,9 @@
 "use client";
 
+import { THEME_OPTIONS } from "@/lib/constants";
+import { useThemeSkin } from "@/lib/hooks/use-theme-skin.hook";
 import { Monitor, Moon, Palette, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useThemeSkin } from "@/lib/hooks/use-theme-skin.hook";
-import { THEME_OPTIONS } from "@/lib/constants";
 
 const MODES = [
   { label: "Light", value: "light", icon: <Sun className="h-3.5 w-3.5" /> },
@@ -56,7 +56,7 @@ export const AppearanceSettings: React.FC = () => {
         </h3>
         {!mounted ? (
           <div className="grid grid-cols-2 gap-2">
-            {Array.from({ length: 8 }).map((_, i) => (
+            {Array.from({ length: THEME_OPTIONS.length }).map((_, i) => (
               <div key={i} className="h-20 rounded-sm border border-border bg-muted animate-pulse" />
             ))}
           </div>
@@ -108,7 +108,7 @@ export const AppearanceSettings: React.FC = () => {
           </div>
         )}
         <p className="text-[10px] text-muted-foreground mt-3">
-          Theme and mode are independent — pick any combination.
+          Theme and mode are independent pick any combination.
         </p>
       </div>
     </div>
