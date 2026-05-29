@@ -27,7 +27,7 @@ export const SettingsModal: React.FC<Props> = ({ open, onClose }) => {
         className="absolute inset-0 bg-background/10 backdrop-blur-xs"
         onClick={onClose}
       />
-      <div className="relative bg-card border border-border rounded-lg shadow-xl w-full max-w-lg mx-4">
+      <div className="relative bg-card border border-border rounded-lg shadow-xl w-full max-w-3xl mx-4">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex items-center gap-2">
             <Settings className="h-4 w-4 text-primary" />

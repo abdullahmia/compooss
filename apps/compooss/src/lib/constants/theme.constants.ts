@@ -6,7 +6,6 @@ export type ThemeSkin =
   | "midnight"
   | "dracula"
   | "solarized"
-  | "nord"
   | "mono"
   | "rose"
   | "pookie"
@@ -55,13 +54,6 @@ export const THEME_OPTIONS: ThemeOption[] = [
     description: "The classic low-contrast tan & teal palette by Ethan Schoonover.",
     pattern: { corners: "sharp", font: "Sans" },
     swatch: { bg: "hsl(192 100% 11%)", primary: "hsl(205 69% 49%)", accent: "hsl(175 59% 40%)" },
-  },
-  {
-    id: "nord",
-    label: "Nord",
-    description: "Arctic, muted blue-grey frost. Calm and rounded.",
-    pattern: { corners: "rounded", font: "Sans" },
-    swatch: { bg: "hsl(220 16% 22%)", primary: "hsl(213 32% 52%)", accent: "hsl(179 25% 65%)" },
   },
   {
     id: "mono",
