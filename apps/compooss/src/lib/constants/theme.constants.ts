@@ -8,7 +8,9 @@ export type ThemeSkin =
   | "solarized"
   | "nord"
   | "mono"
-  | "rose";
+  | "rose"
+  | "pookie"
+  | "glass";
 
 export type ThemeOption = {
   id: ThemeSkin;
@@ -74,5 +76,19 @@ export const THEME_OPTIONS: ThemeOption[] = [
     description: "Warm rose & coral sunset with extra-rounded, pill-like corners.",
     pattern: { corners: "pill", font: "Sans" },
     swatch: { bg: "hsl(340 20% 10%)", primary: "hsl(340 82% 66%)", accent: "hsl(20 90% 65%)" },
+  },
+  {
+    id: "pookie",
+    label: "Pookie 🎀",
+    description: "Bubblegum pink & lavender — soft pastel, extra-pill corners. Pure pookie vibes.",
+    pattern: { corners: "pill", font: "Sans" },
+    swatch: { bg: "hsl(310 70% 97%)", primary: "hsl(305 88% 65%)", accent: "hsl(16 100% 76%)" },
+  },
+  {
+    id: "glass",
+    label: "Liquid Glass",
+    description: "macOS 26 frosted glass — translucent layers, live blur, vivid wallpaper.",
+    pattern: { corners: "rounded", font: "Sans" },
+    swatch: { bg: "hsl(220 45% 96%)", primary: "hsl(211 100% 50%)", accent: "hsl(280 90% 72%)" },
   },
 ] as const;
