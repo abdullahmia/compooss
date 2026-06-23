@@ -6,7 +6,7 @@ import { apiClient } from "@/lib/config/api.config";
 import { ENDPOINTS } from "@/lib/constants";
 import type { SavedConnection } from "@compooss/types";
 import { ThemeSwitcher } from "@/lib/components/common/theme-switcher.component";
-import { Leaf } from "lucide-react";
+import { Database, Leaf } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -215,18 +215,21 @@ export const ConnectionPage: React.FC = () => {
 
         {/* Right sidebar: Saved connections */}
         {hasConnections && (
-          <div className="w-[380px] border-l border-border bg-sidebar flex flex-col shrink-0">
-            <div className="px-4 pt-4 pb-3 border-b border-border">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="w-[360px] border-l border-border/50 bg-sidebar flex flex-col shrink-0">
+            <div className="px-4 py-3 border-b border-border/50 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center ring-1 ring-inset ring-primary/10">
+                  <Database className="h-3.5 w-3.5 text-primary" />
+                </div>
+                <h2 className="text-sm font-semibold text-foreground tracking-tight">
                   Saved Connections
                 </h2>
-                <span className="text-[11px] text-muted-foreground/60 tabular-nums">
-                  {connections.length}
-                </span>
               </div>
+              <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 text-[10px] font-semibold tabular-nums text-muted-foreground bg-secondary rounded-full">
+                {connections.length}
+              </span>
             </div>
-            <div className="flex-1 overflow-hidden p-3">
+            <div className="flex-1 overflow-hidden">
               <ConnectionList
                 connections={connections}
                 onConnect={handleConnect}

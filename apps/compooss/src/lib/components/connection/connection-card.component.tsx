@@ -26,10 +26,18 @@ export const ConnectionCard: React.FC<Props> = ({
 
   return (
     <div
-      className="group relative rounded-xl border border-border/70 bg-card/50 hover:bg-card hover:border-border hover:shadow-sm transition-all duration-150 cursor-pointer overflow-hidden"
+      className="group relative rounded-xl border border-border/50 hover:border-border/80 hover:shadow-sm transition-all duration-150 cursor-pointer overflow-hidden bg-card/40 hover:bg-card/70"
       onClick={() => onConnect(connection)}
     >
-      {/* Color strip */}
+      {/* Subtle color tint overlay */}
+      {connection.color && (
+        <div
+          className="absolute inset-0 opacity-[0.05] pointer-events-none"
+          style={{ backgroundColor: connection.color }}
+        />
+      )}
+
+      {/* Color accent strip */}
       {connection.color && (
         <div
           className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-xl"
@@ -37,10 +45,9 @@ export const ConnectionCard: React.FC<Props> = ({
         />
       )}
 
-      <div className={cn("flex items-center gap-3 px-3.5 py-3", connection.color && "pl-5")}>
-        {/* Color dot (when no strip, still show dot) */}
+      <div className={cn("flex items-center gap-2.5 px-3.5 py-2.5", connection.color && "pl-5")}>
         {!connection.color && (
-          <div className="w-2 h-2 rounded-full bg-border shrink-0" />
+          <div className="w-1.5 h-1.5 rounded-full bg-border/60 shrink-0" />
         )}
 
         {/* Info */}
@@ -50,24 +57,24 @@ export const ConnectionCard: React.FC<Props> = ({
               {connection.name}
             </span>
             {connection.isFavorite && (
-              <Star className="h-3 w-3 fill-warning text-warning shrink-0" />
+              <Star className="h-2.5 w-2.5 fill-warning text-warning shrink-0" />
             )}
             {connection.label && (
-              <span className="text-[10px] px-1.5 py-px bg-primary/8 text-primary/70 rounded font-medium shrink-0 border border-primary/10">
+              <span className="text-[10px] px-1.5 py-px bg-primary/8 text-primary/70 rounded-full font-medium shrink-0 border border-primary/10">
                 {connection.label}
               </span>
             )}
           </div>
           {connection.lastUsedAt && (
-            <span className="text-[11px] text-muted-foreground/60 flex items-center gap-1">
+            <span className="text-[10px] text-muted-foreground/40 flex items-center gap-1">
               <Clock className="h-2.5 w-2.5" />
               {formatDistanceToNow(new Date(connection.lastUsedAt), { addSuffix: true })}
             </span>
           )}
         </div>
 
-        {/* Actions — visible on hover */}
-        <div className="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* Hover actions */}
+        <div className="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
           <IconButton
             icon={
               <FavIcon
@@ -79,8 +86,8 @@ export const ConnectionCard: React.FC<Props> = ({
             }
             label={connection.isFavorite ? "Unfavorite" : "Favorite"}
             className={cn(
-              "rounded-lg",
-              !connection.isFavorite && "text-muted-foreground/50 hover:text-warning",
+              "rounded-md",
+              !connection.isFavorite && "text-muted-foreground/40 hover:text-warning",
             )}
             onClick={(e) => {
               e.stopPropagation();
@@ -90,7 +97,7 @@ export const ConnectionCard: React.FC<Props> = ({
           <IconButton
             icon={<Pencil className="h-3.5 w-3.5" />}
             label="Edit"
-            className="rounded-lg text-muted-foreground/50 hover:text-foreground"
+            className="rounded-md text-muted-foreground/40 hover:text-foreground"
             onClick={(e) => {
               e.stopPropagation();
               onEdit(connection);
@@ -100,7 +107,7 @@ export const ConnectionCard: React.FC<Props> = ({
             variant="danger"
             icon={<Trash2 className="h-3.5 w-3.5" />}
             label="Delete"
-            className="rounded-lg"
+            className="rounded-md"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(connection.id);
@@ -113,7 +120,7 @@ export const ConnectionCard: React.FC<Props> = ({
           size="sm"
           icon={<Plug2 className="h-3 w-3" />}
           loading={isConnecting}
-          className="rounded-lg shrink-0 ml-1"
+          className="rounded-lg shrink-0 text-xs h-7 px-2.5"
           onClick={(e) => {
             e.stopPropagation();
             onConnect(connection);
