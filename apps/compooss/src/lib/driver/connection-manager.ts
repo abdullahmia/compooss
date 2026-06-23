@@ -1,30 +1,12 @@
 import type { MongoClientOptions } from "mongodb";
 import type { ConnectionStatus, ConnectionTestResult } from "@compooss/types";
+import {
+  classifyMongoError,
+  isAuthError,
+  maskUri,
+  resolveDockerHost,
+} from "@/lib/utils/connection.util";
 import { MongoDriver } from "./mongodb.driver";
-
-function maskUri(uri: string): string {
-  try {
-    return uri.replace(
-      /^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@/,
-      "mongodb$1://$2:***@",
-    );
-  } catch {
-    return uri;
-  }
-}
-
-function resolveDockerHost(uri: string): string | null {
-  try {
-    const url = new URL(uri);
-    if (url.hostname === "localhost" || url.hostname === "127.0.0.1") {
-      url.hostname = "mongo";
-      return url.toString();
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
 
 class ConnectionManager {
   private static _instance: ConnectionManager | null = null;
@@ -47,36 +29,38 @@ class ConnectionManager {
     }
 
     const driver = new MongoDriver(uri, options);
-    let ok = await driver.ping();
     let resolvedUri: string | undefined;
 
-    if (!ok) {
-      await driver.disconnect();
-      const fallback = resolveDockerHost(uri);
-      if (fallback) {
-        const fallbackDriver = new MongoDriver(fallback, options);
-        const fallbackOk = await fallbackDriver.ping();
-        if (!fallbackOk) {
-          await fallbackDriver.disconnect();
-          throw new Error(
-            "Could not connect to MongoDB. Check the connection string and ensure the server is running.",
-          );
-        }
-        this.activeDriver = fallbackDriver;
-        this.activeUri = fallback;
-        resolvedUri = fallback;
-        ok = true;
-      } else {
-        throw new Error(
-          "Could not connect to MongoDB. Check the connection string and ensure the server is running.",
-        );
-      }
-    } else {
+    try {
+      await driver.ping();
       this.activeDriver = driver;
       this.activeUri = uri;
+    } catch (err) {
+      await driver.disconnect();
+
+      if (isAuthError(err)) {
+        throw new Error(classifyMongoError(err));
+      }
+
+      const fallback = resolveDockerHost(uri);
+      if (!fallback) {
+        throw new Error(classifyMongoError(err));
+      }
+
+      const fallbackDriver = new MongoDriver(fallback, options);
+      try {
+        await fallbackDriver.ping();
+      } catch (fallbackErr) {
+        await fallbackDriver.disconnect();
+        throw new Error(classifyMongoError(fallbackErr));
+      }
+
+      this.activeDriver = fallbackDriver;
+      this.activeUri = fallback;
+      resolvedUri = fallback;
     }
 
-    const serverInfo = await this.activeDriver.getServerInfo();
+    const serverInfo = await this.activeDriver!.getServerInfo();
     return {
       connected: true,
       maskedUri: maskUri(this.activeUri!),
@@ -99,32 +83,30 @@ class ConnectionManager {
   ): Promise<ConnectionTestResult> {
     const driver = new MongoDriver(uri, options);
     try {
-      const ok = await driver.ping();
-      if (ok) {
-        const serverInfo = await driver.getServerInfo();
-        return { ok: true, message: "Connection successful", serverInfo };
+      await driver.ping();
+      const serverInfo = await driver.getServerInfo();
+      return { ok: true, message: "Connection successful", serverInfo };
+    } catch (err) {
+      if (isAuthError(err)) {
+        return { ok: false, message: classifyMongoError(err) };
       }
 
       const fallback = resolveDockerHost(uri);
       if (!fallback) {
-        return { ok: false, message: "Ping failed. Check your connection string." };
+        return { ok: false, message: classifyMongoError(err) };
       }
 
       await driver.disconnect();
       const fallbackDriver = new MongoDriver(fallback, options);
       try {
-        const fallbackOk = await fallbackDriver.ping();
-        if (!fallbackOk) {
-          return { ok: false, message: "Ping failed. Check your connection string." };
-        }
+        await fallbackDriver.ping();
         const serverInfo = await fallbackDriver.getServerInfo();
         return { ok: true, message: "Connection successful", resolvedUri: fallback, serverInfo };
+      } catch (fallbackErr) {
+        return { ok: false, message: classifyMongoError(fallbackErr) };
       } finally {
         await fallbackDriver.disconnect();
       }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Connection test failed";
-      return { ok: false, message };
     } finally {
       await driver.disconnect();
     }

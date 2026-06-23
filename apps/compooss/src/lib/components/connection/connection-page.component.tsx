@@ -16,11 +16,12 @@ import { ConnectionList } from "./connection-list.component";
 
 export const ConnectionPage: React.FC = () => {
   const router = useRouter();
-  const { connect, testConnection, isConnecting } = useConnection();
+  const { connect, disconnect, testConnection, isConnecting } = useConnection();
   const [connections, setConnections] = useState<SavedConnection[]>([]);
   const [editingConnection, setEditingConnection] =
     useState<SavedConnection | null>(null);
   const [connectingId, setConnectingId] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const loadConnections = useCallback(async () => {
     const all = await connectionDB.getAll();
@@ -32,21 +33,7 @@ export const ConnectionPage: React.FC = () => {
   }, [loadConnections]);
 
   const handleFormSubmit = async (data: TConnectionForm) => {
-    let effectiveUri = data.connectionString;
-
-    try {
-      const result = await testConnection(data.connectionString);
-      if (!result.ok) {
-        toast.error(result.message || "Connection test failed");
-        return;
-      }
-      if (result.resolvedUri) {
-        effectiveUri = result.resolvedUri;
-      }
-    } catch {
-      toast.error("Connection test failed");
-      return;
-    }
+    setSubmitError(null);
 
     const id = editingConnection?.id ?? crypto.randomUUID();
     const now = new Date().toISOString();
@@ -54,7 +41,7 @@ export const ConnectionPage: React.FC = () => {
     const saved: SavedConnection = {
       id,
       name: data.connectionName,
-      uri: effectiveUri,
+      uri: data.connectionString,
       color: data.color,
       label: data.label,
       isFavorite: data.isFavorite,
@@ -67,19 +54,25 @@ export const ConnectionPage: React.FC = () => {
       lastUsedAt: now,
     };
 
+    let status;
     try {
-      const status = await connect(saved);
-      if (status?.resolvedUri) {
-        toast.info("Docker detected — saved connection using `mongo` instead of `localhost`");
-      }
+      status = await connect(saved);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Connection failed");
+      const apiErr = err as { payload?: { message?: string } };
+      const msg = apiErr?.payload?.message ?? (err instanceof Error ? err.message : "Connection failed");
+      setSubmitError(msg);
       return;
+    }
+
+    if (status?.resolvedUri) {
+      saved.uri = status.resolvedUri;
+      toast.info("Docker detected — saved connection using `mongo` instead of `localhost`");
     }
 
     try {
       await apiClient.get(ENDPOINTS.databases.root);
     } catch {
+      await disconnect();
       toast.error("Unable to reach the database. Please check your connection string.");
       return;
     }
@@ -100,17 +93,13 @@ export const ConnectionPage: React.FC = () => {
   const handleConnect = async (connection: SavedConnection) => {
     setConnectingId(connection.id);
     try {
-      const result = await testConnection(connection.uri);
-      if (!result.ok) {
-        toast.error(result.message || "Connection test failed");
-        return;
-      }
-
       await connect(connection);
       toast.success(`Connected to ${connection.name}`);
       router.push("/");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Connection failed");
+      const apiErr = err as { payload?: { message?: string } };
+      const msg = apiErr?.payload?.message ?? (err instanceof Error ? err.message : "Connection failed");
+      toast.error(msg);
     } finally {
       setConnectingId(null);
     }
@@ -136,6 +125,7 @@ export const ConnectionPage: React.FC = () => {
 
   const handleCancelEdit = () => {
     setEditingConnection(null);
+    setSubmitError(null);
   };
 
   const formDefaults: Partial<TConnectionForm> | undefined = editingConnection
@@ -218,6 +208,7 @@ export const ConnectionPage: React.FC = () => {
               onTest={handleTest}
               isConnecting={isConnecting}
               editMode={!!editingConnection}
+              submitError={submitError}
             />
           </div>
         </div>
