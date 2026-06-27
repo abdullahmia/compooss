@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.20.0](https://github.com/abdullahmia/compooss/compare/v1.19.0...v1.20.0) (2026-06-27)
+
+
+### Features
+
+* **connection:** enhance ui and improve connection list ([c27464d](https://github.com/abdullahmia/compooss/commit/c27464dd0ee6294a10bbfacb6930479bdba74cd5))
+
+
+### Bug Fixes
+
+* **connection:** surface classified mongodb errors and fix state inconsistencies ([3352d3c](https://github.com/abdullahmia/compooss/commit/3352d3cd5ce23559218a168eca68acccac87bb27))
+
 ## [1.19.0](https://github.com/abdullahmia/compooss/compare/v1.18.0...v1.19.0) (2026-05-29)
 
 
