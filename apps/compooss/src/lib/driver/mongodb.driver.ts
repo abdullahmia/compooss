@@ -36,18 +36,18 @@ export class MongoDriver {
     }
   }
 
-  async ping(): Promise<boolean> {
+  async ping(): Promise<void> {
+    const client = await this.getClient();
+    await client.db("admin").command({ ping: 1 });
+  }
+
+  async isConnected(): Promise<boolean> {
     try {
-      const client = await this.getClient();
-      await client.db("admin").command({ ping: 1 });
+      await this.ping();
       return true;
     } catch {
       return false;
     }
-  }
-
-  async isConnected(): Promise<boolean> {
-    return this.ping();
   }
 
   async getDb(dbName: string): Promise<Db> {

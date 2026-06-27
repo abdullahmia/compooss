@@ -1,12 +1,10 @@
 "use client";
 
 import type { SavedConnection } from "@compooss/types";
-import { IconButton, Input, cn } from "@compooss/ui";
-import { ArrowDownAZ, Clock, Search, Star, X } from "lucide-react";
+import { cn } from "@compooss/ui";
+import { Clock, Search, Star, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ConnectionCard } from "./connection-card.component";
-
-type SortKey = "name" | "lastUsedAt" | "createdAt";
 
 type Props = {
   connections: SavedConnection[];
@@ -27,7 +25,6 @@ export const ConnectionList: React.FC<Props> = ({
 }) => {
   const [search, setSearch] = useState("");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [sortBy, setSortBy] = useState<SortKey>("lastUsedAt");
 
   const filtered = useMemo(() => {
     let result = connections;
@@ -46,22 +43,11 @@ export const ConnectionList: React.FC<Props> = ({
     }
 
     return [...result].sort((a, b) => {
-      if (sortBy === "name") return a.name.localeCompare(b.name);
-      if (sortBy === "lastUsedAt") {
-        const aTime = a.lastUsedAt
-          ? new Date(a.lastUsedAt).getTime()
-          : 0;
-        const bTime = b.lastUsedAt
-          ? new Date(b.lastUsedAt).getTime()
-          : 0;
-        return bTime - aTime;
-      }
-      return (
-        new Date(b.createdAt).getTime() -
-        new Date(a.createdAt).getTime()
-      );
+      const aTime = a.lastUsedAt ? new Date(a.lastUsedAt).getTime() : 0;
+      const bTime = b.lastUsedAt ? new Date(b.lastUsedAt).getTime() : 0;
+      return bTime - aTime;
     });
-  }, [connections, search, showFavoritesOnly, sortBy]);
+  }, [connections, search, showFavoritesOnly]);
 
   const favorites = useMemo(
     () => filtered.filter((c) => c.isFavorite),
@@ -91,13 +77,15 @@ export const ConnectionList: React.FC<Props> = ({
   ) => {
     if (items.length === 0) return null;
     return (
-      <div className="mb-5">
-        <h3 className="text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-wider mb-2 flex items-center gap-1.5 px-1">
-          {icon}
-          {title}
-          <span className="text-muted-foreground/40 ml-auto tabular-nums">{items.length}</span>
-        </h3>
-        <div className="space-y-2">
+      <div className="mb-4">
+        <div className="flex items-center gap-1.5 mb-1.5 px-0.5">
+          <span className="text-muted-foreground/50">{icon}</span>
+          <span className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-wider">
+            {title}
+          </span>
+          <span className="text-[10px] text-muted-foreground/30 tabular-nums ml-auto">{items.length}</span>
+        </div>
+        <div className="space-y-1.5">
           {items.map((conn) => (
             <ConnectionCard
               key={conn.id}
@@ -116,55 +104,46 @@ export const ConnectionList: React.FC<Props> = ({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Search & Filters */}
-      <div className="flex items-center gap-2 mb-4">
-        <div className="flex items-center gap-2 bg-secondary/80 rounded-lg px-3 py-2 flex-1 border border-transparent focus-within:border-primary/20 transition-colors">
-          <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          <Input
-            variant="search"
+      {/* Search + favorites toggle */}
+      <div className="px-3 pt-3 pb-3 flex items-center gap-2">
+        <div className="relative flex items-center flex-1">
+          <Search className="absolute left-3 h-3.5 w-3.5 text-muted-foreground/40 pointer-events-none" />
+          <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search connections..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            className="w-full h-8 bg-secondary/50 text-sm text-foreground placeholder:text-muted-foreground/40 border border-transparent focus:border-primary/20 focus:outline-none rounded-lg pl-9 pr-8 transition-colors"
           />
           {search && (
-            <IconButton
-              variant="ghost"
-              size="sm"
-              icon={<X className="h-3 w-3" />}
-              label="Clear search"
+            <button
+              type="button"
+              className="absolute right-2.5 text-muted-foreground/40 hover:text-foreground transition-colors"
               onClick={() => setSearch("")}
-            />
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
           )}
         </div>
-
         <button
           type="button"
           onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+          title={showFavoritesOnly ? "Show all" : "Favorites only"}
           className={cn(
-            "p-2 rounded-lg transition-all border",
+            "h-8 w-8 flex items-center justify-center rounded-lg transition-all shrink-0",
             showFavoritesOnly
-              ? "bg-warning/10 text-warning border-warning/20"
-              : "text-muted-foreground hover:text-foreground hover:bg-secondary border-transparent",
+              ? "bg-warning/10 text-warning"
+              : "text-muted-foreground/40 hover:text-muted-foreground hover:bg-secondary",
           )}
-          title="Filter favorites"
         >
           <Star className={cn("h-3.5 w-3.5", showFavoritesOnly && "fill-warning")} />
         </button>
-
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as SortKey)}
-          className="text-[11px] bg-secondary/80 text-foreground border border-transparent rounded-lg px-2.5 py-2 outline-hidden cursor-pointer hover:bg-secondary transition-colors"
-        >
-          <option value="lastUsedAt">Recent</option>
-          <option value="name">Name</option>
-          <option value="createdAt">Created</option>
-        </select>
       </div>
 
+      <div className="mx-3 border-t border-border/40 mb-0" />
+
       {/* Connection list */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
+      <div className="flex-1 overflow-y-auto scrollbar-thin px-3 py-3">
         {filtered.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-3">
@@ -178,7 +157,7 @@ export const ConnectionList: React.FC<Props> = ({
             </p>
           </div>
         ) : showFavoritesOnly ? (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {filtered.map((conn) => (
               <ConnectionCard
                 key={conn.id}
@@ -203,11 +182,7 @@ export const ConnectionList: React.FC<Props> = ({
               recent,
               <Clock className="h-3 w-3" />,
             )}
-            {renderSection(
-              "All Connections",
-              rest,
-              <ArrowDownAZ className="h-3 w-3" />,
-            )}
+            {renderSection("All Connections", rest, null)}
           </>
         )}
       </div>
